@@ -1,4 +1,23 @@
-package frc.robot.Subsystems;
+package frc.robot.subsystems;
+
+import com.ctre.phoenix6.configs.CANcoderConfiguration;
+import com.ctre.phoenix6.hardware.CANcoder;
+import com.revrobotics.spark.SparkBase.ControlType;
+import com.revrobotics.spark.SparkBase.PersistMode;
+import com.revrobotics.spark.SparkBase.ResetMode;
+import com.revrobotics.REVLibError;
+import com.revrobotics.spark.ClosedLoopSlot;
+import com.revrobotics.spark.SparkClosedLoopController;
+import com.revrobotics.spark.SparkFlex;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+import com.revrobotics.spark.config.ClosedLoopConfig;
+import com.revrobotics.spark.config.ExternalEncoderConfig;
+import com.revrobotics.spark.config.LimitSwitchConfig;
+import com.revrobotics.spark.config.SoftLimitConfig;
+import com.revrobotics.spark.config.SparkBaseConfig;
+import com.revrobotics.spark.config.SparkFlexConfig;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -6,33 +25,18 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.Subsystems.Constant;
-import com.ctre.phoenix6.configs.CANcoderConfiguration;
-import com.ctre.phoenix6.hardware.CANcoder;
-import com.revrobotics.spark.SparkFlex;
-import com.revrobotics.spark.SparkFlex;
-import com.revrobotics.spark.SparkClosedLoopController;
-import com.revrobotics.spark.SparkBase;
-import com.revrobotics.spark.SparkBase.ControlType;
-import com.revrobotics.spark.SparkBase.PersistMode;
-import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
-import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
-import com.revrobotics.spark.config.SparkFlexConfig;
-import com.revrobotics.spark.config.SparkMaxConfig;
-
-import frc.robot.Subsystems.Constant.DebugLevel;
-import frc.robot.Subsystems.Constant.DebugSetting;
-import frc.robot.Subsystems.Constant.DriveConstants;
 import frc.robot.Util.CTREModuleState;
 import frc.robot.Util.Conversions;
+import frc.robot.subsystems.Constant.DebugLevel;
+import frc.robot.subsystems.Constant.DebugSetting;
+import frc.robot.subsystems.Constant.DriveConstants;
 
 public class SwerveModule {
 
     private double offset = 0;
 
     private SparkFlex turn;
-    private SparkFlexConfig motorConfig;
+    private SparkBaseConfig motorConfig;
     private SparkFlex drive;
     private SparkClosedLoopController turn_pid;
     private CANcoder canCoder;
@@ -54,32 +58,40 @@ public class SwerveModule {
     public String Name;
     private String canCoderName;
 
-    public SwerveModule(int turnMotor, int driveMotor, int canCoderID, double off, String name, DriveTrainInterface driveTr) {
-        Name = name;
-        offset = off;
-        turnID = turnMotor;
-        driveTrainParent = driveTr;
-        motorConfig = new SparkFlexConfig();
 
-        turn = new SparkFlex(turnMotor, MotorType.kBrushless);
-        drive = new SparkFlex(driveMotor, MotorType.kBrushless);
-        turn.setInverted(false);
-        drive.setInverted(false);
+    private Rotation2d lastAngle;
 
-        canCoder = new CANcoder(canCoderID);
-        canCoderName = name + canCoderID;
-        motorConfig.closedLoop
-        .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-        // Set PID values for position control. We don't need to pass a closed loop
-        // slot, as it will default to slot 0.
-        .p(0.1)
-        .i(0)
-        .d(0);
-        
-       turn.configure(motorConfig, null, null);
-       drive.configure(motorConfig, null, null);
+    public SwerveModule(int turnMotor, int driveMotor, int canCoderID, double off, String name, DriveTrainInterface driveTr, boolean useNewCode) {
+        this.drive = new SparkFlex(driveMotor, MotorType.kBrushless);
+        this.turn = new SparkFlex(turnMotor, MotorType.kBrushless);
+        this.motorConfig = new SparkFlexConfig()
+            .apply(new ExternalEncoderConfig())
+            .smartCurrentLimit(Integer.MAX_VALUE)
+            .inverted(false)
+            .apply(new SoftLimitConfig().forwardSoftLimitEnabled(false).reverseSoftLimitEnabled(false))
+            .apply(new LimitSwitchConfig().forwardLimitSwitchEnabled(false).reverseLimitSwitchEnabled(false))
+            .apply(new ClosedLoopConfig()
+                .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
+                .p(0.1)
+                .i(0.0)
+                .d(0.0)
+            )
+            .idleMode(IdleMode.kBrake);
+
+        this.drive.configure(this.motorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        this.turn.configure(this.motorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
 
+        this.canCoder = new CANcoder(canCoderID);
+        this.turnPID = new PIDController(0.5, 0, 0);
+        this.turnPID.enableContinuousInput(-Math.PI, Math.PI);
+        resetEncoders();
+        lastAngle = getState().angle;
+
+        this.Name = name;
+        this.canCoderName = name + canCoderID;
+        resetTurnToAbsolute();
+        applyTurnConfiguration();
     }
 
     public void update() {
@@ -130,8 +142,34 @@ public class SwerveModule {
         // turn.set(ControlMode.Position, -Conversions.radiansToFalcon(angle));
         turn_pid.setReference(-Conversions.radiansToFalcon(angle), ControlType.kPosition);
         driveAngle = angle;
-
     }
 
+
+
+    public void resetTurnToAbsolute() {
+        double absPos = canCoder.getAbsolutePosition().refresh().getValueAsDouble();
+        double absolutePosition = (absPos * Constant.TwoPI) - 0.0 /* offset */;
+
+        if (DebugSetting.TraceLevel == DebugLevel.Swerve || DebugSetting.TraceLevel == DebugLevel.All) {
+            SmartDashboard.putNumber(Name + " Posn abs", absolutePosition);
+        }
+
+        turn.set(turnPID.calculate(absolutePosition, 0));
+    }
+
+    public void applyTurnConfiguration() {
+        REVLibError status;
+        for (int i = 0; i < 5; i++) {
+            status = turn.configure(motorConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
+            if (status.equals(REVLibError.kOk)) break;
+            else SmartDashboard.putString(Name + " Config Error", status.toString());
+        }
+    }
+
+    public void resetEncoders() {
+        drive.getEncoder().setPosition(0);
+        double absoluteEncoderAngle = (canCoder.getAbsolutePosition().getValueAsDouble() - 0.0 /* offset */) * Constant.TwoPI * 1.0 /* encoder not reversed */;
+        turn.getEncoder().setPosition(absoluteEncoderAngle / (Constant.TwoPI / DriveConstants.turnGearRatio));
+    }
 }
  
