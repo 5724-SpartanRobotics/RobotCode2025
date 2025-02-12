@@ -19,6 +19,7 @@ public class Robot extends TimedRobot {
   private static final String kCustomAuto = "My Auto";
   private String m_autoSelected;
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
+  @SuppressWarnings("unused")
   private RobotContainer _RobotContainer;
 
   /**
