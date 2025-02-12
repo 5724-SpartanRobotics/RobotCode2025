@@ -81,6 +81,13 @@ public final class Constant {
         public static final double ElePidI = 0;
         public static final double ElePidD = 0;
     }
+
+    public static final class LedConstants {
+        public static final int port = 0;
+        public static final int stripLength = 60;
+    }
+
+
     public static final class DebugSetting{
         //set this to get more values to smart dashboard. Leave it off for competition.
         public static final DebugLevel TraceLevel = DebugLevel.Swerve;

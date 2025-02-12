@@ -1,6 +1,13 @@
 # Changelog
 Changelog based on what we do, but some of it may have to come from git commit history.
 
+## Feb 12, 2025
+* Add LED subsystem for an led "status" strip
+* Added the claw motor to the Elevator & Arm subsystem
+* Added a check for high current use on the claw, which activates green LEDs
+* All of this still needs to be tested
+* Build Successful
+
 ## Feb 11, 2025
 ### Part 1
 * Import initial drivetrain code (25 errors, 2 warnings) - subsystem, interface, swerve modules
