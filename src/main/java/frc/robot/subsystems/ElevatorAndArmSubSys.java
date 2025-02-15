@@ -123,7 +123,7 @@ public class ElevatorAndArmSubSys extends SubsystemBase {
         SmartDashboard.putNumber("ElevatorPos", elevatorPosition);
 
         if (usingLotsOfCurrent()) {
-            _LedSubsystem.setGreen();
+            _LedSubsystem.setColor(Color.kGreen);
         } else {
             _LedSubsystem.reset();
         }
