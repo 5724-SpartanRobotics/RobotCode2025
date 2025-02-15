@@ -7,7 +7,6 @@ import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.config.ClosedLoopConfig;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.LimitSwitchConfig;
 import com.revrobotics.spark.config.SoftLimitConfig;
@@ -15,7 +14,6 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.Constant.CanIdConstants;
 import frc.robot.subsystems.Constant.ElevatorAndArmConstants;
@@ -35,10 +33,16 @@ public class ElevatorAndArmSubSys extends SubsystemBase {
     private RelativeEncoder _ArmRotateMtr1Encoder;
     private SparkClosedLoopController _ArmExtendMtrPidController;
     private RelativeEncoder _ArmExtenMtrEncoder;
-    private SparkClosedLoopController _ClawIntakePidController;
-    private RelativeEncoder _ClawIntakeEncoder;
 
     private final LedSubsystem _LedSubsystem;
+
+    private double _ElevatorSetpoint;
+    private double _ElevatorMax = 14.0;
+    private double _ArmRotateSetpoint;
+    private double _ArmRotateMax = 100;
+    private double _ArmExtendSetpoint;
+    private double _ArmExtendMax = 12.0;
+    private double _ArmSpoolDiameter = 1.0;
 
     public ElevatorAndArmSubSys(LedSubsystem led)
     {
@@ -94,10 +98,6 @@ public class ElevatorAndArmSubSys extends SubsystemBase {
             .smartCurrentLimit(50)
             .apply(new SoftLimitConfig().forwardSoftLimitEnabled(false).reverseSoftLimitEnabled(false))
             .apply(new LimitSwitchConfig().forwardLimitSwitchEnabled(false).reverseLimitSwitchEnabled(false))
-            .apply(new ClosedLoopConfig()
-                .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-                .p(0.1).i(0.0).d(0.0)
-            )
             .idleMode(IdleMode.kBrake), 
             ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
@@ -107,9 +107,6 @@ public class ElevatorAndArmSubSys extends SubsystemBase {
         _ArmRotateMtr1Encoder = _ArmRotateMtrCtrl1.getEncoder();
         _ArmExtendMtrPidController = _ArmExtendMtrCtrl.getClosedLoopController();
         _ArmExtenMtrEncoder = _ArmExtendMtrCtrl.getEncoder();
-        _ClawIntakePidController = _ClawIntake.getClosedLoopController();
-        _ClawIntakeEncoder = _ClawIntake.getEncoder();
-
 
         _LedSubsystem = led;
     }
@@ -141,5 +138,74 @@ public class ElevatorAndArmSubSys extends SubsystemBase {
 
     public boolean usingLotsOfCurrent() {
         return _ClawIntake.getOutputCurrent() > 30.0;
+    }
+
+    public void IncrementElevatorUp()
+    {
+        _ElevatorSetpoint += 1;
+        if (_ElevatorSetpoint > _ElevatorMax)
+            _ElevatorSetpoint = _ElevatorMax;
+        _ElevatorMtr1PidController.setReference(ConvertElevatorInchesToRotations(_ElevatorSetpoint), ControlType.kPosition);
+    }
+
+    private double ConvertElevatorInchesToRotations(double height)
+    {
+        return height / (Math.PI * ElevatorAndArmConstants.ElevatorChainSproketDiameter) * ElevatorAndArmConstants.ElevatorGearRatio;
+    }
+
+    public void DecrementElevatorUp()
+    {
+        _ElevatorSetpoint -= 1;//1 inch
+        if (_ElevatorSetpoint < 0)
+            _ElevatorSetpoint = 0;
+        _ElevatorMtr1PidController.setReference(ConvertElevatorInchesToRotations(_ElevatorSetpoint), ControlType.kPosition);
+    }
+
+    public void IncrementArmRotate()
+    {
+        _ArmRotateSetpoint += 5;
+        if (_ArmRotateSetpoint > _ArmRotateMax)
+            _ArmRotateSetpoint = _ArmRotateMax;
+        //convert to motor rotations
+        double setpoint = _ArmRotateSetpoint / 360 * ElevatorAndArmConstants.ArmRotateGearRatio;
+        _ArmRotateMtr1PidController.setReference(setpoint, ControlType.kPosition);
+    }
+
+    public void DecrementArmRotate()
+    {
+        _ArmRotateSetpoint -= 5;
+        if (_ArmRotateSetpoint < 0)
+            _ArmRotateSetpoint = 0;
+        //convert to motor rotations
+        double setpoint = _ArmRotateSetpoint / 360 * ElevatorAndArmConstants.ArmRotateGearRatio;
+        _ArmRotateMtr1PidController.setReference(setpoint, ControlType.kPosition);
+    }
+
+    public void IncrementArmExtend()
+    {
+        _ArmExtendSetpoint += 1;
+        if (_ArmExtendSetpoint > _ArmExtendMax)
+            _ArmExtendSetpoint = _ArmExtendMax;
+        //convert from inches to motor rotations
+        _ArmExtendMtrPidController.setReference(ConvertArmExtendInchesToRotations(_ArmExtendSetpoint), ControlType.kPosition);
+    }
+
+    public void DecrementArmExtend()
+    {
+        _ArmExtendSetpoint -= 1;
+        if (_ArmExtendSetpoint < 0)
+            _ArmExtendSetpoint = 0;
+        //convert from inches to motor rotations
+        _ArmExtendMtrPidController.setReference(ConvertArmExtendInchesToRotations(_ArmExtendSetpoint), ControlType.kPosition);
+    }
+
+    private double ConvertArmExtendInchesToRotations(double dist)
+    {
+        return dist / (Math.PI * _ArmSpoolDiameter) * ElevatorAndArmConstants.ArmExtendGearRatio;
+    }
+
+    public void ClawRun(double speed)
+    {
+        _ClawIntake.set(speed);
     }
 }

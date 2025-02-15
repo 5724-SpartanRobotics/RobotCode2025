@@ -66,7 +66,8 @@ public class AlgaeSubsystem extends SubsystemBase{
         if (newSetpoint > 120)
             newSetpoint = 120;
         _AlgaeRotateSetpoint = newSetpoint;
-        _AlgaeRotateMtrPidController.setReference(_AlgaeRotateSetpoint, ControlType.kPosition);
+        double setpoint = _AlgaeRotateSetpoint * NeoConstants.CountsPerRevolution * AlgaeConstants.GearRatio / 360.0;
+        _AlgaeRotateMtrPidController.setReference(setpoint, ControlType.kPosition);
     }
 
     public void DecrementSmallDegrees()
@@ -75,6 +76,7 @@ public class AlgaeSubsystem extends SubsystemBase{
         if (newSetpoint < 0)
             newSetpoint = 0;
         _AlgaeRotateSetpoint = newSetpoint;
-        _AlgaeRotateMtrPidController.setReference(_AlgaeRotateSetpoint, ControlType.kPosition);
+        double setpoint = _AlgaeRotateSetpoint * NeoConstants.CountsPerRevolution * AlgaeConstants.GearRatio / 360.0;
+        _AlgaeRotateMtrPidController.setReference(setpoint, ControlType.kPosition);
     }
 }

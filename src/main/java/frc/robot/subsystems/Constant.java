@@ -77,6 +77,11 @@ public final class Constant {
         public static final double ElePidFF = 0.0002;
         public static final double ElePidI = 0;
         public static final double ElePidD = 0;
+
+        public static final double ArmRotateGearRatio = 45.0;
+        public static final double ArmExtendGearRatio = 12.0;
+        public static final double ElevatorGearRatio = 12.0;
+        public static final double ElevatorChainSproketDiameter = 1.5;//inches
     }
 
     public final class AlgaeConstants {
