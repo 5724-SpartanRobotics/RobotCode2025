@@ -1,6 +1,11 @@
 # Changelog
 Changelog based on what we do, but some of it may have to come from git commit history.
 
+## Feb 15, 2025
+* LED code works properly
+* Some Algae intake added / worked on
+* Maybe some other changes (?)
+
 ## Feb 14, 2025
 * Add the TeleopSwerve default driving command
 * Fix some non-instantiated things
