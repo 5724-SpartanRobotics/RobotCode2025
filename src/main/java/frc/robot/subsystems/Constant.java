@@ -6,25 +6,28 @@ public final class Constant {
    
     public static final double TwoPI = Math.PI * 2;
     public static final double HalfPI = Math.PI / 2;
-    public static final class CanIdConstants
-    {
-        public static final int LFTurnMotor = 2;
-        public static final int LFDriveMotor = 3;
-        public static final int LBTurnMotor = 4;
-        public static final int LBDriveMotor = 5;
-        public static final int RBTurnMotor = 6;
-        public static final int RBDriveMotor = 7;
-        public static final int RFTurnMotor = 8;
-        public static final int RFDriveMotor = 9;
+    public static final class CanIdConstants {
+        public static final int LFTurnMotor = 1;
+        public static final int LFDriveMotor = 2;
+        public static final int LBTurnMotor = 3;
+        public static final int LBDriveMotor = 4;
+        public static final int RBTurnMotor = 5;
+        public static final int RBDriveMotor = 6;
+        public static final int RFTurnMotor = 7;
+        public static final int RFDriveMotor = 8;
         public static final int LFCanID = 10;
         public static final int LBCanID = 11;
         public static final int RFCanID = 12;
         public static final int RBCanID = 13;
         public static final int PigeonID = 14;
-        public static final int PDHID = 1;
-        public static final int pneumaticontroller = 15;
-        
-     }
+        public static final int PDHID = 50;
+        public static final int ArmRotateMtrCtrl1CanId = 18;
+        public static final int ArmRotateMtrCtrl2CanId = 19;
+        public static final int ArmExtendMtrCtrlCanId = 16;
+        public static final int ElevatorMtrCtrl1CanId = 20;
+        public static final int ElevatorMtrCtrl2CanId = 21;
+        public static final int ClawMtrCtrlCanId = 17;
+    }
     public final class DriveConstants {
         public static final double maxRobotSpeedmps = 4.5;
         public static final double driveGearRatio = 6.75;
@@ -58,14 +61,7 @@ public final class Constant {
         public static double joystickZDeadband = 0.3;//a deadband that you must overcome for the joystick input, otherwise we send 0
     }
 
-    public final class ElevatorAndArmConstants
-    {
-        public static final int ArmRotateMtrCtrl1CanId = 18;
-        public static final int ArmRotateMtrCtrl2CanId = 19;
-        public static final int ArmExtendMtrCtrlCanId = 16;
-        public static final int ElevatorMtrCtrl1CanId = 20;
-        public static final int ElevatorMtrCtrl2CanId = 21;
-
+    public final class ElevatorAndArmConstants {
         public static final double ArmExtendPidP = 0.0001;
         public static final double ArmExtendPidFF = 0.0002;
         public static final double ArmExtendPidI = 0;
@@ -84,7 +80,7 @@ public final class Constant {
 
     public static final class LedConstants {
         public static final int port = 0;
-        public static final int stripLength = 60;
+        public static final int stripLength = 200;
     }
 
 

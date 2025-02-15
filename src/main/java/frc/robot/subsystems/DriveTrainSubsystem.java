@@ -14,6 +14,7 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.commands.TeleopSwerve;
 import frc.robot.subsystems.Constant.CanIdConstants;
 import frc.robot.subsystems.Constant.DebugLevel;
 import frc.robot.subsystems.Constant.DebugSetting;
@@ -36,6 +37,8 @@ public class DriveTrainSubsystem extends SubsystemBase implements DriveTrainInte
     private Pose2d robotPose;
     private Field2d field;
 
+    private TeleopSwerve.JoystickAxes joystickAxes;
+
     public DriveTrainSubsystem() {
         _gyroscope = new Pigeon2(CanIdConstants.PigeonID);
         resetGyro();
@@ -52,6 +55,7 @@ public class DriveTrainSubsystem extends SubsystemBase implements DriveTrainInte
             DriveConstants.RBLocation
         );
 
+        field = new Field2d();
         robotPose = new Pose2d(new Translation2d(4.0, 5.0), new Rotation2d());
 
         SwerveModulePosition[] swerveInitialPositions = {
@@ -119,5 +123,14 @@ public class DriveTrainSubsystem extends SubsystemBase implements DriveTrainInte
     private void resetGyro() {
         _gyroscope.reset();
         updateGyro();
+    }
+
+    public void zeroGyro() {
+        _gyroscope.setYaw(0);
+    }
+
+    public TeleopSwerve.JoystickAxes setJoystickAxes(TeleopSwerve.JoystickAxes axes) {
+        joystickAxes = axes;
+        return joystickAxes;
     }
 }

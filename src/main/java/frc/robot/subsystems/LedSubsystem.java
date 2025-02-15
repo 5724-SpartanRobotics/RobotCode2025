@@ -26,6 +26,12 @@ public class LedSubsystem extends SubsystemBase {
         return this;
     }
 
+    public LedSubsystem reset() {
+        LEDPattern.solid(Color.kGold).applyTo(_ledBuffer);
+        _led.setData(_ledBuffer);
+        return this;
+    }
+
     public LedSubsystem off() {
         LEDPattern.solid(Color.kBlack).applyTo(_ledBuffer);
         _led.setData(_ledBuffer);

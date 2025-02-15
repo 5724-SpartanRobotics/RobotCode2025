@@ -1,6 +1,15 @@
 # Changelog
 Changelog based on what we do, but some of it may have to come from git commit history.
 
+## Feb 14, 2025
+* Add the TeleopSwerve default driving command
+* Fix some non-instantiated things
+* More work on the LED system, which don't work as intended
+* Build Successfule
+* Move some constants around
+* Update CAN IDs
+* some debugging (which was not removed before commit)
+
 ## Feb 12, 2025
 * Add LED subsystem for an led "status" strip
 * Added the claw motor to the Elevator & Arm subsystem

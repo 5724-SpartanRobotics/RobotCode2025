@@ -17,6 +17,7 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.subsystems.Constant.CanIdConstants;
 import frc.robot.subsystems.Constant.ElevatorAndArmConstants;
 
 public class ElevatorAndArmSubSys extends SubsystemBase {
@@ -41,11 +42,12 @@ public class ElevatorAndArmSubSys extends SubsystemBase {
 
     public ElevatorAndArmSubSys(LedSubsystem led)
     {
-        _ElevatorMtrCtrl1 = new SparkMax(ElevatorAndArmConstants.ElevatorMtrCtrl1CanId, MotorType.kBrushless);
-        _ElevatorMtrCtrl2 = new SparkMax(ElevatorAndArmConstants.ElevatorMtrCtrl2CanId, MotorType.kBrushless);
-        _ArmRotateMtrCtrl1 = new SparkMax(ElevatorAndArmConstants.ArmRotateMtrCtrl1CanId, MotorType.kBrushless);
-        _ArmRotateMtrCtrl2 = new SparkMax(ElevatorAndArmConstants.ArmRotateMtrCtrl2CanId, MotorType.kBrushless);
-        _ArmExtendMtrCtrl = new SparkMax(ElevatorAndArmConstants.ArmExtendMtrCtrlCanId, MotorType.kBrushless);
+        _ElevatorMtrCtrl1 = new SparkMax(CanIdConstants.ElevatorMtrCtrl1CanId, MotorType.kBrushless);
+        _ElevatorMtrCtrl2 = new SparkMax(CanIdConstants.ElevatorMtrCtrl2CanId, MotorType.kBrushless);
+        _ArmRotateMtrCtrl1 = new SparkMax(CanIdConstants.ArmRotateMtrCtrl1CanId, MotorType.kBrushless);
+        _ArmRotateMtrCtrl2 = new SparkMax(CanIdConstants.ArmRotateMtrCtrl2CanId, MotorType.kBrushless);
+        _ArmExtendMtrCtrl = new SparkMax(CanIdConstants.ArmExtendMtrCtrlCanId, MotorType.kBrushless);
+        _ClawIntake = new SparkMax(CanIdConstants.ClawMtrCtrlCanId, MotorType.kBrushless);
 
         SparkMaxConfig cfg = new SparkMaxConfig();
         cfg.inverted(true)
@@ -60,7 +62,7 @@ public class ElevatorAndArmSubSys extends SubsystemBase {
         cfg = new SparkMaxConfig();
         cfg.inverted(false)
         .idleMode(IdleMode.kBrake).
-        follow(ElevatorAndArmConstants.ElevatorMtrCtrl1CanId);
+        follow(CanIdConstants.ElevatorMtrCtrl1CanId);
         _ElevatorMtrCtrl2.configure(cfg, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
 
         cfg = new SparkMaxConfig();
@@ -75,7 +77,7 @@ public class ElevatorAndArmSubSys extends SubsystemBase {
         cfg = new SparkMaxConfig();
         cfg.inverted(false)
         .idleMode(IdleMode.kBrake)
-        .follow(ElevatorAndArmConstants.ArmRotateMtrCtrl1CanId);
+        .follow(CanIdConstants.ArmRotateMtrCtrl1CanId);
         _ArmRotateMtrCtrl2.configure(cfg, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
 
         cfg = new SparkMaxConfig();
@@ -123,9 +125,6 @@ public class ElevatorAndArmSubSys extends SubsystemBase {
         SmartDashboard.putNumber("ArmRotPos", armRotatePosition);
         SmartDashboard.putNumber("ElevatorPos", elevatorPosition);
 
-        if (usingLotsOfCurrent()) {
-            _LedSubsystem.setColor(Color.kGreen);
-        }
     }
 
     public void MoveToPickupPieceInRobot()
