@@ -125,6 +125,11 @@ public class ElevatorAndArmSubSys extends SubsystemBase {
         SmartDashboard.putNumber("ArmRotPos", armRotatePosition);
         SmartDashboard.putNumber("ElevatorPos", elevatorPosition);
 
+        if (usingLotsOfCurrent()) {
+            _LedSubsystem.setGreen();
+        } else {
+            _LedSubsystem.reset();
+        }
     }
 
     public void MoveToPickupPieceInRobot()

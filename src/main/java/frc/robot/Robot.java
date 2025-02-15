@@ -44,12 +44,6 @@ public class Robot extends TimedRobot {
   @Override
   public void robotPeriodic() {
     CommandScheduler.getInstance().run();
-    
-        if (true) {
-          _RobotContainer._LedSubsystem.setColor(Color.kGreen);
-        } else {
-          _RobotContainer._LedSubsystem.reset();
-        }
   }
 
   /**
