@@ -2,9 +2,19 @@
 Changelog based on what we do, but some of it may have to come from git commit history.
 
 ## Feb 15, 2025
+### Part 1
 * LED code works properly
 * Some Algae intake added / worked on
-* Maybe some other changes (?)
+* Add commands & button mappings for elevator, arm, and intake (lots of code)
+### Part 2
+* Add logging
+* Add CameraServer
+* Remove unread variables in SwerveModule
+* Remove the DriveTrainInterface
+* Move Constants out of Subsystems, since it's not a subsystem
+* Move SwerveModule into new `lib` folder, since it is also not a subsystem
+* Removed duplicate 2π in Util.Conversions
+* Make some formatting changes
 
 ## Feb 14, 2025
 * Add the TeleopSwerve default driving command

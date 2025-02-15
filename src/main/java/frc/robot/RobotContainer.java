@@ -1,7 +1,6 @@
 package frc.robot;
 
-import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -31,6 +30,7 @@ public class RobotContainer {
         _TeleopSwerve = new TeleopSwerve(_DriveTrainSubsystem, _DriverController);
 
         _DriveTrainSubsystem.setDefaultCommand(_TeleopSwerve);
+        CameraServer.startAutomaticCapture(); // Start camera server on zeroth index video device
 
         configureBindings();
     }

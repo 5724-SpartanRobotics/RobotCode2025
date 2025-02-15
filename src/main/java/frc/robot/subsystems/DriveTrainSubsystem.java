@@ -14,13 +14,14 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.CanIdConstants;
+import frc.robot.Constants.DebugLevel;
+import frc.robot.Constants.DebugSetting;
+import frc.robot.Constants.DriveConstants;
 import frc.robot.commands.TeleopSwerve;
-import frc.robot.subsystems.Constant.CanIdConstants;
-import frc.robot.subsystems.Constant.DebugLevel;
-import frc.robot.subsystems.Constant.DebugSetting;
-import frc.robot.subsystems.Constant.DriveConstants;
+import frc.robot.lib.SwerveModule;
 
-public class DriveTrainSubsystem extends SubsystemBase implements DriveTrainInterface {
+public class DriveTrainSubsystem extends SubsystemBase {
     public static final boolean kFieldRelativeDriveDefault = true;
 
     private final SwerveDriveOdometry _SwerveDriveOdometry;
@@ -43,10 +44,10 @@ public class DriveTrainSubsystem extends SubsystemBase implements DriveTrainInte
         _gyroscope = new Pigeon2(CanIdConstants.PigeonID);
         resetGyro();
 
-        _LF = new SwerveModule(CanIdConstants.LFTurnMotor, CanIdConstants.LFDriveMotor, CanIdConstants.LFCanID, DriveConstants.LFOff, "LF", this, true);
-        _RF = new SwerveModule(CanIdConstants.RFTurnMotor, CanIdConstants.RFDriveMotor, CanIdConstants.RFCanID, DriveConstants.RFOff, "RF", this, true);
-        _LB = new SwerveModule(CanIdConstants.LBTurnMotor, CanIdConstants.LBDriveMotor, CanIdConstants.LBCanID, DriveConstants.LBOff, "LB", this, true);
-        _RB = new SwerveModule(CanIdConstants.RBTurnMotor, CanIdConstants.RBDriveMotor, CanIdConstants.RBCanID, DriveConstants.RBOff, "RB", this, true);
+        _LF = new SwerveModule(CanIdConstants.LFTurnMotor, CanIdConstants.LFDriveMotor, CanIdConstants.LFCanID, DriveConstants.LFOff, "LF");
+        _RF = new SwerveModule(CanIdConstants.RFTurnMotor, CanIdConstants.RFDriveMotor, CanIdConstants.RFCanID, DriveConstants.RFOff, "RF");
+        _LB = new SwerveModule(CanIdConstants.LBTurnMotor, CanIdConstants.LBDriveMotor, CanIdConstants.LBCanID, DriveConstants.LBOff, "LB");
+        _RB = new SwerveModule(CanIdConstants.RBTurnMotor, CanIdConstants.RBDriveMotor, CanIdConstants.RBCanID, DriveConstants.RBOff, "RB");
 
         _SwerveDriveKinematics = new SwerveDriveKinematics(
             DriveConstants.LFLocation,

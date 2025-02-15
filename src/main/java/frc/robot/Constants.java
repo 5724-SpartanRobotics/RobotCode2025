@@ -1,11 +1,11 @@
-package frc.robot.subsystems;
+package frc.robot;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 
-public final class Constant {
-   
+public final class Constants {
     public static final double TwoPI = Math.PI * 2;
     public static final double HalfPI = Math.PI / 2;
+
     public static final class CanIdConstants {
         public static final int LFTurnMotor = 1;
         public static final int LFDriveMotor = 2;
@@ -32,12 +32,12 @@ public final class Constant {
     public final class DriveConstants {
         public static final double maxRobotSpeedmps = 4.5;
         public static final double driveGearRatio = 6.75;
-        public static double turnGearRatio = 150.0 / 7.0;
+        public static final double turnGearRatio = 150.0 / 7.0;
         public static final double wheelDiameter = Units.inchesToMeters(4.125);//guessing there is about 1/8" added for the tread. The wheel diameter is 4"
         public static final double wheelCircumfrence = wheelDiameter * Math.PI;//meters
     
         // Maximum angular velocity (in radians per second)
-        public static final double maxAngularVelocityRadps = Math.PI * 2;
+        public static final double maxAngularVelocityRadps = TwoPI;
         public static final double maxLinearSpeed = 15.5F / 3.281F;
     
         // Wheelbase and track width (in meters)
@@ -112,7 +112,7 @@ public final class Constant {
         Amp,
         Climber,
         IntakeShooter,
-        Helix,
+        Autonomous,
         Vision,
         All
     }

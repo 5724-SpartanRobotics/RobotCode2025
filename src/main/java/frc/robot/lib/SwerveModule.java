@@ -1,6 +1,5 @@
-package frc.robot.subsystems;
+package frc.robot.lib;
 
-import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.revrobotics.REVLibError;
 import com.revrobotics.spark.SparkBase.ControlType;
@@ -24,43 +23,29 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.Constants;
+import frc.robot.Constants.DebugLevel;
+import frc.robot.Constants.DebugSetting;
+import frc.robot.Constants.DriveConstants;
 import frc.robot.Util.CTREModuleState;
 import frc.robot.Util.Conversions;
-import frc.robot.subsystems.Constant.DebugLevel;
-import frc.robot.subsystems.Constant.DebugSetting;
-import frc.robot.subsystems.Constant.DriveConstants;
 
 public class SwerveModule {
-
-    private double offset = 0;
-
     private SparkFlex turn;
     private SparkBaseConfig motorConfig;
     private SparkFlex drive;
     private SparkClosedLoopController turn_pid;
     private CANcoder canCoder;
-    private CANcoderConfiguration config;
-
-    private DriveTrainInterface driveTrainParent;
-
-    private SwerveModuleState state;
 
     private double driveSpeed = 0;
     private double driveAngle = 0;
     private double maxdrive = 0.3;
     private double isInverted = 1;
-    private double requestedAngle = 0;
-    private double canCoderModified = 0;
 
     private PIDController turnPID;
-    private int turnID = 0;
     public String Name;
-    private String canCoderName;
 
-
-    private Rotation2d lastAngle;
-
-    public SwerveModule(int turnMotor, int driveMotor, int canCoderID, double off, String name, DriveTrainInterface driveTr, boolean useNewCode) {
+    public SwerveModule(int turnMotor, int driveMotor, int canCoderID, double offset, String name) {
         this.drive = new SparkFlex(driveMotor, MotorType.kBrushless);
         this.turn = new SparkFlex(turnMotor, MotorType.kBrushless);
         this.motorConfig = new SparkFlexConfig()
@@ -85,10 +70,10 @@ public class SwerveModule {
         this.turnPID = new PIDController(0.5, 0, 0);
         this.turnPID.enableContinuousInput(-Math.PI, Math.PI);
         resetEncoders();
-        lastAngle = getState().angle;
+        // lastAngle = getState().angle;
 
         this.Name = name;
-        this.canCoderName = name + canCoderID;
+        // this.canCoderName = name + canCoderID;
         resetTurnToAbsolute();
         applyTurnConfiguration();
     }
@@ -102,12 +87,12 @@ public class SwerveModule {
     }
 
     public void setCartesian(double x, double y) {
-        requestedAngle = Math.atan2(y, x);
+        // requestedAngle = Math.atan2(y, x);
         driveSpeed = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
     }
 
     public void setPolar(double ang, double spe) {
-        requestedAngle = ang;
+        // requestedAngle = ang;
         driveSpeed = spe;
     }
 
@@ -147,7 +132,7 @@ public class SwerveModule {
 
     public void resetTurnToAbsolute() {
         double absPos = canCoder.getAbsolutePosition().refresh().getValueAsDouble();
-        double absolutePosition = (absPos * Constant.TwoPI) - 0.0 /* offset */;
+        double absolutePosition = (absPos * Constants.TwoPI) - 0.0 /* offset */;
 
         if (DebugSetting.TraceLevel == DebugLevel.Swerve || DebugSetting.TraceLevel == DebugLevel.All) {
             SmartDashboard.putNumber(Name + " Posn abs", absolutePosition);
@@ -167,8 +152,8 @@ public class SwerveModule {
 
     public void resetEncoders() {
         drive.getEncoder().setPosition(0);
-        double absoluteEncoderAngle = (canCoder.getAbsolutePosition().getValueAsDouble() - 0.0 /* offset */) * Constant.TwoPI * 1.0 /* encoder not reversed */;
-        turn.getEncoder().setPosition(absoluteEncoderAngle / (Constant.TwoPI / DriveConstants.turnGearRatio));
+        double absoluteEncoderAngle = (canCoder.getAbsolutePosition().getValueAsDouble() - 0.0 /* offset */) * Constants.TwoPI * 1.0 /* encoder not reversed */;
+        turn.getEncoder().setPosition(absoluteEncoderAngle / (Constants.TwoPI / DriveConstants.turnGearRatio));
     }
 }
  
