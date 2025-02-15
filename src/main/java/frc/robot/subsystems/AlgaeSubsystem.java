@@ -1,7 +1,5 @@
 package frc.robot.subsystems;
 
-import java.security.AlgorithmConstraints;
-
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
@@ -65,8 +63,8 @@ public class AlgaeSubsystem extends SubsystemBase{
     public void IncrementSmallDegrees()
     {
         double newSetpoint = _AlgaeRotateSetpoint + AlgaeConstants.IncrementDegrees;
-        if (newSetpoint > 180)
-            newSetpoint = 180;
+        if (newSetpoint > 120)
+            newSetpoint = 120;
         _AlgaeRotateSetpoint = newSetpoint;
         _AlgaeRotateMtrPidController.setReference(_AlgaeRotateSetpoint, ControlType.kPosition);
     }
