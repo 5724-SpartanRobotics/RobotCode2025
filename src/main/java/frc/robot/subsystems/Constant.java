@@ -26,6 +26,7 @@ public final class Constant {
         public static final int ArmExtendMtrCtrlCanId = 16;
         public static final int ElevatorMtrCtrl1CanId = 20;
         public static final int ElevatorMtrCtrl2CanId = 21;
+        public static final int AlgaeRotateMtrCtrlCanId = 22;
         public static final int ClawMtrCtrlCanId = 17;
     }
     public final class DriveConstants {
@@ -78,6 +79,18 @@ public final class Constant {
         public static final double ElePidD = 0;
     }
 
+    public final class AlgaeConstants {
+        public static final double RotatePidP = 0.0001;
+        public static final double RotatePidFF = 0.0002;
+        public static final double RotatePidI = 0;
+        public static final double RotatePidD = 0;
+        public static final double GearRatio = 9;
+        public static final double IncrementDegrees = 5;
+    }
+
+    public static final class NeoConstants {
+        public static final double CountsPerRevolution = 1.0;
+    }
     public static final class LedConstants {
         public static final int port = 0;
         public static final int stripLength = 200;
