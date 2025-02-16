@@ -18,11 +18,10 @@ import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.InterferenceInfo;
 import frc.robot.RobotContainer;
-import frc.robot.subsystems.Constant.CanIdConstants;
-import frc.robot.subsystems.Constant.ElevatorAndArmConstants;
+import frc.robot.Constants.CanIdConstants;
+import frc.robot.Constants.ElevatorAndArmConstants;
 
 public class ElevatorAndArmSubSys extends SubsystemBase {
-
     private SparkMax _ElevatorMtrCtrl1;
     private SparkMax _ElevatorMtrCtrl2;
     private SparkMax _ArmRotateMtrCtrl1;

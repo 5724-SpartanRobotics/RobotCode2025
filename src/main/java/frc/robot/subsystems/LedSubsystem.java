@@ -6,7 +6,7 @@ import edu.wpi.first.wpilibj.LEDPattern;
 import edu.wpi.first.wpilibj.AddressableLED.ColorOrder;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.subsystems.Constant.LedConstants;
+import frc.robot.Constants.LedConstants;
 
 public class LedSubsystem extends SubsystemBase {
     public static final Color kWhiteWhiteGreen = Color.fromHSV(217, 73, 96);

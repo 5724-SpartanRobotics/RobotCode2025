@@ -7,10 +7,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
-import frc.robot.subsystems.Constant.ControllerConstants;
-import frc.robot.subsystems.Constant.DebugLevel;
-import frc.robot.subsystems.Constant.DebugSetting;
-import frc.robot.subsystems.Constant.DriveConstants;
+import frc.robot.Constants.ControllerConstants;
+import frc.robot.Constants.DebugLevel;
+import frc.robot.Constants.DebugSetting;
+import frc.robot.Constants.DriveConstants;
 import frc.robot.subsystems.DriveTrainSubsystem;
 
 public class TeleopSwerve extends Command {

@@ -11,11 +11,11 @@ import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
-import frc.robot.subsystems.Constant.AlgaeConstants;
-import frc.robot.subsystems.Constant.CanIdConstants;
-import frc.robot.subsystems.Constant.NeoConstants;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.AlgaeConstants;
+import frc.robot.Constants.CanIdConstants;
+import frc.robot.Constants.NeoConstants;
 
 public class AlgaeSubsystem extends SubsystemBase{
     private SparkMax _AlgaeRotateMtrCtrl;

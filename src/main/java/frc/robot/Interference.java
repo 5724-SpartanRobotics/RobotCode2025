@@ -2,7 +2,7 @@ package frc.robot;
 
 import frc.robot.subsystems.AlgaeSubsystem;
 import frc.robot.subsystems.ElevatorAndArmSubSys;
-import frc.robot.subsystems.Constant.ElevatorAndArmConstants;
+import frc.robot.Constants.ElevatorAndArmConstants;
 
 /*Provides indications of interference between different mechanisms
  */
