@@ -69,6 +69,7 @@ public class SwerveModule {
         this.canCoder = new CANcoder(canCoderID);
         this.turnPID = new PIDController(0.5, 0, 0);
         this.turnPID.enableContinuousInput(-Math.PI, Math.PI);
+        this.turn_pid = this.turn.getClosedLoopController();
         resetEncoders();
         // lastAngle = getState().angle;
 

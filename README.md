@@ -1,6 +1,12 @@
 # Changelog
 Changelog based on what we do, but some of it may have to come from git commit history.
 
+## Feb 16, 2025
+* Added interface / helper for elevator/arm/intake
+* Fixed a null "pointer" discovered while using simgui
+* Build successful, more simulation to be done later
+* We may replace operator Xbox controller with a Joystick
+
 ## Feb 15, 2025
 ### Part 1
 * LED code works properly
