@@ -19,12 +19,14 @@ public class RobotContainer {
     private AlgaeSubsystem _AlgaeSubSys;
     private CommandJoystick _DriverController;
     private CommandXboxController _OperatorController;
+    public static Interference InterferenceHelper;
 
     public RobotContainer(){
         _DriveTrainSubsystem = new DriveTrainSubsystem();
         _LedSubsystem = new LedSubsystem();
         _ElevatorAndArmSubSys = new ElevatorAndArmSubSys(_LedSubsystem);
         _AlgaeSubSys = new AlgaeSubsystem();
+        InterferenceHelper = new Interference(_AlgaeSubSys, _ElevatorAndArmSubSys);
         _DriverController = new CommandJoystick(0);
         _OperatorController = new CommandXboxController(1);
 

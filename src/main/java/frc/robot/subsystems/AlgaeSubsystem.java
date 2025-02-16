@@ -79,4 +79,10 @@ public class AlgaeSubsystem extends SubsystemBase{
         double setpoint = _AlgaeRotateSetpoint * NeoConstants.CountsPerRevolution * AlgaeConstants.GearRatio / 360.0;
         _AlgaeRotateMtrPidController.setReference(setpoint, ControlType.kPosition);
     }
+
+    public double GetAlgaeArmAngleDegrees()
+    {
+        double neoRotations = _AlgaeRotateMtrEncoder.getPosition();
+        return neoRotations / AlgaeConstants.GearRatio * 360;
+    }
 }

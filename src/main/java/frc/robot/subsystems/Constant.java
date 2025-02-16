@@ -82,6 +82,10 @@ public final class Constant {
         public static final double ArmExtendGearRatio = 12.0;
         public static final double ElevatorGearRatio = 12.0;
         public static final double ElevatorChainSproketDiameter = 1.5;//inches
+        public static final double ArmExtendSpoolDiameter = 1.0;
+        public static final double ArmPivotPointToFrameEdgeInches = 18.0;
+        public static final double ArmLengthRetractedInches = 14.0;
+        public static final double ArmMaxOutsideOfFrameInches = 17.0;
     }
 
     public final class AlgaeConstants {

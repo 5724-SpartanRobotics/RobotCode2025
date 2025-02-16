@@ -16,6 +16,8 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.InterferenceInfo;
+import frc.robot.RobotContainer;
 import frc.robot.subsystems.Constant.CanIdConstants;
 import frc.robot.subsystems.Constant.ElevatorAndArmConstants;
 
@@ -43,7 +45,6 @@ public class ElevatorAndArmSubSys extends SubsystemBase {
     private double _ArmRotateMax = 100;
     private double _ArmExtendSetpoint;
     private double _ArmExtendMax = 12.0;
-    private double _ArmSpoolDiameter = 1.0;
 
     public ElevatorAndArmSubSys(LedSubsystem led)
     {
@@ -141,15 +142,38 @@ public class ElevatorAndArmSubSys extends SubsystemBase {
         return _ClawIntake.getOutputCurrent() > 30.0;
     }
 
+    public double GetElevatorHeightInches()
+    {
+        return _ElevatorMtr1Encoder.getPosition() / ElevatorAndArmConstants.ElevatorGearRatio * Math.PI * ElevatorAndArmConstants.ElevatorChainSproketDiameter;
+    }
+
+    public double GetArmRotateAngleDegrees()
+    {
+        return _ArmRotateMtr1Encoder.getPosition() / ElevatorAndArmConstants.ArmRotateGearRatio * 360.0;
+    }
+
+    public double GetArmExtendPosnInches()
+    {
+        return _ArmExtenMtrEncoder.getPosition() / ElevatorAndArmConstants.ArmExtendGearRatio * Math.PI * ElevatorAndArmConstants.ArmExtendSpoolDiameter;
+    }
+
+    public double GetArmOutsideFrameInches()
+    {
+        double armCurrentLength = ElevatorAndArmConstants.ArmLengthRetractedInches + GetArmExtendPosnInches();
+        double armRotation = 90 - GetArmRotateAngleDegrees();
+        double armAngleToHorizontal = Math.abs(armRotation);
+        return (Math.cos(Math.toRadians(armAngleToHorizontal))/armCurrentLength) - ElevatorAndArmConstants.ArmPivotPointToFrameEdgeInches;
+    }
+
     public void IncrementElevatorUp()
     {
         _ElevatorSetpoint += 1;
         if (_ElevatorSetpoint > _ElevatorMax)
             _ElevatorSetpoint = _ElevatorMax;
-        _ElevatorMtr1PidController.setReference(ConvertElevatorInchesToRotations(_ElevatorSetpoint), ControlType.kPosition);
+        _ElevatorMtr1PidController.setReference(ConvertElevatorInchesToNeoRotations(_ElevatorSetpoint), ControlType.kPosition);
     }
 
-    private double ConvertElevatorInchesToRotations(double height)
+    private double ConvertElevatorInchesToNeoRotations(double height)
     {
         return height / (Math.PI * ElevatorAndArmConstants.ElevatorChainSproketDiameter) * ElevatorAndArmConstants.ElevatorGearRatio;
     }
@@ -159,11 +183,21 @@ public class ElevatorAndArmSubSys extends SubsystemBase {
         _ElevatorSetpoint -= 1;//1 inch
         if (_ElevatorSetpoint < 0)
             _ElevatorSetpoint = 0;
-        _ElevatorMtr1PidController.setReference(ConvertElevatorInchesToRotations(_ElevatorSetpoint), ControlType.kPosition);
+        _ElevatorMtr1PidController.setReference(ConvertElevatorInchesToNeoRotations(_ElevatorSetpoint), ControlType.kPosition);
     }
 
     public void IncrementArmRotate()
     {
+        InterferenceInfo info = new InterferenceInfo();
+        if (RobotContainer.InterferenceHelper.ArmCannotRotateUp(info))
+        {
+            SmartDashboard.putString("InterferenceMessage", info.Message);
+            return;
+        }
+        else
+        {
+            SmartDashboard.putString("InterferenceMessage", "");
+        }
         _ArmRotateSetpoint += 5;
         if (_ArmRotateSetpoint > _ArmRotateMax)
             _ArmRotateSetpoint = _ArmRotateMax;
@@ -174,6 +208,16 @@ public class ElevatorAndArmSubSys extends SubsystemBase {
 
     public void DecrementArmRotate()
     {
+        InterferenceInfo info = new InterferenceInfo();
+        if (RobotContainer.InterferenceHelper.ArmCannotRotateDown(info))
+        {
+            SmartDashboard.putString("InterferenceMessage", info.Message);
+            return;
+        }
+        else
+        {
+            SmartDashboard.putString("InterferenceMessage", "");
+        }
         _ArmRotateSetpoint -= 5;
         if (_ArmRotateSetpoint < 0)
             _ArmRotateSetpoint = 0;
@@ -202,7 +246,7 @@ public class ElevatorAndArmSubSys extends SubsystemBase {
 
     private double ConvertArmExtendInchesToRotations(double dist)
     {
-        return dist / (Math.PI * _ArmSpoolDiameter) * ElevatorAndArmConstants.ArmExtendGearRatio;
+        return dist / (Math.PI * ElevatorAndArmConstants.ArmExtendSpoolDiameter) * ElevatorAndArmConstants.ArmExtendGearRatio;
     }
 
     public void ClawRun(double speed)
