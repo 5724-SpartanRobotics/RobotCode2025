@@ -86,7 +86,9 @@ public final class Constants {
         public static final double ArmPivotPointToFrameEdgeInches = 18.0;
         public static final double ArmLengthRetractedInches = 14.0;
         public static final double ArmMaxOutsideOfFrameInches = 17.0;
-    }
+        public static final double ArmAlgaeZoneAngle = 45;//degrees
+        public static final double ArmExtendMaxWhenInRobot = 1;//inches
+       }
 
     public final class AlgaeConstants {
         public static final double RotatePidP = 0.0001;
@@ -95,6 +97,9 @@ public final class Constants {
         public static final double RotatePidD = 0;
         public static final double GearRatio = 9;
         public static final double IncrementDegrees = 5;
+        public static final double AlgaeMinAngleForArmRotationClearance = 35;//degrees
+        public static final double AlgaeHoldGamepieceAngle = 20;
+        public static final double AlgaeFullOutAngle = 90;
     }
 
     public static final class NeoConstants {

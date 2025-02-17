@@ -132,9 +132,32 @@ public class ElevatorAndArmSubSys extends SubsystemBase {
 
     public void MoveToPickupPieceInRobot()
     {
+        _ArmExtendSetpoint = 0;
+        _ArmRotateSetpoint = 0;
+        _ElevatorSetpoint = 0;
         _ArmExtendMtrPidController.setReference(0, ControlType.kPosition);
         _ArmRotateMtr1PidController.setReference(0, ControlType.kPosition);
         _ElevatorMtr1PidController.setReference(0, ControlType.kPosition);
+    }
+
+    public void MoveToL4()
+    {
+        
+    }
+
+    public void MoveToL3()
+    {
+
+    }
+
+    public void MoveToL2()
+    {
+
+    }
+
+    public void MoveToL1()
+    {
+        
     }
 
     public boolean usingLotsOfCurrent() {

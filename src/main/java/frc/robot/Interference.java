@@ -2,14 +2,12 @@ package frc.robot;
 
 import frc.robot.subsystems.AlgaeSubsystem;
 import frc.robot.subsystems.ElevatorAndArmSubSys;
+import frc.robot.Constants.AlgaeConstants;
 import frc.robot.Constants.ElevatorAndArmConstants;
 
 /*Provides indications of interference between different mechanisms
  */
 public class Interference {
-    private static final double AlgaeMinAngleForArmRotationClearance = 35;//degrees
-    private static final double ArmAlgaeZoneAngle = 45;//degrees
-    private static final double ArmExtendMaxWhenInRobot = 1;//inches
 
     private ElevatorAndArmSubSys _EleArm;
     private AlgaeSubsystem _Algae;
@@ -25,11 +23,11 @@ public class Interference {
         double currentArmExtend = _EleArm.GetArmExtendPosnInches();
         double currentEleHeight = _EleArm.GetElevatorHeightInches();
 
-        if (currentAlgaeAngle <= AlgaeMinAngleForArmRotationClearance && currentArmRotate < ArmAlgaeZoneAngle)
+        if (currentAlgaeAngle <= AlgaeConstants.AlgaeMinAngleForArmRotationClearance && currentArmRotate < ElevatorAndArmConstants.ArmAlgaeZoneAngle)
         {
             info.Message = "Algae arm is blocking main arm rotate down";
         }
-        else if ((currentArmExtend - currentEleHeight) > ArmExtendMaxWhenInRobot && currentArmRotate <= ArmAlgaeZoneAngle)
+        else if ((currentArmExtend - currentEleHeight) > ElevatorAndArmConstants.ArmExtendMaxWhenInRobot && currentArmRotate <= ElevatorAndArmConstants.ArmAlgaeZoneAngle)
         {
             info.Message = "The arm is extended too far which is blocking arm rotation down";
             return true;
@@ -51,12 +49,12 @@ public class Interference {
         double currentArmExtend = _EleArm.GetArmExtendPosnInches();
         double currentEleHeight = _EleArm.GetElevatorHeightInches();
 
-        if (currentAlgaeAngle <= AlgaeMinAngleForArmRotationClearance && currentArmRotate >= ArmAlgaeZoneAngle)
+        if (currentAlgaeAngle <= AlgaeConstants.AlgaeMinAngleForArmRotationClearance && currentArmRotate >= ElevatorAndArmConstants.ArmAlgaeZoneAngle)
         {
             info.Message = "Algae arm is blocking main arm rotation up";
             return true;
         }
-        else if ((currentArmExtend - currentEleHeight) > ArmExtendMaxWhenInRobot && currentArmRotate <= ArmAlgaeZoneAngle)
+        else if ((currentArmExtend - currentEleHeight) > ElevatorAndArmConstants.ArmExtendMaxWhenInRobot && currentArmRotate <= ElevatorAndArmConstants.ArmAlgaeZoneAngle)
         {
             info.Message = "The arm is extended too far which is blocking arm rotation out";
             return true;

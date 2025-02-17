@@ -17,7 +17,7 @@ public class RobotContainer {
     private ElevatorAndArmSubSys _ElevatorAndArmSubSys;
     private AlgaeSubsystem _AlgaeSubSys;
     private CommandJoystick _DriverController;
-    private CommandXboxController _OperatorController;
+    private CommandJoystick _OperatorController;
     public static Interference InterferenceHelper;
 
     public RobotContainer(){
@@ -27,7 +27,7 @@ public class RobotContainer {
         _AlgaeSubSys = new AlgaeSubsystem();
         InterferenceHelper = new Interference(_AlgaeSubSys, _ElevatorAndArmSubSys);
         _DriverController = new CommandJoystick(0);
-        _OperatorController = new CommandXboxController(1);
+        _OperatorController = new CommandJoystick(1);
 
         _TeleopSwerve = new TeleopSwerve(_DriveTrainSubsystem, _DriverController);
 
@@ -43,46 +43,67 @@ public class RobotContainer {
             _DriveTrainSubsystem.zeroGyro();
         }));
        //algae controls
-        _OperatorController.a().onTrue(new InstantCommand(() -> {
+        _OperatorController.button(7).onTrue(new InstantCommand(() -> {
             _AlgaeSubSys.RotateToOut();
         }, _AlgaeSubSys));
-        _OperatorController.y().onTrue(new InstantCommand(() ->{
+        _OperatorController.button(8).onTrue(new InstantCommand(() ->{
             _AlgaeSubSys.IncrementSmallDegrees();
         }, _AlgaeSubSys));
-        _OperatorController.x().onTrue(new InstantCommand(() ->{
+        _OperatorController.button(10).onTrue(new InstantCommand(() ->{
             _AlgaeSubSys.DecrementSmallDegrees();
         }, _AlgaeSubSys));
+        _OperatorController.button(11).onTrue(new InstantCommand(() ->{
+            _AlgaeSubSys.RotateToIn();
+        }, _AlgaeSubSys));
+        _OperatorController.button(9).onTrue(new InstantCommand(() ->{
+            _AlgaeSubSys.RotateToHoldAlgaePosn();
+        }, _AlgaeSubSys));
 
-        //elevator up and down
-        _OperatorController.rightBumper().onTrue(new InstantCommand(() ->{
+        //elevator increment up and down
+        _OperatorController.axisLessThan(5, -0.3).onTrue(new InstantCommand(() ->{
             _ElevatorAndArmSubSys.IncrementElevatorUp();
         }, _ElevatorAndArmSubSys));
-        _OperatorController.leftBumper().onTrue(new InstantCommand(() ->{
+        _OperatorController.axisGreaterThan(5, 0.3).onTrue(new InstantCommand(() ->{
             _ElevatorAndArmSubSys.DecrementElevatorUp();
         }, _ElevatorAndArmSubSys));
-        //arm rotate
-        _OperatorController.povUp().onTrue(new InstantCommand(() ->{
+        //arm rotate - main Y axis
+        _OperatorController.axisLessThan(2, -0.3).onTrue(new InstantCommand(() ->{
             _ElevatorAndArmSubSys.IncrementArmRotate();
         }, _ElevatorAndArmSubSys));
-        _OperatorController.povDown().onTrue(new InstantCommand(() ->{
+        _OperatorController.axisGreaterThan(2, 0.3).onTrue(new InstantCommand(() ->{
             _ElevatorAndArmSubSys.DecrementArmRotate();
         }, _ElevatorAndArmSubSys));
         //arm extend
-        _OperatorController.povRight().onTrue(new InstantCommand(() ->{
+        _OperatorController.axisLessThan(6, -0.3).onTrue(new InstantCommand(() ->{
             _ElevatorAndArmSubSys.IncrementArmExtend();
         }, _ElevatorAndArmSubSys));
-        _OperatorController.povLeft().onTrue(new InstantCommand(() ->{
+        _OperatorController.axisGreaterThan(6, 0.3).onTrue(new InstantCommand(() ->{
             _ElevatorAndArmSubSys.DecrementArmExtend();
         }, _ElevatorAndArmSubSys));
-        //claw run - Right joystick Y axis is number 5. Forward yeilds a negative input, reverse a positive
-        _OperatorController.axisLessThan(5, -0.4).onTrue(new InstantCommand(() ->{
+        //claw run 
+        _OperatorController.button(1).whileTrue(new InstantCommand(() ->{
             _ElevatorAndArmSubSys.ClawRun(0.3);
         }, _ElevatorAndArmSubSys));
         _ElevatorAndArmSubSys.setDefaultCommand(new InstantCommand(() ->{
             _ElevatorAndArmSubSys.ClawRun(0);
         }, _ElevatorAndArmSubSys));
-        _OperatorController.axisGreaterThan(5, 0.4).onTrue(new InstantCommand(() ->{
+        _OperatorController.button(2).whileTrue(new InstantCommand(() ->{
             _ElevatorAndArmSubSys.ClawRun(-0.3);
+        }, _ElevatorAndArmSubSys));
+        _OperatorController.button(5).onTrue(new InstantCommand(() ->{
+            _ElevatorAndArmSubSys.MoveToL4();
+        }, _ElevatorAndArmSubSys));
+        _OperatorController.button(3).onTrue(new InstantCommand(() ->{
+            _ElevatorAndArmSubSys.MoveToL3();
+        }, _ElevatorAndArmSubSys));
+        _OperatorController.button(6).onTrue(new InstantCommand(() ->{
+            _ElevatorAndArmSubSys.MoveToL2();
+        }, _ElevatorAndArmSubSys));
+        _OperatorController.button(4).onTrue(new InstantCommand(() ->{
+            _ElevatorAndArmSubSys.MoveToL1();
+        }, _ElevatorAndArmSubSys));
+        _OperatorController.button(12).onTrue(new InstantCommand(() ->{
+            _ElevatorAndArmSubSys.MoveToPickupPieceInRobot();
         }, _ElevatorAndArmSubSys));
     }
 }

@@ -49,7 +49,7 @@ public class AlgaeSubsystem extends SubsystemBase{
 
     public void RotateToOut()
     {
-        double degreesOut = 110.0;
+        double degreesOut = AlgaeConstants.AlgaeFullOutAngle;
         _AlgaeRotateSetpoint = degreesOut;
         double setpoint = degreesOut * NeoConstants.CountsPerRevolution * AlgaeConstants.GearRatio / 360.0;
         _AlgaeRotateMtrPidController.setReference(setpoint, ControlType.kPosition);
@@ -58,6 +58,14 @@ public class AlgaeSubsystem extends SubsystemBase{
     public void RotateToIn()
     {
         _AlgaeRotateMtrPidController.setReference(0, ControlType.kPosition);
+    }
+
+    public void RotateToHoldAlgaePosn()
+    {
+        double degrees = AlgaeConstants.AlgaeHoldGamepieceAngle;
+        _AlgaeRotateSetpoint = degrees;
+        double setpoint = degrees * NeoConstants.CountsPerRevolution * AlgaeConstants.GearRatio / 360.0;
+        _AlgaeRotateMtrPidController.setReference(setpoint, ControlType.kPosition);
     }
 
     public void IncrementSmallDegrees()

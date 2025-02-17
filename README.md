@@ -1,6 +1,10 @@
 # Changelog
 Changelog based on what we do, but some of it may have to come from git commit history.
-
+## Feb 17, 2025
+* Moved some constants from Interference class to Constants classes
+* changed the operator control from XBox to Joystick - button mappings in Google Drive Spreadsheet under technical
+* Added some methods that are not implemented for moving to L4 - L1. I think these need to be a sequence that keeps the robot from tearing itself up.
+* Added a Hold Game piece position for Algae arm.
 ## Feb 16, 2025
 * Added interface / helper for elevator/arm/intake
 * Fixed a null "pointer" discovered while using simgui
