@@ -3,7 +3,6 @@ package frc.robot;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.TeleopSwerve;
 import frc.robot.subsystems.AlgaeSubsystem;
 import frc.robot.subsystems.DriveTrainSubsystem;
@@ -13,7 +12,7 @@ import frc.robot.subsystems.LedSubsystem;
 public class RobotContainer {
     private DriveTrainSubsystem _DriveTrainSubsystem;
     private TeleopSwerve _TeleopSwerve;
-    public LedSubsystem _LedSubsystem;
+    private LedSubsystem _LedSubsystem;
     private ElevatorAndArmSubSys _ElevatorAndArmSubSys;
     private AlgaeSubsystem _AlgaeSubSys;
     private CommandJoystick _DriverController;
@@ -21,11 +20,11 @@ public class RobotContainer {
     public static Interference InterferenceHelper;
 
     public RobotContainer(){
+        InterferenceHelper = new Interference(_AlgaeSubSys, _ElevatorAndArmSubSys);
         _DriveTrainSubsystem = new DriveTrainSubsystem();
         _LedSubsystem = new LedSubsystem();
         _ElevatorAndArmSubSys = new ElevatorAndArmSubSys(_LedSubsystem);
         _AlgaeSubSys = new AlgaeSubsystem();
-        InterferenceHelper = new Interference(_AlgaeSubSys, _ElevatorAndArmSubSys);
         _DriverController = new CommandJoystick(0);
         _OperatorController = new CommandJoystick(1);
 
