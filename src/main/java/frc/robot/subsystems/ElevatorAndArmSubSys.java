@@ -228,6 +228,35 @@ public class ElevatorAndArmSubSys extends SubsystemBase {
         _ArmRotateMtr1PidController.setReference(setpoint, ControlType.kPosition);
     }
 
+    public void ElevatorStop()
+    {
+        _ElevatorMtr1PidController.setReference(0, ControlType.kVelocity);
+    }
+
+    public void ElevatorToPosition(double heightInches)
+    {
+        _ElevatorSetpoint = heightInches;
+        if (_ElevatorSetpoint > _ElevatorMax)
+            _ElevatorSetpoint = _ElevatorMax;
+        _ElevatorMtr1PidController.setReference(ConvertElevatorInchesToNeoRotations(_ElevatorSetpoint), ControlType.kPosition);
+    }
+
+    public void ArmRotateStop()
+    {
+        _ArmRotateMtr1PidController.setReference(0, ControlType.kVelocity);
+    }
+
+    public void ArmRotateToPosition(double degrees)
+    {
+        _ArmRotateSetpoint = degrees;
+        if (_ArmRotateSetpoint > _ArmRotateMax)
+            _ArmRotateSetpoint = _ArmRotateMax;
+        if (_ArmRotateSetpoint < 0)
+            _ArmRotateSetpoint = 0;
+        //convert to motor rotations
+        double setpoint = _ArmRotateSetpoint / 360 * ElevatorAndArmConstants.ArmRotateGearRatio;
+        _ArmRotateMtr1PidController.setReference(setpoint, ControlType.kPosition);
+    }
     public void DecrementArmRotate()
     {
         InterferenceInfo info = new InterferenceInfo();
@@ -263,6 +292,21 @@ public class ElevatorAndArmSubSys extends SubsystemBase {
         if (_ArmExtendSetpoint < 0)
             _ArmExtendSetpoint = 0;
         //convert from inches to motor rotations
+        _ArmExtendMtrPidController.setReference(ConvertArmExtendInchesToRotations(_ArmExtendSetpoint), ControlType.kPosition);
+    }
+    public void ArmExtendStop()
+    {
+        _ArmExtendMtrPidController.setReference(0, ControlType.kVelocity);
+    }
+
+    public void ArmExtendToPosition(double angle)
+    {
+        _ArmExtendSetpoint = angle;
+        if (_ArmExtendSetpoint > _ArmExtendMax)
+            _ArmExtendSetpoint = _ArmExtendMax;
+        if (_ArmExtendSetpoint < 0)
+            _ArmExtendSetpoint = 0;
+        //convert to motor rotations
         _ArmExtendMtrPidController.setReference(ConvertArmExtendInchesToRotations(_ArmExtendSetpoint), ControlType.kPosition);
     }
 

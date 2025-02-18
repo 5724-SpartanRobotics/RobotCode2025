@@ -88,6 +88,7 @@ public final class Constants {
         public static final double ArmMaxOutsideOfFrameInches = 17.0;
         public static final double ArmAlgaeZoneAngle = 45;//degrees
         public static final double ArmExtendMaxWhenInRobot = 1;//inches
+        public static final double ElevatorRaisedUpPosition = 12;//inches
        }
 
     public final class AlgaeConstants {

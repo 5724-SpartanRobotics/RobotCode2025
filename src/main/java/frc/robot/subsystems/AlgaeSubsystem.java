@@ -21,6 +21,7 @@ public class AlgaeSubsystem extends SubsystemBase{
     private SparkMax _AlgaeRotateMtrCtrl;
     private SparkClosedLoopController _AlgaeRotateMtrPidController;
     private RelativeEncoder _AlgaeRotateMtrEncoder;
+    private double _AlgaeRotateMax = 120;
 
     private double _AlgaeRotateSetpoint;
 
@@ -68,11 +69,27 @@ public class AlgaeSubsystem extends SubsystemBase{
         _AlgaeRotateMtrPidController.setReference(setpoint, ControlType.kPosition);
     }
 
+    public void AlgaeToSetpoint(double angle)
+    {
+        _AlgaeRotateSetpoint = angle;
+        if (_AlgaeRotateSetpoint > _AlgaeRotateMax)
+            _AlgaeRotateSetpoint = _AlgaeRotateMax;
+        if (_AlgaeRotateSetpoint < 0)
+            _AlgaeRotateSetpoint = 0;
+        double setpoint = _AlgaeRotateSetpoint * NeoConstants.CountsPerRevolution * AlgaeConstants.GearRatio / 360.0;
+        _AlgaeRotateMtrPidController.setReference(setpoint, ControlType.kPosition);
+    }
+
+    public void AlgaeStop()
+    {
+        _AlgaeRotateMtrPidController.setReference(0, ControlType.kVelocity);
+    }
+
     public void IncrementSmallDegrees()
     {
         double newSetpoint = _AlgaeRotateSetpoint + AlgaeConstants.IncrementDegrees;
-        if (newSetpoint > 120)
-            newSetpoint = 120;
+        if (newSetpoint > _AlgaeRotateMax)
+            newSetpoint = _AlgaeRotateMax;
         _AlgaeRotateSetpoint = newSetpoint;
         double setpoint = _AlgaeRotateSetpoint * NeoConstants.CountsPerRevolution * AlgaeConstants.GearRatio / 360.0;
         _AlgaeRotateMtrPidController.setReference(setpoint, ControlType.kPosition);
