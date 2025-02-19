@@ -1,6 +1,10 @@
 # Changelog
 Changelog based on what we do, but some of it may have to come from git commit history.
 
+## Feb 19, 2025
+* Added in some Limelight 3G vision code... Will it work? Probably not. Will we use it? No clue, but it's there.
+* Nothing crashes in simulation!
+
 ## Feb 18, 2025
 * Tuned the PID for the elevator & the extending arm (i.e., the elevator goes up/down & the arm goes in/out)
 * Changed the way some buttons on the Operator controller fire commands

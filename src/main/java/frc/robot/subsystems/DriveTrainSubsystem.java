@@ -96,6 +96,14 @@ public class DriveTrainSubsystem extends SubsystemBase {
         return lastUpdatedGyroHeading;
     }
 
+    public double getGyroRate() {
+        return _gyroscope.getAngularVelocityZWorld().getValueAsDouble();
+    }
+
+    public SwerveDrivePoseEstimator getPoseEstimator() {
+        return _SwerveDrivePoseEstimator;
+    }
+
     public DriveTrainSubsystem drive(Translation2d translation, double rotation) {
         SwerveModuleState[] states = _SwerveDriveKinematics.toSwerveModuleStates(
             ChassisSpeeds.fromFieldRelativeSpeeds(translation.getX(), translation.getY(), rotation, getGyroHeading())

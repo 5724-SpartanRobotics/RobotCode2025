@@ -3,11 +3,13 @@ package frc.robot;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
+import frc.robot.commands.AprilTagLockonCommand;
 import frc.robot.commands.TeleopSwerve;
 import frc.robot.subsystems.AlgaeSubsystem;
 import frc.robot.subsystems.DriveTrainSubsystem;
 import frc.robot.subsystems.ElevatorAndArmSubSys;
 import frc.robot.subsystems.LedSubsystem;
+import frc.robot.subsystems.VisionSubsystem;
 
 public class RobotContainer {
     private DriveTrainSubsystem _DriveTrainSubsystem;
@@ -15,6 +17,7 @@ public class RobotContainer {
     private LedSubsystem _LedSubsystem;
     private ElevatorAndArmSubSys _ElevatorAndArmSubSys;
     private AlgaeSubsystem _AlgaeSubSys;
+    private VisionSubsystem _VisionSubSys;
     private CommandJoystick _DriverController;
     private CommandJoystick _OperatorController;
     public static Interference InterferenceHelper;
@@ -23,6 +26,7 @@ public class RobotContainer {
         InterferenceHelper = new Interference(_AlgaeSubSys, _ElevatorAndArmSubSys);
         _DriveTrainSubsystem = new DriveTrainSubsystem();
         _LedSubsystem = new LedSubsystem();
+        _VisionSubSys = new VisionSubsystem(_DriveTrainSubsystem);
         _ElevatorAndArmSubSys = new ElevatorAndArmSubSys(_LedSubsystem);
         _AlgaeSubSys = new AlgaeSubsystem();
         _DriverController = new CommandJoystick(0);
@@ -41,7 +45,9 @@ public class RobotContainer {
         _DriverController.button(7).onTrue(new InstantCommand(() -> {
             _DriveTrainSubsystem.zeroGyro();
         }));
-       //algae controls
+        _DriverController.button(11).whileTrue(new AprilTagLockonCommand(_DriveTrainSubsystem, _VisionSubSys));
+       
+        //algae controls
         _OperatorController.button(7).onTrue(new InstantCommand(() -> {
             _AlgaeSubSys.RotateToOut();
         }, _AlgaeSubSys));
@@ -65,6 +71,7 @@ public class RobotContainer {
         _OperatorController.povDown().onTrue(new InstantCommand(() ->{
             _ElevatorAndArmSubSys.DecrementElevatorUp();
         }, _ElevatorAndArmSubSys));
+
         //arm rotate - main Y axis
         _OperatorController.axisLessThan(2, -0.3).onTrue(new InstantCommand(() ->{
             _ElevatorAndArmSubSys.IncrementArmRotate();
@@ -72,6 +79,7 @@ public class RobotContainer {
         _OperatorController.axisGreaterThan(2, 0.3).onTrue(new InstantCommand(() ->{
             _ElevatorAndArmSubSys.DecrementArmRotate();
         }, _ElevatorAndArmSubSys));
+
         //arm extend
         _OperatorController.povRight().onTrue(new InstantCommand(() ->{
             _ElevatorAndArmSubSys.IncrementArmExtend();
@@ -79,6 +87,7 @@ public class RobotContainer {
         _OperatorController.povLeft().onTrue(new InstantCommand(() ->{
             _ElevatorAndArmSubSys.DecrementArmExtend();
         }, _ElevatorAndArmSubSys));
+
         //claw run 
         _OperatorController.button(1).onTrue(new InstantCommand(() ->{
             _ElevatorAndArmSubSys.ClawRun(0.3);
