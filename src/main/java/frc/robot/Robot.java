@@ -112,4 +112,10 @@ public class Robot extends TimedRobot {
     /** This function is called periodically whilst in simulation. */
     @Override
     public void simulationPeriodic() {}
+
+    /** Gets the current alliance color from DS and returns a WPILib color (red or blue) */
+    public static edu.wpi.first.wpilibj.util.Color allianceToColor() {
+      return DriverStation.getAlliance().get() == DriverStation.Alliance.Blue ?
+        edu.wpi.first.wpilibj.util.Color.kBlue : edu.wpi.first.wpilibj.util.Color.kRed;
+    }
 }

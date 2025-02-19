@@ -63,8 +63,8 @@ public final class Constants {
     }
 
     public final class ElevatorAndArmConstants {
-        public static final double ArmExtendPidP = 0.0001;
-        public static final double ArmExtendPidFF = 0.0002;
+        public static final double ArmExtendPidP = 0.035;
+        public static final double ArmExtendPidFF = 0.000325;
         public static final double ArmExtendPidI = 0;
         public static final double ArmExtendPidD = 0;
 
@@ -73,8 +73,8 @@ public final class Constants {
         public static final double ArmRotatePidI = 0;
         public static final double ArmRotatePidD = 0;
 
-        public static final double ElePidP = 0.0001;
-        public static final double ElePidFF = 0.0002;
+        public static final double ElePidP = 0.035;
+        public static final double ElePidFF = 0.0025;
         public static final double ElePidI = 0;
         public static final double ElePidD = 0;
 

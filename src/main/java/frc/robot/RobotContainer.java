@@ -59,10 +59,10 @@ public class RobotContainer {
         }, _AlgaeSubSys));
 
         //elevator increment up and down
-        _OperatorController.axisLessThan(5, -0.3).onTrue(new InstantCommand(() ->{
+        _OperatorController.povUp().onTrue(new InstantCommand(() ->{
             _ElevatorAndArmSubSys.IncrementElevatorUp();
         }, _ElevatorAndArmSubSys));
-        _OperatorController.axisGreaterThan(5, 0.3).onTrue(new InstantCommand(() ->{
+        _OperatorController.povDown().onTrue(new InstantCommand(() ->{
             _ElevatorAndArmSubSys.DecrementElevatorUp();
         }, _ElevatorAndArmSubSys));
         //arm rotate - main Y axis
@@ -73,20 +73,26 @@ public class RobotContainer {
             _ElevatorAndArmSubSys.DecrementArmRotate();
         }, _ElevatorAndArmSubSys));
         //arm extend
-        _OperatorController.axisLessThan(6, -0.3).onTrue(new InstantCommand(() ->{
+        _OperatorController.povRight().onTrue(new InstantCommand(() ->{
             _ElevatorAndArmSubSys.IncrementArmExtend();
         }, _ElevatorAndArmSubSys));
-        _OperatorController.axisGreaterThan(6, 0.3).onTrue(new InstantCommand(() ->{
+        _OperatorController.povLeft().onTrue(new InstantCommand(() ->{
             _ElevatorAndArmSubSys.DecrementArmExtend();
         }, _ElevatorAndArmSubSys));
         //claw run 
-        _OperatorController.button(1).whileTrue(new InstantCommand(() ->{
+        _OperatorController.button(1).onTrue(new InstantCommand(() ->{
             _ElevatorAndArmSubSys.ClawRun(0.3);
         }, _ElevatorAndArmSubSys));
-        _ElevatorAndArmSubSys.setDefaultCommand(new InstantCommand(() ->{
+        _OperatorController.button(1).onFalse(new InstantCommand(() ->{
             _ElevatorAndArmSubSys.ClawRun(0);
         }, _ElevatorAndArmSubSys));
-        _OperatorController.button(2).whileTrue(new InstantCommand(() ->{
+        // _ElevatorAndArmSubSys.setDefaultCommand(new InstantCommand(() ->{
+        //     _ElevatorAndArmSubSys.ClawRun(0);
+        // }, _ElevatorAndArmSubSys));
+        _OperatorController.button(2).onFalse(new InstantCommand(() ->{
+            _ElevatorAndArmSubSys.ClawRun(0);
+        }, _ElevatorAndArmSubSys));
+        _OperatorController.button(2).onTrue(new InstantCommand(() ->{
             _ElevatorAndArmSubSys.ClawRun(-0.3);
         }, _ElevatorAndArmSubSys));
         _OperatorController.button(5).onTrue(new InstantCommand(() ->{

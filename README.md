@@ -1,6 +1,12 @@
 # Changelog
 Changelog based on what we do, but some of it may have to come from git commit history.
 
+## Feb 18, 2025
+* Tuned the PID for the elevator & the extending arm (i.e., the elevator goes up/down & the arm goes in/out)
+* Changed the way some buttons on the Operator controller fire commands
+* Fix some errors with position feedback scaling
+* Added a method in Robot to get the Util.Color based on the current DS alliance.
+
 ## Feb 17, 2025
 * Moved some constants from Interference class to Constants classes
 * changed the operator control from XBox to Joystick - button mappings in Google Drive Spreadsheet under technical

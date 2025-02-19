@@ -43,7 +43,7 @@ public class AlgaeSubsystem extends SubsystemBase{
     @Override
     public void periodic(){
         super.periodic();
-        double algaeRotatePosn = _AlgaeRotateMtrEncoder.getPosition();
+        double algaeRotatePosn = GetAlgaeArmAngleDegrees();
 
         SmartDashboard.putNumber("AlgaePos", algaeRotatePosn);
     }
