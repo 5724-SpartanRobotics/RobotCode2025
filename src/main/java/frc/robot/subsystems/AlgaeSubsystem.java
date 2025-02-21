@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController;
@@ -52,6 +53,15 @@ public class AlgaeSubsystem extends SubsystemBase{
         SmartDashboard.putNumber("AlgaeRef", _AlgaeRotateSetpoint);
         SmartDashboard.putNumber("AlgaeRampRef", _PidRamp.GetCurrentRampedSetpoint());
         SmartDashboard.putBoolean("AlgaeStopActive", _PidRamp.GetStopIsActive());
+    }
+
+        /**
+     * Call this at teleop init, so if we disabled with a setpoint and
+     * an arm or elevator drifted, we can set the motor controller's PID setpoint
+     * to match the current state.
+     */
+    public void SetPositionRegulatorsSetpointToMatchFeedback() {
+        _AlgaeRotateMtrPidController.setReference(_AlgaeRotateMtrEncoder.getPosition(), ControlType.kPosition);
     }
 
     public void RotateToOut()

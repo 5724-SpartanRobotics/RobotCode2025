@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController;
@@ -154,6 +155,17 @@ public class ElevatorAndArmSubSys extends SubsystemBase {
         } else {
             _LedSubsystem.reset();
         }
+    }
+
+    /**
+     * Call this at teleop init, so if we disabled with a setpoint and
+     * an arm or elevator drifted, we can set the motor controller's PID setpoint
+     * to match the current state.
+     */
+    public void SetPositionRegulatorsSetpointToMatchFeedback() {
+        _ArmExtendMtrPidController.setReference(_ArmExtenMtrEncoder.getPosition(), ControlType.kPosition);
+        _ArmRotateMtr1PidController.setReference(_ArmRotateMtr1Encoder.getPosition(), ControlType.kPosition);
+        _ElevatorMtr1PidController.setReference(_ElevatorMtr1Encoder.getPosition(), ControlType.kPosition);
     }
 
     public void MoveToL4()

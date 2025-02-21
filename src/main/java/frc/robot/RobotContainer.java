@@ -135,4 +135,10 @@ public class RobotContainer {
     public void robotFinishedBooting() {
         _LedSubsystem.setColorForDuration(LedSubsystem.kDefaultNotificationColor, 2);
     }
+
+    public void SetPositionRegulatorsSetpointToMatchFeedback()
+    {
+        _AlgaeSubSys.SetPositionRegulatorsSetpointToMatchFeedback();
+        _ElevatorAndArmSubSys.SetPositionRegulatorsSetpointToMatchFeedback();
+    }
 }
