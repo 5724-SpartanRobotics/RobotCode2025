@@ -27,6 +27,6 @@ public class ArmExtendToSetpointCommand extends Command{
     @Override
     public boolean isFinished() {
         double diff = Math.abs(_ElevatorAndArmSubSystem.GetArmExtendPosnInches() - _Setpoint);
-        return diff <= 0.5;
+        return diff <= 1.0;
       }
 }

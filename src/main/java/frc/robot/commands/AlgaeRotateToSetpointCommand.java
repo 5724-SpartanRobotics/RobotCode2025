@@ -28,7 +28,7 @@ public class AlgaeRotateToSetpointCommand extends Command{
       @Override
       public boolean isFinished() {
           double diff = Math.abs(_AlgaeSubSystem.GetAlgaeArmAngleDegrees() - _Setpoint);
-          return diff <= 3;
+          return diff <= 5;
         }
   
 }

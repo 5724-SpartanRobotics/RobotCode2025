@@ -2,7 +2,14 @@ package frc.robot;
 
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
+import frc.robot.Constants.AlgaeConstants;
+import frc.robot.Constants.ElevatorAndArmConstants;
+import frc.robot.commands.AlgaeRotateToSetpointCommand;
+import frc.robot.commands.ArmExtendToSetpointCommand;
+import frc.robot.commands.ArmRotateToSetpointCommand;
+import frc.robot.commands.ElevatorToSetpointCommand;
 import frc.robot.commands.TeleopSwerve;
 import frc.robot.subsystems.AlgaeSubsystem;
 import frc.robot.subsystems.DriveTrainSubsystem;
@@ -16,6 +23,7 @@ public class RobotContainer {
     private LedSubsystem _LedSubsystem;
     private ElevatorAndArmSubSys _ElevatorAndArmSubSys;
     private AlgaeSubsystem _AlgaeSubSys;
+    @SuppressWarnings("unused")
     private VisionSubsystem _VisionSubSys;
     private CommandJoystick _DriverController;
     private CommandJoystick _OperatorController;
@@ -103,9 +111,13 @@ public class RobotContainer {
         _OperatorController.button(2).onTrue(new InstantCommand(() ->{
             _ElevatorAndArmSubSys.ClawRun(-0.3);
         }, _ElevatorAndArmSubSys));
-        _OperatorController.button(5).onTrue(new InstantCommand(() ->{
-            _ElevatorAndArmSubSys.MoveToL4();
-        }, _ElevatorAndArmSubSys));
+        //sequencial commands
+        SequentialCommandGroup l4CommandGroups = new SequentialCommandGroup(
+            new ElevatorToSetpointCommand((_ElevatorAndArmSubSys), ElevatorAndArmConstants.ElevatorL4Posn)
+            .alongWith(new AlgaeRotateToSetpointCommand(_AlgaeSubSys, AlgaeConstants.AlgaeHoldGamepieceAngle))
+            .andThen(new ArmRotateToSetpointCommand(_ElevatorAndArmSubSys, ElevatorAndArmConstants.ArmRotateL4Posn))
+            .andThen(new ArmExtendToSetpointCommand(_ElevatorAndArmSubSys, ElevatorAndArmConstants.ArmExtendL4Posn)));
+        _OperatorController.button(5).onTrue(l4CommandGroups);
         _OperatorController.button(3).onTrue(new InstantCommand(() ->{
             _ElevatorAndArmSubSys.MoveToL3();
         }, _ElevatorAndArmSubSys));

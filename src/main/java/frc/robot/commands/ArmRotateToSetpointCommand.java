@@ -27,7 +27,7 @@ public class ArmRotateToSetpointCommand extends Command{
     @Override
     public boolean isFinished() {
         double diff = Math.abs(_ElevatorAndArmSubSys.GetArmRotateAngleDegrees() - _Setpoint);
-        return diff <= 3;
+        return diff <= 10;
       }
 
 }

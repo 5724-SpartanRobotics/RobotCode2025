@@ -26,6 +26,6 @@ public class ElevatorToSetpointCommand extends Command{
     @Override
     public boolean isFinished() {
         double diff = Math.abs(_ElevatorAndArmSubSys.GetElevatorHeightInches() - _Setpoint);
-        return diff <= 0.5;
+        return diff <= 1.0;
       }
 }
