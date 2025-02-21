@@ -1,6 +1,10 @@
 # Changelog
 Changelog based on what we do, but some of it may have to come from git commit history.
 
+## Feb 20, 2025
+* Adjust more PIDs (algae and arm rotate)
+* Adjust CAN IDs
+
 ## Feb 19, 2025
 * Added in some Limelight 3G vision code... Will it work? Probably not. Will we use it? No clue, but it's there.
 * Nothing crashes in simulation!

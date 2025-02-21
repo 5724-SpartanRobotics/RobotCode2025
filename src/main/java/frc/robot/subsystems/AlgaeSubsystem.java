@@ -33,8 +33,7 @@ public class AlgaeSubsystem extends SubsystemBase{
         .idleMode(IdleMode.kBrake);
         cfg.closedLoop
         .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-        .pid(AlgaeConstants.RotatePidP, AlgaeConstants.RotatePidI, AlgaeConstants.RotatePidD)
-        .velocityFF(AlgaeConstants.RotatePidFF);
+        .pid(AlgaeConstants.RotatePidP, AlgaeConstants.RotatePidI, AlgaeConstants.RotatePidD);
 
         _AlgaeRotateMtrCtrl.configure(cfg, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
         _AlgaeRotateMtrPidController = _AlgaeRotateMtrCtrl.getClosedLoopController();
@@ -46,6 +45,7 @@ public class AlgaeSubsystem extends SubsystemBase{
         double algaeRotatePosn = GetAlgaeArmAngleDegrees();
 
         SmartDashboard.putNumber("AlgaePos", algaeRotatePosn);
+        SmartDashboard.putNumber("AlgaeRef", _AlgaeRotateSetpoint);
     }
 
     public void RotateToOut()
@@ -58,7 +58,8 @@ public class AlgaeSubsystem extends SubsystemBase{
 
     public void RotateToIn()
     {
-        _AlgaeRotateMtrPidController.setReference(0, ControlType.kPosition);
+        _AlgaeRotateSetpoint = 0;
+        _AlgaeRotateMtrPidController.setReference(_AlgaeRotateSetpoint, ControlType.kPosition);
     }
 
     public void RotateToHoldAlgaePosn()

@@ -44,6 +44,7 @@ public class SwerveModule {
 
     private PIDController turnPID;
     public String Name;
+    private double Offset;
 
     public SwerveModule(int turnMotor, int driveMotor, int canCoderID, double offset, String name) {
         this.drive = new SparkFlex(driveMotor, MotorType.kBrushless);
@@ -66,6 +67,7 @@ public class SwerveModule {
         this.turn.configure(this.motorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
 
+        this.Offset = offset;
         this.canCoder = new CANcoder(canCoderID);
         this.turnPID = new PIDController(0.5, 0, 0);
         this.turnPID.enableContinuousInput(-Math.PI, Math.PI);
@@ -133,7 +135,7 @@ public class SwerveModule {
 
     public void resetTurnToAbsolute() {
         double absPos = canCoder.getAbsolutePosition().refresh().getValueAsDouble();
-        double absolutePosition = (absPos * Constants.TwoPI) - 0.0 /* offset */;
+        double absolutePosition = (absPos * Constants.TwoPI) - Offset;
 
         if (DebugSetting.TraceLevel == DebugLevel.Swerve || DebugSetting.TraceLevel == DebugLevel.All) {
             SmartDashboard.putNumber(Name + " Posn abs", absolutePosition);
@@ -153,7 +155,7 @@ public class SwerveModule {
 
     public void resetEncoders() {
         drive.getEncoder().setPosition(0);
-        double absoluteEncoderAngle = (canCoder.getAbsolutePosition().getValueAsDouble() - 0.0 /* offset */) * Constants.TwoPI * 1.0 /* encoder not reversed */;
+        double absoluteEncoderAngle = (canCoder.getAbsolutePosition().getValueAsDouble() - Offset) * Constants.TwoPI * 1.0 /* encoder not reversed */;
         turn.getEncoder().setPosition(absoluteEncoderAngle / (Constants.TwoPI / DriveConstants.turnGearRatio));
     }
 }

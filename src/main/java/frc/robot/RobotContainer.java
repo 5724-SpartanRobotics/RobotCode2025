@@ -1,7 +1,10 @@
 package frc.robot;
 
 import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import frc.robot.commands.AprilTagLockonCommand;
 import frc.robot.commands.TeleopSwerve;
@@ -23,12 +26,12 @@ public class RobotContainer {
     public static Interference InterferenceHelper;
 
     public RobotContainer(){
-        InterferenceHelper = new Interference(_AlgaeSubSys, _ElevatorAndArmSubSys);
         _DriveTrainSubsystem = new DriveTrainSubsystem();
         _LedSubsystem = new LedSubsystem();
         _VisionSubSys = new VisionSubsystem(_DriveTrainSubsystem);
         _ElevatorAndArmSubSys = new ElevatorAndArmSubSys(_LedSubsystem);
         _AlgaeSubSys = new AlgaeSubsystem();
+        InterferenceHelper = new Interference(_AlgaeSubSys, _ElevatorAndArmSubSys);
         _DriverController = new CommandJoystick(0);
         _OperatorController = new CommandJoystick(1);
 
@@ -45,7 +48,7 @@ public class RobotContainer {
         _DriverController.button(7).onTrue(new InstantCommand(() -> {
             _DriveTrainSubsystem.zeroGyro();
         }));
-        _DriverController.button(11).whileTrue(new AprilTagLockonCommand(_DriveTrainSubsystem, _VisionSubSys));
+        // _DriverController.button(11).whileTrue(new AprilTagLockonCommand(_DriveTrainSubsystem, _VisionSubSys));
        
         //algae controls
         _OperatorController.button(7).onTrue(new InstantCommand(() -> {
@@ -73,10 +76,10 @@ public class RobotContainer {
         }, _ElevatorAndArmSubSys));
 
         //arm rotate - main Y axis
-        _OperatorController.axisLessThan(2, -0.3).onTrue(new InstantCommand(() ->{
+        _OperatorController.axisLessThan(1, -0.3).onTrue(new InstantCommand(() ->{
             _ElevatorAndArmSubSys.IncrementArmRotate();
         }, _ElevatorAndArmSubSys));
-        _OperatorController.axisGreaterThan(2, 0.3).onTrue(new InstantCommand(() ->{
+        _OperatorController.axisGreaterThan(1, 0.3).onTrue(new InstantCommand(() ->{
             _ElevatorAndArmSubSys.DecrementArmRotate();
         }, _ElevatorAndArmSubSys));
 
@@ -119,5 +122,11 @@ public class RobotContainer {
         _OperatorController.button(12).onTrue(new InstantCommand(() ->{
             _ElevatorAndArmSubSys.MoveToPickupPieceInRobot();
         }, _ElevatorAndArmSubSys));
+    }
+
+    public void robotFinishedBooting() {
+        // new ParallelDeadlineGroup(new WaitCommand(2), new InstantCommand(() -> {_LedSubsystem.setColor(Color.kGray);}))
+        //     .andThen(new InstantCommand(() -> {_LedSubsystem.reset();}))
+        //     .execute();
     }
 }

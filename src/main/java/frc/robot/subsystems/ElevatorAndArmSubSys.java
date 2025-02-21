@@ -140,6 +140,7 @@ public class ElevatorAndArmSubSys extends SubsystemBase {
         SmartDashboard.putNumber("ArmExtRef", _ArmExtendSetpoint);
         SmartDashboard.putNumber("ElevatorPos", elevatorPosition);
         SmartDashboard.putNumber("ElevatorPosRef", _ElevatorSetpoint);
+        SmartDashboard.putNumber("ArmRotRef", _ArmRotateSetpoint);
 
         if (ClawIsUsingLotsOfCurrent()) {
             _LedSubsystem.setColor(Color.kGreen);

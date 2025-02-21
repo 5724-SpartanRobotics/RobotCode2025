@@ -7,18 +7,18 @@ public final class Constants {
     public static final double HalfPI = Math.PI / 2;
 
     public static final class CanIdConstants {
-        public static final int LFTurnMotor = 1;
-        public static final int LFDriveMotor = 2;
-        public static final int LBTurnMotor = 3;
-        public static final int LBDriveMotor = 4;
-        public static final int RBTurnMotor = 5;
-        public static final int RBDriveMotor = 6;
-        public static final int RFTurnMotor = 7;
-        public static final int RFDriveMotor = 8;
+        public static final int LFTurnMotor = 7;
+        public static final int LFDriveMotor = 8;
+        public static final int LBTurnMotor = 6;
+        public static final int LBDriveMotor = 5;
+        public static final int RBTurnMotor = 3;
+        public static final int RBDriveMotor = 4;
+        public static final int RFTurnMotor = 2;
+        public static final int RFDriveMotor = 1;
         public static final int LFCanID = 10;
         public static final int LBCanID = 11;
-        public static final int RFCanID = 12;
-        public static final int RBCanID = 13;
+        public static final int RFCanID = 13;
+        public static final int RBCanID = 12;
         public static final int PigeonID = 14;
         public static final int PDHID = 50;
         public static final int ArmRotateMtrCtrl1CanId = 18;
@@ -46,9 +46,9 @@ public final class Constants {
     
         // Swerve module offsets (in radians) - adjust these based on calibration
         public static final double LFOff = 0.0;
-        public static final double RFOff = 0.0;
+        public static final double RFOff = 0.007324;
         public static final double LBOff = 0.0;
-        public static final double RBOff = 0.0; 
+        public static final double RBOff = -0.00415; 
         public static Translation2d LFLocation = new Translation2d(wheelBase/2, trackWidth/2);
         public static Translation2d RFLocation = new Translation2d(wheelBase/2, -trackWidth/2);
         public static Translation2d LBLocation = new Translation2d(-wheelBase/2, trackWidth/2);
@@ -68,8 +68,8 @@ public final class Constants {
         public static final double ArmExtendPidI = 0;
         public static final double ArmExtendPidD = 0;
 
-        public static final double ArmRotatePidP = 0.0001;
-        public static final double ArmRotatePidFF = 0.0002;
+        public static final double ArmRotatePidP = 0.1;
+        public static final double ArmRotatePidFF = 0.0035;
         public static final double ArmRotatePidI = 0;
         public static final double ArmRotatePidD = 0;
 
@@ -92,15 +92,17 @@ public final class Constants {
        }
 
     public final class AlgaeConstants {
-        public static final double RotatePidP = 0.0001;
-        public static final double RotatePidFF = 0.0002;
-        public static final double RotatePidI = 0;
+        public static final double RotatePidP = 0.38;
+        public static final double RotatePidFF = 0.000;
+        public static final double RotatePidI = 0.00000;
         public static final double RotatePidD = 0;
         public static final double GearRatio = 9;
         public static final double IncrementDegrees = 5;
         public static final double AlgaeMinAngleForArmRotationClearance = 35;//degrees
         public static final double AlgaeHoldGamepieceAngle = 20;
         public static final double AlgaeFullOutAngle = 90;
+        public static final double RotateMaxAccel = 300; // RPM/s
+        public static final double RotateMaxVelocity = 300; // RPM
     }
 
     public static final class NeoConstants {
