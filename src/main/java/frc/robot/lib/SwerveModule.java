@@ -135,8 +135,9 @@ public class SwerveModule {
 
     public void resetTurnToAbsolute() {
         double absPos = canCoder.getAbsolutePosition().refresh().getValueAsDouble();
-        double absolutePosition = (absPos * Constants.TwoPI) - Offset;
-
+        double absolutePosition = Conversions.radiansToVortex(
+            (absPos * Constants.TwoPI) - Offset
+        );
         if (DebugSetting.TraceLevel == DebugLevel.Swerve || DebugSetting.TraceLevel == DebugLevel.All) {
             SmartDashboard.putNumber(Name + " Posn abs", absolutePosition);
         }

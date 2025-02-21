@@ -32,6 +32,11 @@ public class Conversions {
         return radians / (Constants.TwoPI / (DriveConstants.turnGearRatio * 1.0));
     }
 
+    public static double radiansToVortex(double radians){
+        return radians / (Constants.TwoPI / (DriveConstants.turnGearRatio * 1.0));
+    }
+
+
     public static double degreesToFalcon(double degrees){
         return degrees / (360 / (DriveConstants.turnGearRatio * 1.0));
     }

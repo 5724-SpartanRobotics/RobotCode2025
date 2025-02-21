@@ -33,7 +33,9 @@ public class AlgaeSubsystem extends SubsystemBase{
         .idleMode(IdleMode.kBrake);
         cfg.closedLoop
         .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-        .pid(AlgaeConstants.RotatePidP, AlgaeConstants.RotatePidI, AlgaeConstants.RotatePidD);
+        .pidf(AlgaeConstants.RotatePidP, AlgaeConstants.RotatePidI, AlgaeConstants.RotatePidD, AlgaeConstants.RotatePidFF);
+//        .maxMotion.maxAcceleration(1000)
+//        .maxVelocity(1000);
 
         _AlgaeRotateMtrCtrl.configure(cfg, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
         _AlgaeRotateMtrPidController = _AlgaeRotateMtrCtrl.getClosedLoopController();
