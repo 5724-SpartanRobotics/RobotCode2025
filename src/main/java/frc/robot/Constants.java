@@ -46,9 +46,9 @@ public final class Constants {
     
         // Swerve module offsets (in radians) - adjust these based on calibration
         public static final double LFOff = 0.0;
-        public static final double RFOff = 0.007324;
+        public static final double RFOff = 0.0;
         public static final double LBOff = 0.0;
-        public static final double RBOff = -0.00415; 
+        public static final double RBOff = 0.0; 
         public static Translation2d LFLocation = new Translation2d(wheelBase/2, trackWidth/2);
         public static Translation2d RFLocation = new Translation2d(wheelBase/2, -trackWidth/2);
         public static Translation2d LBLocation = new Translation2d(-wheelBase/2, trackWidth/2);
@@ -86,23 +86,27 @@ public final class Constants {
         public static final double ArmPivotPointToFrameEdgeInches = 18.0;
         public static final double ArmLengthRetractedInches = 14.0;
         public static final double ArmMaxOutsideOfFrameInches = 17.0;
-        public static final double ArmAlgaeZoneAngle = 45;//degrees
+        public static final double ArmAlgaeZoneAngle = 5;//degrees
         public static final double ArmExtendMaxWhenInRobot = 1;//inches
         public static final double ElevatorRaisedUpPosition = 12;//inches
+        public static final double ElevatorSetpointRampRate = 2;//inches per second
+        public static final double ArmRotateSetpointRampRate = 40;//degrees per second
+        public static final double ArmExtendSetpointRampRate = 4;//inches per second
        }
 
     public final class AlgaeConstants {
-        public static final double RotatePidP = 0.38;
-        public static final double RotatePidFF = 0.000;
-        public static final double RotatePidI = 0.00000;
+        public static final double RotatePidP = 0.8;
+        public static final double RotatePidFF = 0.0000;
+        public static final double RotatePidI = 0.0000;
         public static final double RotatePidD = 0;
         public static final double GearRatio = 9;
         public static final double IncrementDegrees = 5;
         public static final double AlgaeMinAngleForArmRotationClearance = 35;//degrees
-        public static final double AlgaeHoldGamepieceAngle = 20;
-        public static final double AlgaeFullOutAngle = 90;
-        public static final double RotateMaxAccel = 300; // RPM/s
-        public static final double RotateMaxVelocity = 300; // RPM
+        public static final double AlgaeHoldGamepieceAngle = 35;
+        public static final double AlgaeFullOutAngle = 117;
+        public static final double AlgaeSetpointRampRate = 50;//degrees per second
+        public static final double RotateMaxAccel = 3000; // RPM/s
+        public static final double RotateMaxVelocity = 5000; // RPM
     }
 
     public static final class NeoConstants {

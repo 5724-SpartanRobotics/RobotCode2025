@@ -1,6 +1,10 @@
 # Changelog
 Changelog based on what we do, but some of it may have to come from git commit history.
 
+## Feb 21, 2025
+* Alan adjusted LED to flash once on robot boot
+* Applied PID ramp to 4 position regulators
+* Fixed the swerve turn initial position reset off absolute encoder code.
 ## Feb 20, 2025
 * Adjust more PIDs (algae and arm rotate)
 * Adjust CAN IDs

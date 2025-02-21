@@ -18,8 +18,7 @@ public class PidRamp {
     /**
      * Creates a new PID ramp using the given units/second rate
      * @param pidController - The PID controller
-     * @param rampRate - The ramp rate. The rate is in engineering units. For example, if your PID setpoint is in
-     *   inches, this ramp rate would be in inches per second.
+     * @param rampRate - The ramp rate. The rate is in motor rotations per second per second.
      */
     public PidRamp(SparkClosedLoopController pidController, double rampRate) {
         _Pid = pidController;
@@ -28,10 +27,13 @@ public class PidRamp {
 
     public void Stop() {
         _StopIsActive = true;
-        _Pid.setReference(0, ControlType.kVelocity);
     }
 
-    public void SetReference(double setpoint) {
+    /**
+     * Set the reference setpoint to be ramped. The units are in motor rotation units.
+     * @param setpoint
+     */
+    public void setReference(double setpoint) {
         _StopIsActive = false;
         _Setpoint = setpoint;
     }
@@ -39,7 +41,7 @@ public class PidRamp {
     /**
      * Call this method in your periodic method. The current setpoint will be ramped and sent
      * to the PID controller. If stop is active, the ramp input will be set to the current
-     * position feedback.
+     * position feedback which should be in motor rotations
      * @param currentPositionFeedback
      */
     public void Periodic(double currentPositionFeedback){

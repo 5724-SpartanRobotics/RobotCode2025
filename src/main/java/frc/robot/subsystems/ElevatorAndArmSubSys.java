@@ -1,7 +1,6 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.RelativeEncoder;
-import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController;
@@ -14,12 +13,12 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CanIdConstants;
 import frc.robot.Constants.ElevatorAndArmConstants;
 import frc.robot.InterferenceInfo;
 import frc.robot.RobotContainer;
+import frc.robot.lib.PidRamp;
 
 public class ElevatorAndArmSubSys extends SubsystemBase {
     private SparkMax _ElevatorMtrCtrl1;
@@ -31,13 +30,15 @@ public class ElevatorAndArmSubSys extends SubsystemBase {
 
     private SparkClosedLoopController _ElevatorMtr1PidController;
     private RelativeEncoder _ElevatorMtr1Encoder;
-    private SparkClosedLoopController _ElevatorMtr2PidController;
     private SparkClosedLoopController _ArmRotateMtr1PidController;
     private RelativeEncoder _ArmRotateMtr1Encoder;
     private SparkClosedLoopController _ArmExtendMtrPidController;
     private RelativeEncoder _ArmExtenMtrEncoder;
 
     private final LedSubsystem _LedSubsystem;
+    private PidRamp _ElevatorPidRamp;
+    private PidRamp _ArmRotatePidRamp;
+    private PidRamp _ArmExtendPidRamp;
 
     private double _ElevatorSetpoint;
     private double _ElevatorMax = 14.0;
@@ -119,11 +120,13 @@ public class ElevatorAndArmSubSys extends SubsystemBase {
 
         _ElevatorMtr1PidController = _ElevatorMtrCtrl1.getClosedLoopController();
         _ElevatorMtr1Encoder = _ElevatorMtrCtrl1.getEncoder();
-        _ElevatorMtr2PidController = _ElevatorMtrCtrl2.getClosedLoopController();
         _ArmRotateMtr1PidController = _ArmRotateMtrCtrl1.getClosedLoopController();
         _ArmRotateMtr1Encoder = _ArmRotateMtrCtrl1.getEncoder();
         _ArmExtendMtrPidController = _ArmExtendMtrCtrl.getClosedLoopController();
         _ArmExtenMtrEncoder = _ArmExtendMtrCtrl.getEncoder();
+        _ElevatorPidRamp = new PidRamp(_ElevatorMtr1PidController, ConvertElevatorInchesToNeoRotations(ElevatorAndArmConstants.ElevatorSetpointRampRate));
+        _ArmRotatePidRamp = new PidRamp(_ArmRotateMtr1PidController, ConvertArmRotateAngleToNeoRotations(ElevatorAndArmConstants.ArmRotateSetpointRampRate));
+        _ArmExtendPidRamp = new PidRamp(_ArmExtendMtrPidController, ConvertArmExtendInchesToRotations(ElevatorAndArmConstants.ArmExtendSetpointRampRate));
 
         _LedSubsystem = led;
     }
@@ -135,6 +138,10 @@ public class ElevatorAndArmSubSys extends SubsystemBase {
         double armRotatePosition = GetArmRotateAngleDegrees();
         double elevatorPosition = GetElevatorHeightInches();
 
+        _ElevatorPidRamp.Periodic(ConvertElevatorInchesToNeoRotations(elevatorPosition));
+        _ArmRotatePidRamp.Periodic(ConvertArmRotateAngleToNeoRotations(armRotatePosition));
+        _ArmExtendPidRamp.Periodic(ConvertArmExtendInchesToRotations(armExtendPosition));
+
         SmartDashboard.putNumber("ArmExtPos", armExtendPosition);
         SmartDashboard.putNumber("ArmRotPos", armRotatePosition);
         SmartDashboard.putNumber("ArmExtRef", _ArmExtendSetpoint);
@@ -143,21 +150,10 @@ public class ElevatorAndArmSubSys extends SubsystemBase {
         SmartDashboard.putNumber("ArmRotRef", _ArmRotateSetpoint);
 
         if (ClawIsUsingLotsOfCurrent()) {
-            _LedSubsystem.setColor(Color.kGreen);
+            _LedSubsystem.setColor(LedSubsystem.kDefaultActiveColor);
         } else {
             _LedSubsystem.reset();
         }
-    }
-
-    public void MoveToPickupPieceInRobot()
-    {
-        _ArmExtendSetpoint = 0;
-        _ArmRotateSetpoint = 0;
-        _ElevatorSetpoint = 0;
-        _ArmExtendMtrPidController.setReference(0, ControlType.kPosition);
-        _ArmRotateMtr1PidController.setReference(0, ControlType.kPosition);
-        _ElevatorMtr1PidController.setReference(0, ControlType.kPosition);
-        _ElevatorMtr2PidController.setReference(0, ControlType.kPosition);
     }
 
     public void MoveToL4()
@@ -212,8 +208,7 @@ public class ElevatorAndArmSubSys extends SubsystemBase {
         _ElevatorSetpoint += 1;
         if (_ElevatorSetpoint > _ElevatorMax)
             _ElevatorSetpoint = _ElevatorMax;
-        _ElevatorMtr1PidController.setReference(ConvertElevatorInchesToNeoRotations(_ElevatorSetpoint), ControlType.kPosition);
-        _ElevatorMtr2PidController.setReference(ConvertElevatorInchesToNeoRotations(_ElevatorSetpoint), ControlType.kPosition);
+        _ElevatorPidRamp.setReference(ConvertElevatorInchesToNeoRotations(_ElevatorSetpoint));
     }
 
     /**
@@ -230,10 +225,26 @@ public class ElevatorAndArmSubSys extends SubsystemBase {
         _ElevatorSetpoint -= 1;//1 inch
         if (_ElevatorSetpoint < 0)
             _ElevatorSetpoint = 0;
-        _ElevatorMtr1PidController.setReference(ConvertElevatorInchesToNeoRotations(_ElevatorSetpoint), ControlType.kPosition);
-        _ElevatorMtr2PidController.setReference(ConvertElevatorInchesToNeoRotations(_ElevatorSetpoint), ControlType.kPosition);
+        _ElevatorPidRamp.setReference(ConvertElevatorInchesToNeoRotations(_ElevatorSetpoint));
     }
 
+    public void ElevatorStop()
+    {
+        _ElevatorPidRamp.Stop();
+    }
+
+    public void ElevatorToPosition(double heightInches)
+    {
+        _ElevatorSetpoint = heightInches;
+        if (_ElevatorSetpoint > _ElevatorMax)
+            _ElevatorSetpoint = _ElevatorMax;
+        _ElevatorPidRamp.setReference(ConvertElevatorInchesToNeoRotations(_ElevatorSetpoint));
+    }
+
+    private double ConvertArmRotateAngleToNeoRotations(double angle)
+    {
+        return angle / 360 * ElevatorAndArmConstants.ArmRotateGearRatio;
+    }
     public void IncrementArmRotate()
     {
         InterferenceInfo info = new InterferenceInfo();
@@ -250,41 +261,11 @@ public class ElevatorAndArmSubSys extends SubsystemBase {
         if (_ArmRotateSetpoint > _ArmRotateMax)
             _ArmRotateSetpoint = _ArmRotateMax;
         //convert to motor rotations
-        double setpoint = _ArmRotateSetpoint / 360 * ElevatorAndArmConstants.ArmRotateGearRatio;
-        _ArmRotateMtr1PidController.setReference(setpoint, ControlType.kPosition);
+        double setpoint = ConvertArmRotateAngleToNeoRotations(_ArmRotateSetpoint);
+        _ArmRotatePidRamp.setReference(setpoint);
     }
 
-    public void ElevatorStop()
-    {
-        _ElevatorMtr1PidController.setReference(0, ControlType.kVelocity);
-        _ElevatorMtr2PidController.setReference(0, ControlType.kVelocity);
-    }
 
-    public void ElevatorToPosition(double heightInches)
-    {
-        _ElevatorSetpoint = heightInches;
-        if (_ElevatorSetpoint > _ElevatorMax)
-            _ElevatorSetpoint = _ElevatorMax;
-        _ElevatorMtr1PidController.setReference(ConvertElevatorInchesToNeoRotations(_ElevatorSetpoint), ControlType.kPosition);
-        _ElevatorMtr2PidController.setReference(ConvertElevatorInchesToNeoRotations(_ElevatorSetpoint), ControlType.kPosition);
-    }
-
-    public void ArmRotateStop()
-    {
-        _ArmRotateMtr1PidController.setReference(0, ControlType.kVelocity);
-    }
-
-    public void ArmRotateToPosition(double degrees)
-    {
-        _ArmRotateSetpoint = degrees;
-        if (_ArmRotateSetpoint > _ArmRotateMax)
-            _ArmRotateSetpoint = _ArmRotateMax;
-        if (_ArmRotateSetpoint < 0)
-            _ArmRotateSetpoint = 0;
-        //convert to motor rotations
-        double setpoint = _ArmRotateSetpoint / 360 * ElevatorAndArmConstants.ArmRotateGearRatio;
-        _ArmRotateMtr1PidController.setReference(setpoint, ControlType.kPosition);
-    }
     public void DecrementArmRotate()
     {
         InterferenceInfo info = new InterferenceInfo();
@@ -301,8 +282,25 @@ public class ElevatorAndArmSubSys extends SubsystemBase {
         if (_ArmRotateSetpoint < 0)
             _ArmRotateSetpoint = 0;
         //convert to motor rotations
-        double setpoint = _ArmRotateSetpoint / 360 * ElevatorAndArmConstants.ArmRotateGearRatio;
-        _ArmRotateMtr1PidController.setReference(setpoint, ControlType.kPosition);
+        double setpoint = ConvertArmRotateAngleToNeoRotations(_ArmRotateSetpoint);
+        _ArmRotatePidRamp.setReference(setpoint);
+    }
+
+    public void ArmRotateStop()
+    {
+        _ArmRotatePidRamp.Stop();
+    }
+
+    public void ArmRotateToPosition(double degrees)
+    {
+        _ArmRotateSetpoint = degrees;
+        if (_ArmRotateSetpoint > _ArmRotateMax)
+            _ArmRotateSetpoint = _ArmRotateMax;
+        if (_ArmRotateSetpoint < 0)
+            _ArmRotateSetpoint = 0;
+        //convert to motor rotations
+        double setpoint = ConvertArmRotateAngleToNeoRotations(_ArmRotateSetpoint);
+        _ArmRotatePidRamp.setReference(setpoint);
     }
 
     public void IncrementArmExtend()
@@ -311,7 +309,7 @@ public class ElevatorAndArmSubSys extends SubsystemBase {
         if (_ArmExtendSetpoint > _ArmExtendMax)
             _ArmExtendSetpoint = _ArmExtendMax;
         //convert from inches to motor rotations
-        _ArmExtendMtrPidController.setReference(ConvertArmExtendInchesToRotations(_ArmExtendSetpoint), ControlType.kPosition);
+        _ArmExtendPidRamp.setReference(ConvertArmExtendInchesToRotations(_ArmExtendSetpoint));
     }
 
     public void DecrementArmExtend()
@@ -320,11 +318,11 @@ public class ElevatorAndArmSubSys extends SubsystemBase {
         if (_ArmExtendSetpoint < 0)
             _ArmExtendSetpoint = 0;
         //convert from inches to motor rotations
-        _ArmExtendMtrPidController.setReference(ConvertArmExtendInchesToRotations(_ArmExtendSetpoint), ControlType.kPosition);
+        _ArmExtendPidRamp.setReference(ConvertArmExtendInchesToRotations(_ArmExtendSetpoint));
     }
     public void ArmExtendStop()
     {
-        _ArmExtendMtrPidController.setReference(0, ControlType.kVelocity);
+        _ArmExtendPidRamp.Stop();
     }
 
     public void ArmExtendToPosition(double angle)
@@ -335,7 +333,7 @@ public class ElevatorAndArmSubSys extends SubsystemBase {
         if (_ArmExtendSetpoint < 0)
             _ArmExtendSetpoint = 0;
         //convert to motor rotations
-        _ArmExtendMtrPidController.setReference(ConvertArmExtendInchesToRotations(_ArmExtendSetpoint), ControlType.kPosition);
+        _ArmExtendPidRamp.setReference(ConvertArmExtendInchesToRotations(_ArmExtendSetpoint));
     }
 
     /**

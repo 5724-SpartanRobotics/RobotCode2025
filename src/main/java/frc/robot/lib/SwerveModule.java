@@ -142,7 +142,8 @@ public class SwerveModule {
             SmartDashboard.putNumber(Name + " Posn abs", absolutePosition);
         }
 
-        turn.set(turnPID.calculate(absolutePosition, 0));
+        
+        turn.getEncoder().setPosition(absolutePosition);
     }
 
     public void applyTurnConfiguration() {

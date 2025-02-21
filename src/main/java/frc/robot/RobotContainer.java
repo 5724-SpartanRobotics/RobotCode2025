@@ -1,12 +1,8 @@
 package frc.robot;
 
 import edu.wpi.first.cameraserver.CameraServer;
-import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
-import frc.robot.commands.AprilTagLockonCommand;
 import frc.robot.commands.TeleopSwerve;
 import frc.robot.subsystems.AlgaeSubsystem;
 import frc.robot.subsystems.DriveTrainSubsystem;
@@ -120,13 +116,11 @@ public class RobotContainer {
             _ElevatorAndArmSubSys.MoveToL1();
         }, _ElevatorAndArmSubSys));
         _OperatorController.button(12).onTrue(new InstantCommand(() ->{
-            _ElevatorAndArmSubSys.MoveToPickupPieceInRobot();
+            _AlgaeSubSys.AlgaeStop();
         }, _ElevatorAndArmSubSys));
     }
 
     public void robotFinishedBooting() {
-        // new ParallelDeadlineGroup(new WaitCommand(2), new InstantCommand(() -> {_LedSubsystem.setColor(Color.kGray);}))
-        //     .andThen(new InstantCommand(() -> {_LedSubsystem.reset();}))
-        //     .execute();
+        _LedSubsystem.setColorForDuration(LedSubsystem.kDefaultNotificationColor, 2);
     }
 }
