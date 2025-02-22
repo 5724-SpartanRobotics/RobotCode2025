@@ -121,6 +121,7 @@ public final class Constants {
         public static final double AlgaeHoldGamepieceAngle = 40;
         public static final double AlgaeFullOutAngle = 120;
         public static final double AlgaeSetpointRampRate = 50;//degrees per second
+        public static final double AlgaeClearOfArmMinimumAngle = 60;
         public static final double RotateMaxAccel = 3000; // RPM/s
         public static final double RotateMaxVelocity = 5000; // RPM
     }

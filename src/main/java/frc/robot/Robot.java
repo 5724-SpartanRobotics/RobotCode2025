@@ -85,7 +85,6 @@ public class Robot extends TimedRobot {
     /** This function is called once when teleop is enabled. */
     @Override
     public void teleopInit() {
-        _RobotContainer.SetPositionRegulatorsSetpointToMatchFeedback();
     }
 
     /** This function is called periodically during operator control. */
@@ -94,7 +93,9 @@ public class Robot extends TimedRobot {
 
     /** This function is called once when the robot is disabled. */
     @Override
-    public void disabledInit() {}
+    public void disabledInit() {
+        _RobotContainer.StopPidRamps();
+    }
 
     /** This function is called periodically when disabled. */
     @Override

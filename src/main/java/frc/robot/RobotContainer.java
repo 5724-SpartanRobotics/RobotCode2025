@@ -117,19 +117,28 @@ public class RobotContainer {
         //sequencial commands
         SequentialCommandGroup l4CommandGroups = new SequentialCommandGroup(
             new ElevatorToSetpointCommand((_ElevatorAndArmSubSys), ElevatorAndArmConstants.ElevatorL4Posn)
-            .alongWith(new AlgaeRotateToSetpointCommand(_AlgaeSubSys, AlgaeConstants.AlgaeHoldGamepieceAngle))
+            .alongWith(new AlgaeRotateToSetpointCommand(_AlgaeSubSys, AlgaeConstants.AlgaeClearOfArmMinimumAngle))
             .andThen(new ArmRotateToSetpointCommand(_ElevatorAndArmSubSys, ElevatorAndArmConstants.ArmRotateL4Posn))
             .andThen(new ArmExtendToSetpointCommand(_ElevatorAndArmSubSys, ElevatorAndArmConstants.ArmExtendL4Posn)));
+        SequentialCommandGroup l3CommandGroups = new SequentialCommandGroup(
+                new ElevatorToSetpointCommand((_ElevatorAndArmSubSys), ElevatorAndArmConstants.ElevatorL3Posn)
+                .alongWith(new AlgaeRotateToSetpointCommand(_AlgaeSubSys, AlgaeConstants.AlgaeClearOfArmMinimumAngle))
+                .andThen(new ArmRotateToSetpointCommand(_ElevatorAndArmSubSys, ElevatorAndArmConstants.ArmRotateL3Posn))
+                .andThen(new ArmExtendToSetpointCommand(_ElevatorAndArmSubSys, ElevatorAndArmConstants.ArmExtendL3Posn)));
+        SequentialCommandGroup l2CommandGroups = new SequentialCommandGroup(
+                new ElevatorToSetpointCommand((_ElevatorAndArmSubSys), ElevatorAndArmConstants.ElevatorL2Posn)
+                .alongWith(new AlgaeRotateToSetpointCommand(_AlgaeSubSys, AlgaeConstants.AlgaeClearOfArmMinimumAngle))
+                .andThen(new ArmRotateToSetpointCommand(_ElevatorAndArmSubSys, ElevatorAndArmConstants.ArmRotateL2Posn))
+                .andThen(new ArmExtendToSetpointCommand(_ElevatorAndArmSubSys, ElevatorAndArmConstants.ArmExtendL2Posn)));
+        SequentialCommandGroup l1CommandGroups = new SequentialCommandGroup(
+                new ElevatorToSetpointCommand((_ElevatorAndArmSubSys), ElevatorAndArmConstants.ElevatorL1Posn)
+                .alongWith(new AlgaeRotateToSetpointCommand(_AlgaeSubSys, AlgaeConstants.AlgaeClearOfArmMinimumAngle))
+                .andThen(new ArmRotateToSetpointCommand(_ElevatorAndArmSubSys, ElevatorAndArmConstants.ArmRotateL1Posn))
+                .andThen(new ArmExtendToSetpointCommand(_ElevatorAndArmSubSys, ElevatorAndArmConstants.ArmExtendL1Posn)));
         _OperatorController.button(5).onTrue(l4CommandGroups);
-        _OperatorController.button(3).onTrue(new InstantCommand(() ->{
-            _ElevatorAndArmSubSys.MoveToL3();
-        }, _ElevatorAndArmSubSys));
-        _OperatorController.button(6).onTrue(new InstantCommand(() ->{
-            _ElevatorAndArmSubSys.MoveToL2();
-        }, _ElevatorAndArmSubSys));
-        _OperatorController.button(4).onTrue(new InstantCommand(() ->{
-            _ElevatorAndArmSubSys.MoveToL1();
-        }, _ElevatorAndArmSubSys));
+        _OperatorController.button(3).onTrue(l3CommandGroups);
+        _OperatorController.button(6).onTrue(l2CommandGroups);
+        _OperatorController.button(4).onTrue(l1CommandGroups);
         _OperatorController.button(12).onTrue(new InstantCommand(() ->{
             _AlgaeSubSys.AlgaeStop();
         }, _ElevatorAndArmSubSys));
@@ -139,9 +148,24 @@ public class RobotContainer {
         _LedSubsystem.setColorForDuration(LedSubsystem.kDefaultNotificationColor, 2);
     }
 
+    //Delete this method and the methods it calls. I now do not believe the SparkMax closed loop
+    //control remembers its last setpoint after the robot goes back to teleop enabled after having
+    //previous setpoints. I believe the code in the PID Ramps is making that behavior happen.
     public void SetPositionRegulatorsSetpointToMatchFeedback()
     {
         _AlgaeSubSys.SetPositionRegulatorsSetpointToMatchFeedback();
         _ElevatorAndArmSubSys.SetPositionRegulatorsSetpointToMatchFeedback();
+    }
+    /**
+     * Calling stop on the PID controlled parts of a subsystem calls stop on their PID ramp
+     * instances, which stops them from setting a reference to the SparkMax ClosedLoop position
+     * control and makes their ramp outputs follow the current position feedback.
+     */
+    public void StopPidRamps()
+    {
+        _AlgaeSubSys.AlgaeStop();
+        _ElevatorAndArmSubSys.ArmExtendStop();
+        _ElevatorAndArmSubSys.ArmRotateStop();
+        _ElevatorAndArmSubSys.ElevatorStop();
     }
 }
