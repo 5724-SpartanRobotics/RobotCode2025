@@ -44,10 +44,10 @@ public class DriveTrainSubsystem extends SubsystemBase {
         _gyroscope = new Pigeon2(CanIdConstants.PigeonID);
         resetGyro();
 
-        _LF = new SwerveModule(CanIdConstants.LFTurnMotor, CanIdConstants.LFDriveMotor, CanIdConstants.LFCanID, DriveConstants.LFOff, "LF");
-        _RF = new SwerveModule(CanIdConstants.RFTurnMotor, CanIdConstants.RFDriveMotor, CanIdConstants.RFCanID, DriveConstants.RFOff, "RF");
-        _LB = new SwerveModule(CanIdConstants.LBTurnMotor, CanIdConstants.LBDriveMotor, CanIdConstants.LBCanID, DriveConstants.LBOff, "LB");
-        _RB = new SwerveModule(CanIdConstants.RBTurnMotor, CanIdConstants.RBDriveMotor, CanIdConstants.RBCanID, DriveConstants.RBOff, "RB");
+        _LF = new SwerveModule(CanIdConstants.LFTurnMotor, CanIdConstants.LFDriveMotor, CanIdConstants.LFCanID, DriveConstants.LFOff, false, "LF");
+        _RF = new SwerveModule(CanIdConstants.RFTurnMotor, CanIdConstants.RFDriveMotor, CanIdConstants.RFCanID, DriveConstants.RFOff, false, "RF");
+        _LB = new SwerveModule(CanIdConstants.LBTurnMotor, CanIdConstants.LBDriveMotor, CanIdConstants.LBCanID, DriveConstants.LBOff, true, "LB");
+        _RB = new SwerveModule(CanIdConstants.RBTurnMotor, CanIdConstants.RBDriveMotor, CanIdConstants.RBCanID, DriveConstants.RBOff, true, "RB");
 
         _SwerveDriveKinematics = new SwerveDriveKinematics(
             DriveConstants.LFLocation,
@@ -83,6 +83,11 @@ public class DriveTrainSubsystem extends SubsystemBase {
         if (DebugSetting.TraceLevel == DebugLevel.Swerve || DebugSetting.TraceLevel == DebugLevel.All) {
             SmartDashboard.putNumber("RobotPoseX", robotPose.getX());
             SmartDashboard.putNumber("RobotPoseY", robotPose.getY());
+            _LF.reportAll();
+            _RF.reportAll();
+            _LB.reportAll();
+            _RB.reportAll();
+            SmartDashboard.putNumber("GyroYaw", getGyroHeading().getDegrees());
             // _LF.periodic();
             // _RF.periodic();
             // _LB.periodic();
@@ -125,7 +130,7 @@ public class DriveTrainSubsystem extends SubsystemBase {
 
 
     private void updateGyro() {
-        lastUpdatedGyroHeading = Rotation2d.fromDegrees(-_gyroscope.getYaw().getValueAsDouble());
+        lastUpdatedGyroHeading = Rotation2d.fromDegrees(_gyroscope.getYaw().getValueAsDouble());
     }
 
 
@@ -136,6 +141,10 @@ public class DriveTrainSubsystem extends SubsystemBase {
 
     public void zeroGyro() {
         _gyroscope.setYaw(0);
+    }
+
+    public void flipGyro() {
+        _gyroscope.setYaw(Math.PI);
     }
 
     public TeleopSwerve.JoystickAxes setJoystickAxes(TeleopSwerve.JoystickAxes axes) {

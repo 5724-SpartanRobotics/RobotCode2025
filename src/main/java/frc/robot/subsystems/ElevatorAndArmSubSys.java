@@ -42,11 +42,8 @@ public class ElevatorAndArmSubSys extends SubsystemBase {
     private PidRamp _ArmExtendPidRamp;
 
     private double _ElevatorSetpoint;
-    private double _ElevatorMax = 14.0;
     private double _ArmRotateSetpoint;
-    private double _ArmRotateMax = 100;
     private double _ArmExtendSetpoint;
-    private double _ArmExtendMax = 12.0;
 
     public ElevatorAndArmSubSys(LedSubsystem led)
     {
@@ -218,8 +215,8 @@ public class ElevatorAndArmSubSys extends SubsystemBase {
     public void IncrementElevatorUp()
     {
         _ElevatorSetpoint += 1;
-        if (_ElevatorSetpoint > _ElevatorMax)
-            _ElevatorSetpoint = _ElevatorMax;
+        if (_ElevatorSetpoint > ElevatorAndArmConstants.ElevatorMax)
+            _ElevatorSetpoint = ElevatorAndArmConstants.ElevatorMax;
         _ElevatorPidRamp.setReference(ConvertElevatorInchesToNeoRotations(_ElevatorSetpoint));
     }
 
@@ -248,8 +245,8 @@ public class ElevatorAndArmSubSys extends SubsystemBase {
     public void ElevatorToPosition(double heightInches)
     {
         _ElevatorSetpoint = heightInches;
-        if (_ElevatorSetpoint > _ElevatorMax)
-            _ElevatorSetpoint = _ElevatorMax;
+        if (_ElevatorSetpoint > ElevatorAndArmConstants.ElevatorMax)
+            _ElevatorSetpoint = ElevatorAndArmConstants.ElevatorMax;
         _ElevatorPidRamp.setReference(ConvertElevatorInchesToNeoRotations(_ElevatorSetpoint));
     }
 
@@ -270,8 +267,8 @@ public class ElevatorAndArmSubSys extends SubsystemBase {
             SmartDashboard.putString("InterferenceMessage", "");
         }
         _ArmRotateSetpoint += 5;
-        if (_ArmRotateSetpoint > _ArmRotateMax)
-            _ArmRotateSetpoint = _ArmRotateMax;
+        if (_ArmRotateSetpoint > ElevatorAndArmConstants.ArmRotateMax)
+            _ArmRotateSetpoint = ElevatorAndArmConstants.ArmRotateMax;
         //convert to motor rotations
         double setpoint = ConvertArmRotateAngleToNeoRotations(_ArmRotateSetpoint);
         _ArmRotatePidRamp.setReference(setpoint);
@@ -306,8 +303,8 @@ public class ElevatorAndArmSubSys extends SubsystemBase {
     public void ArmRotateToPosition(double degrees)
     {
         _ArmRotateSetpoint = degrees;
-        if (_ArmRotateSetpoint > _ArmRotateMax)
-            _ArmRotateSetpoint = _ArmRotateMax;
+        if (_ArmRotateSetpoint > ElevatorAndArmConstants.ArmRotateMax)
+            _ArmRotateSetpoint = ElevatorAndArmConstants.ArmRotateMax;
         if (_ArmRotateSetpoint < 0)
             _ArmRotateSetpoint = 0;
         //convert to motor rotations
@@ -318,8 +315,8 @@ public class ElevatorAndArmSubSys extends SubsystemBase {
     public void IncrementArmExtend()
     {
         _ArmExtendSetpoint += 1;
-        if (_ArmExtendSetpoint > _ArmExtendMax)
-            _ArmExtendSetpoint = _ArmExtendMax;
+        if (_ArmExtendSetpoint > ElevatorAndArmConstants.ArmExtendMax)
+            _ArmExtendSetpoint = ElevatorAndArmConstants.ArmExtendMax;
         //convert from inches to motor rotations
         _ArmExtendPidRamp.setReference(ConvertArmExtendInchesToRotations(_ArmExtendSetpoint));
     }
@@ -340,8 +337,8 @@ public class ElevatorAndArmSubSys extends SubsystemBase {
     public void ArmExtendToPosition(double angle)
     {
         _ArmExtendSetpoint = angle;
-        if (_ArmExtendSetpoint > _ArmExtendMax)
-            _ArmExtendSetpoint = _ArmExtendMax;
+        if (_ArmExtendSetpoint > ElevatorAndArmConstants.ArmExtendMax)
+            _ArmExtendSetpoint = ElevatorAndArmConstants.ArmExtendMax;
         if (_ArmExtendSetpoint < 0)
             _ArmExtendSetpoint = 0;
         //convert to motor rotations

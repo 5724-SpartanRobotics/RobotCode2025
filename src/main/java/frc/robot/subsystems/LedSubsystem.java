@@ -41,7 +41,7 @@ public class LedSubsystem extends SubsystemBase {
         this._led.setData(this._ledBuffer);
         this._led.start();
         this._timer.reset();
-        this._timer.reset();
+        this._timer.start();
     }
 
     @Override

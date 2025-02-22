@@ -44,6 +44,9 @@ public class RobotContainer {
         _DriveTrainSubsystem.setDefaultCommand(_TeleopSwerve);
         CameraServer.startAutomaticCapture(); // Start camera server on zeroth index video device
 
+        _DriveTrainSubsystem.zeroGyro();
+        _DriveTrainSubsystem.flipGyro();
+
         configureBindings();
     }
 

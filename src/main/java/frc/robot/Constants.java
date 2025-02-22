@@ -89,10 +89,10 @@ public final class Constants {
         public static final double ArmAlgaeZoneAngle = 5;//degrees
         public static final double ArmExtendMaxWhenInRobot = 1;//inches
         public static final double ElevatorRaisedUpPosition = 12;//inches
-        public static final double ElevatorL4Posn = 12;
-        public static final double ElevatorL3Posn = 10;
-        public static final double ElevatorL2Posn = 8;
-        public static final double ElevatorL1Posn = 6;
+        public static final double ElevatorL4Posn = 10;
+        public static final double ElevatorL3Posn = 8;
+        public static final double ElevatorL2Posn = 6;
+        public static final double ElevatorL1Posn = 4;
         public static final double ArmRotateL4Posn = 100;
         public static final double ArmRotateL3Posn = 90;
         public static final double ArmRotateL2Posn = 80;
@@ -104,6 +104,10 @@ public final class Constants {
         public static final double ElevatorSetpointRampRate = 2;//inches per second
         public static final double ArmRotateSetpointRampRate = 40;//degrees per second
         public static final double ArmExtendSetpointRampRate = 4;//inches per second
+
+        public static final double ElevatorMax = 14.0; // inches
+        public static final double ArmRotateMax = 115.0; // degrees
+        public static final double ArmExtendMax = 12.0; // inches
        }
 
     public final class AlgaeConstants {
