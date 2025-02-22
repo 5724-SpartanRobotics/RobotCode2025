@@ -152,5 +152,6 @@ public class SwerveModule {
         double absoluteEncoderAngle = (canCoder.getAbsolutePosition().refresh().getValueAsDouble() - Offset) * Constants.TwoPI * 1.0 /* encoder not reversed */;
         turn.getEncoder().setPosition(absoluteEncoderAngle / (Constants.TwoPI / DriveConstants.turnGearRatio));
     }
+    
 }
  

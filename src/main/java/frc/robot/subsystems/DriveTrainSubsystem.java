@@ -2,6 +2,8 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix6.hardware.Pigeon2;
 
+import choreo.trajectory.SwerveSample;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -33,6 +35,10 @@ public class DriveTrainSubsystem extends SubsystemBase {
     private final SwerveModule[] _SwerveModules;
     private final Pigeon2 _gyroscope;
     private final SwerveDrivePoseEstimator _SwerveDrivePoseEstimator;
+    private final PIDController xController = new PIDController(10.0, 0.0, 0.0);
+    private final PIDController yController = new PIDController(10.0, 0.0, 0.0);
+    private final PIDController headingController = new PIDController(7.5, 0.0, 0.0);
+    
 
     private Rotation2d lastUpdatedGyroHeading;
     private Pose2d robotPose;
@@ -66,7 +72,9 @@ public class DriveTrainSubsystem extends SubsystemBase {
         _SwerveDriveOdometry = new SwerveDriveOdometry(_SwerveDriveKinematics, getGyroHeading(), swerveInitialPositions, robotPose);
         _SwerveModules = new SwerveModule[]{_LF, _RF, _LB, _RB};
         _SwerveDrivePoseEstimator = new SwerveDrivePoseEstimator(_SwerveDriveKinematics, getGyroHeading(), swerveInitialPositions, robotPose);
+        headingController.enableContinuousInput(-Math.PI, Math.PI);
     }
+
 
     @Override
     public void periodic() {
@@ -151,4 +159,37 @@ public class DriveTrainSubsystem extends SubsystemBase {
         joystickAxes = axes;
         return joystickAxes;
     }
+    public void driveFieldRelative(ChassisSpeeds speeds) {
+        SwerveModuleState[] states = _SwerveDriveKinematics.toSwerveModuleStates(
+            ChassisSpeeds.fromFieldRelativeSpeeds(
+                speeds.vxMetersPerSecond,
+                speeds.vyMetersPerSecond,
+                speeds.omegaRadiansPerSecond,
+                getGyroHeading()
+            )
+        );
+    
+        SwerveDriveKinematics.desaturateWheelSpeeds(states, DriveConstants.maxRobotSpeedmps);
+    
+        _LF.setDesiredState(states[0]);
+        _RF.setDesiredState(states[1]);
+        _LB.setDesiredState(states[2]);
+        _RB.setDesiredState(states[3]);
+    }
+     
+      public void followTrajectory(SwerveSample sample) {
+        // Get the current pose of the robot
+        Pose2d pose = robotPose;
+
+        // Generate the next speeds for the robot
+        ChassisSpeeds speeds = new ChassisSpeeds(
+            sample.vx + xController.calculate(pose.getX(), sample.x),
+            sample.vy + yController.calculate(pose.getY(), sample.y),
+            sample.omega + headingController.calculate(pose.getRotation().getRadians(), sample.heading)
+        );
+
+        // Apply the generated speeds
+        driveFieldRelative(speeds);
+            }
+    
 }

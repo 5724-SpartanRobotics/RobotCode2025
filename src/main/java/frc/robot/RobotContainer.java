@@ -1,5 +1,10 @@
 package frc.robot;
 
+import choreo.auto.AutoChooser;
+import choreo.auto.AutoChooser;
+import choreo.auto.AutoChooser;
+import choreo.auto.AutoChooser;
+import choreo.auto.AutoFactory;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -26,6 +31,10 @@ public class RobotContainer {
     private CommandJoystick _DriverController;
     private CommandJoystick _OperatorController;
     public static Interference InterferenceHelper;
+    private AutoFactory _autoFactory;
+    private AutoChooser _autoChooser;
+
+
 
     public RobotContainer(){
         _DriveTrainSubsystem = new DriveTrainSubsystem();
@@ -37,6 +46,7 @@ public class RobotContainer {
         _DriverController = new CommandJoystick(0);
         _OperatorController = new CommandJoystick(1);
 
+
         _TeleopSwerve = new TeleopSwerve(_DriveTrainSubsystem, _DriverController);
 
         _DriveTrainSubsystem.setDefaultCommand(_TeleopSwerve);
@@ -44,8 +54,10 @@ public class RobotContainer {
 
         _DriveTrainSubsystem.zeroGyro();
         _DriveTrainSubsystem.flipGyro();
+       
 
         configureBindings();
+      
     }
 
     private void configureBindings()
@@ -169,4 +181,5 @@ public class RobotContainer {
         _ElevatorAndArmSubSys.ArmRotateStop();
         _ElevatorAndArmSubSys.ElevatorStop();
     }
+    
 }
