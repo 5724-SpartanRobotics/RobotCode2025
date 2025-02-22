@@ -135,13 +135,16 @@ public class RobotContainer {
                 .alongWith(new AlgaeRotateToSetpointCommand(_AlgaeSubSys, AlgaeConstants.AlgaeClearOfArmMinimumAngle))
                 .andThen(new ArmRotateToSetpointCommand(_ElevatorAndArmSubSys, ElevatorAndArmConstants.ArmRotateL1Posn))
                 .andThen(new ArmExtendToSetpointCommand(_ElevatorAndArmSubSys, ElevatorAndArmConstants.ArmExtendL1Posn)));
+        SequentialCommandGroup returnHomeCommandGroup = new SequentialCommandGroup(
+                    new ArmExtendToSetpointCommand((_ElevatorAndArmSubSys), 0.0)
+                    .alongWith(new AlgaeRotateToSetpointCommand(_AlgaeSubSys, AlgaeConstants.AlgaeClearOfArmMinimumAngle))
+                    .andThen(new ArmRotateToSetpointCommand(_ElevatorAndArmSubSys, 0.0))
+                    .andThen(new ElevatorToSetpointCommand(_ElevatorAndArmSubSys, 0.0)));
         _OperatorController.button(5).onTrue(l4CommandGroups);
         _OperatorController.button(3).onTrue(l3CommandGroups);
         _OperatorController.button(6).onTrue(l2CommandGroups);
         _OperatorController.button(4).onTrue(l1CommandGroups);
-        _OperatorController.button(12).onTrue(new InstantCommand(() ->{
-            _AlgaeSubSys.AlgaeStop();
-        }, _ElevatorAndArmSubSys));
+        _OperatorController.button(12).onTrue(returnHomeCommandGroup);
     }
 
     public void robotFinishedBooting() {

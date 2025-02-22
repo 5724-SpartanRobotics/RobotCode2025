@@ -6,6 +6,7 @@ Changelog based on what we do, but some of it may have to come from git commit h
 * Added code to call Stop on the PID ramps at disabled init.
 * Added sequential sequences for more arm/elevator actions.
 * Adjusted the algae out of the way for arm rotate setpoint
+* Added an Elevator/Arm return to home sequence
 ## Feb 21, 2025
 * Alan adjusted LED to flash once on robot boot
 * Applied PID ramp to 4 position regulators
