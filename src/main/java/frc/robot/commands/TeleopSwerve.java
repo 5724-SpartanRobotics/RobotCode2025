@@ -88,7 +88,7 @@ public class TeleopSwerve extends Command {
         
             yAxis = (Math.abs(yAxis) < joystickDeadband) ? 0 : yAxis * speedMod;
             xAxis = (Math.abs(xAxis) < joystickDeadband) ? 0 : xAxis * speedMod;
-            zAxis = (Math.abs(zAxis) < joystickZDeadband) ? 0 : zAxis * speedMod;
+            zAxis = (Math.abs(zAxis) < joystickZDeadband) ? 0 : zAxis * speedMod * 0.70;
 
             double rotation = zAxis * DriveConstants.maxAngularVelocityRadps;
             if (DebugSetting.TraceLevel == DebugLevel.Swerve) {

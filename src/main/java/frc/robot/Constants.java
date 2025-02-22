@@ -59,7 +59,7 @@ public final class Constants {
     }
     public static final class ControllerConstants{
         public static double joystickDeadband = 0.1;//a deadband that you must overcome for the joystick input, otherwise we send 0
-        public static double joystickZDeadband = 0.3;//a deadband that you must overcome for the joystick input, otherwise we send 0
+        public static double joystickZDeadband = 0.35;//a deadband that you must overcome for the joystick input, otherwise we send 0
     }
 
     public final class ElevatorAndArmConstants {
@@ -93,7 +93,7 @@ public final class Constants {
         public static final double ElevatorL3Posn = 8;
         public static final double ElevatorL2Posn = 6;
         public static final double ElevatorL1Posn = 4;
-        public static final double ArmRotateL4Posn = 100;
+        public static final double ArmRotateL4Posn = 130;
         public static final double ArmRotateL3Posn = 90;
         public static final double ArmRotateL2Posn = 80;
         public static final double ArmRotateL1Posn = 70;
@@ -106,7 +106,7 @@ public final class Constants {
         public static final double ArmExtendSetpointRampRate = 4;//inches per second
 
         public static final double ElevatorMax = 14.0; // inches
-        public static final double ArmRotateMax = 115.0; // degrees
+        public static final double ArmRotateMax = 130.0; // degrees
         public static final double ArmExtendMax = 12.0; // inches
        }
 
