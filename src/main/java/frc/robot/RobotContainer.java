@@ -1,14 +1,20 @@
 package frc.robot;
 
-import choreo.auto.AutoChooser;
-import choreo.auto.AutoChooser;
-import choreo.auto.AutoChooser;
+import com.fasterxml.jackson.databind.deser.std.EnumDeserializer;
+
+import choreo.Choreo.TrajectoryLogger;
 import choreo.auto.AutoChooser;
 import choreo.auto.AutoFactory;
+import choreo.auto.AutoRoutine;
+import choreo.auto.AutoTrajectory;
 import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
+import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import frc.robot.Constants.ElevatorAndArmConstants;
 import frc.robot.commands.ArmExtendToSetpointCommand;
 import frc.robot.commands.ArmRotateToSetpointCommand;
@@ -31,8 +37,8 @@ public class RobotContainer {
     private CommandJoystick _DriverController;
     private CommandJoystick _OperatorController;
     public static Interference InterferenceHelper;
-    private AutoFactory _autoFactory;
-    private AutoChooser _autoChooser;
+    public final AutoFactory autoFactory;
+    public AutoChooser autoChooser;
 
 
 
@@ -45,7 +51,9 @@ public class RobotContainer {
         InterferenceHelper = new Interference(_AlgaeSubSys, _ElevatorAndArmSubSys);
         _DriverController = new CommandJoystick(0);
         _OperatorController = new CommandJoystick(1);
-
+        Field2d m_field = new Field2d();
+        AutoRoutine routine = autoFactory.newRoutine("Blueleaveleft");
+        autoChooser = new AutoChooser();
 
         _TeleopSwerve = new TeleopSwerve(_DriveTrainSubsystem, _DriverController);
 
@@ -57,7 +65,18 @@ public class RobotContainer {
        
 
         configureBindings();
-      
+        autoChooser.addRoutine("Blueleaveleft", null);
+        SmartDashboard.putData(autoChooser);
+
+  
+        autoFactory = new AutoFactory(
+            _DriveTrainSubsystem::getPose, // A function that returns the current robot pose
+            _DriveTrainSubsystem::resetOdometry, // A function that resets the current robot pose to the provided Pose2d
+            _DriveTrainSubsystem::followTrajectory, // The drive subsystem trajectory follower 
+            true, // If alliance flipping should be enabled 
+            _DriveTrainSubsystem,
+        );
+        RobotModeTriggers.autonomous().whileTrue(autoChooser.selectedCommandScheduler());
     }
 
     private void configureBindings()
@@ -181,5 +200,22 @@ public class RobotContainer {
         _ElevatorAndArmSubSys.ArmRotateStop();
         _ElevatorAndArmSubSys.ElevatorStop();
     }
+
+    public AutoRoutine Blueleaveleft() {
+        AutoRoutine routine = autoFactory.newRoutine("1");
     
+        // Load the routine's trajectories
+        AutoTrajectory BlueLeaveLeft = routine.trajectory("Blue Leave Left");
+    
+        // When the routine begins, reset odometry and start the first trajectory (1)
+        routine.active().onTrue(
+            Commands.sequence(
+                BlueLeaveLeft.resetOdometry(),
+                BlueLeaveLeft.cmd()
+            )
+        );
+    
+        return routine;
+    }
+
 }
