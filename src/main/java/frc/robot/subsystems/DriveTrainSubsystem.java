@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import com.ctre.phoenix6.hardware.Pigeon2;
 
 import choreo.trajectory.SwerveSample;
+import choreo.trajectory.Trajectory;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -74,7 +75,6 @@ public class DriveTrainSubsystem extends SubsystemBase {
         _SwerveDrivePoseEstimator = new SwerveDrivePoseEstimator(_SwerveDriveKinematics, getGyroHeading(), swerveInitialPositions, robotPose);
         headingController.enableContinuousInput(-Math.PI, Math.PI);
     }
-
 
     @Override
     public void periodic() {
@@ -176,8 +176,17 @@ public class DriveTrainSubsystem extends SubsystemBase {
         _LB.setDesiredState(states[2]);
         _RB.setDesiredState(states[3]);
     }
-     
-      public void followTrajectory(SwerveSample sample) {
+    public Pose2d getPose()
+    {
+        return robotPose;
+    }
+
+    public void resetOdometry(Pose2d pose) {
+      //  this.resetPose(pose);
+      //  m_vision.resetPose();
+      }
+
+    public void followTrajectory(SwerveSample sample) {
         // Get the current pose of the robot
         Pose2d pose = robotPose;
 
@@ -190,6 +199,12 @@ public class DriveTrainSubsystem extends SubsystemBase {
 
         // Apply the generated speeds
         driveFieldRelative(speeds);
-            }
-    
+    }
+    private final SwerveSample[] emptyTrajectory = new SwerveSample[0];
+    public SwerveSample[] currentTrajectory = emptyTrajectory;
+  
+      public void logTrajectory(Trajectory<SwerveSample> traj, boolean isStarting) {
+        currentTrajectory = isStarting ? traj.samples().toArray(SwerveSample[]::new) : emptyTrajectory;
+      }
+        
 }
