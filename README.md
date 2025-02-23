@@ -1,12 +1,21 @@
 # Changelog
 Changelog based on what we do, but some of it may have to come from git commit history.
 
+## Feb 23, 2025
+* Added a slow multiplier button for the driver joystick using trigger 1.
+* Altered the debug level code so it includes current subsystems and added conditional statements
+* Added a calculation for Elevator is stalled due to chain sproket slip.
+* Added some periodic code in the Elevator/Arm subsystem to hold the arm rotate and retract the arm
+  if the arm is near outside the frame.
+* Changed the arm rotate increment decrement with a pulse of the Y axis to a while the Y axis forward
+  then ramp out, and while Y axis reverse, then ramp back
 ## Feb 22, 2025
 * Removed the calling of the code to set the PID setpoints at teleop start.
 * Added code to call Stop on the PID ramps at disabled init.
 * Added sequential sequences for more arm/elevator actions.
 * Adjusted the algae out of the way for arm rotate setpoint
 * Added an Elevator/Arm return to home sequence
+* Added some auto trajectories and some implementation in drivetrain.
 ## Feb 21, 2025
 * Alan adjusted LED to flash once on robot boot
 * Applied PID ramp to 4 position regulators

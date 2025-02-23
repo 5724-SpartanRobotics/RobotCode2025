@@ -142,9 +142,11 @@ public final class Constants {
     public static enum DebugLevel{
         Off,
         Swerve,
-        Amp,
-        Climber,
-        IntakeShooter,
+        ArmRotate,
+        ArmExtend,
+        Elevator,
+        Algae,
+        Claw,
         Autonomous,
         Vision,
         All

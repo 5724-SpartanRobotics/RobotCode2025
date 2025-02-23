@@ -1,9 +1,6 @@
 package frc.robot;
 
 import choreo.auto.AutoChooser;
-import choreo.auto.AutoChooser;
-import choreo.auto.AutoChooser;
-import choreo.auto.AutoChooser;
 import choreo.auto.AutoFactory;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -42,7 +39,7 @@ public class RobotContainer {
         _VisionSubSys = new VisionSubsystem(_DriveTrainSubsystem);
         _ElevatorAndArmSubSys = new ElevatorAndArmSubSys(_LedSubsystem);
         _AlgaeSubSys = new AlgaeSubsystem();
-        InterferenceHelper = new Interference(_AlgaeSubSys, _ElevatorAndArmSubSys);
+        InterferenceHelper = new Interference(_ElevatorAndArmSubSys);
         _DriverController = new CommandJoystick(0);
         _OperatorController = new CommandJoystick(1);
 
@@ -93,11 +90,11 @@ public class RobotContainer {
         }, _ElevatorAndArmSubSys));
 
         //arm rotate - main Y axis
-        _OperatorController.axisLessThan(1, -0.3).onTrue(new InstantCommand(() ->{
-            _ElevatorAndArmSubSys.IncrementArmRotate();
+        _OperatorController.axisLessThan(1, -0.3).whileTrue(new InstantCommand(() ->{
+            _ElevatorAndArmSubSys.ArmRotateToPositionMoreThanCurrent();
         }, _ElevatorAndArmSubSys));
-        _OperatorController.axisGreaterThan(1, 0.3).onTrue(new InstantCommand(() ->{
-            _ElevatorAndArmSubSys.DecrementArmRotate();
+        _OperatorController.axisGreaterThan(1, 0.3).whileTrue(new InstantCommand(() ->{
+            _ElevatorAndArmSubSys.ArmRotateToPositionLessThanCurrent();
         }, _ElevatorAndArmSubSys));
 
         //arm extend
@@ -161,14 +158,6 @@ public class RobotContainer {
         _LedSubsystem.setColorForDuration(LedSubsystem.kDefaultNotificationColor, 2);
     }
 
-    //Delete this method and the methods it calls. I now do not believe the SparkMax closed loop
-    //control remembers its last setpoint after the robot goes back to teleop enabled after having
-    //previous setpoints. I believe the code in the PID Ramps is making that behavior happen.
-    public void SetPositionRegulatorsSetpointToMatchFeedback()
-    {
-        _AlgaeSubSys.SetPositionRegulatorsSetpointToMatchFeedback();
-        _ElevatorAndArmSubSys.SetPositionRegulatorsSetpointToMatchFeedback();
-    }
     /**
      * Calling stop on the PID controlled parts of a subsystem calls stop on their PID ramp
      * instances, which stops them from setting a reference to the SparkMax ClosedLoop position

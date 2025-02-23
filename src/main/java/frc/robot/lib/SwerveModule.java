@@ -97,11 +97,13 @@ public class SwerveModule {
     }
 
     public void reportAbsolutePosition() {
-        SmartDashboard.putNumber(Name + " AbsEncPosn", canCoder.getAbsolutePosition().refresh().getValueAsDouble());
+        if (DebugSetting.TraceLevel == DebugLevel.Swerve || DebugSetting.TraceLevel == DebugLevel.All)
+          SmartDashboard.putNumber(Name + " AbsEncPosn", canCoder.getAbsolutePosition().refresh().getValueAsDouble());
     }
 
     public void reportMotorEncoderPosition() {
-        SmartDashboard.putNumber(Name + " TurnMotorPosEnc", turn.getEncoder().getPosition()); // rotations
+        if (DebugSetting.TraceLevel == DebugLevel.Swerve || DebugSetting.TraceLevel == DebugLevel.All)
+            SmartDashboard.putNumber(Name + " TurnMotorPosEnc", turn.getEncoder().getPosition()); // rotations
     }
 
     public void reportAll() {

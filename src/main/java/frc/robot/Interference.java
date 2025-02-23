@@ -1,7 +1,6 @@
 package frc.robot;
 
 import frc.robot.Constants.ElevatorAndArmConstants;
-import frc.robot.subsystems.AlgaeSubsystem;
 import frc.robot.subsystems.ElevatorAndArmSubSys;
 
 /*Provides indications of interference between different mechanisms
@@ -9,10 +8,8 @@ import frc.robot.subsystems.ElevatorAndArmSubSys;
 public class Interference {
 
     private ElevatorAndArmSubSys _EleArm;
-    // private AlgaeSubsystem _Algae;
-    public Interference(AlgaeSubsystem algae, ElevatorAndArmSubSys elevatorAndArm) {
+    public Interference(ElevatorAndArmSubSys elevatorAndArm) {
         _EleArm = elevatorAndArm;
-        // _Algae = algae;
     }
 
     public Boolean ArmCannotRotateDown(InterferenceInfo info)

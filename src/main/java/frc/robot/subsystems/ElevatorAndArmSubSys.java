@@ -1,7 +1,8 @@
 package frc.robot.subsystems;
 
+import java.time.Duration;
+import java.time.Instant;
 import com.revrobotics.RelativeEncoder;
-import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController;
@@ -16,6 +17,8 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CanIdConstants;
+import frc.robot.Constants.DebugLevel;
+import frc.robot.Constants.DebugSetting;
 import frc.robot.Constants.ElevatorAndArmConstants;
 import frc.robot.InterferenceInfo;
 import frc.robot.RobotContainer;
@@ -45,6 +48,9 @@ public class ElevatorAndArmSubSys extends SubsystemBase {
     private double _ArmRotateSetpoint;
     private double _ArmExtendSetpoint;
 
+    private Instant _DateTimeOfLastElevatorStall = Instant.MIN;
+    private double _ElevatorPosnLastStallCheck;
+    
     public ElevatorAndArmSubSys(LedSubsystem led)
     {
         _ElevatorMtrCtrl1 = new SparkMax(CanIdConstants.ElevatorMtrCtrl1CanId, MotorType.kBrushless);
@@ -136,53 +142,38 @@ public class ElevatorAndArmSubSys extends SubsystemBase {
         double armRotatePosition = GetArmRotateAngleDegrees();
         double elevatorPosition = GetElevatorHeightInches();
 
+        //Keep the arm within the frame paremeter
+        if (GetArmOutsideFrameInches() > 0){
+            _ArmRotatePidRamp.setReference(armRotatePosition);
+            _ArmExtendPidRamp.setReference(0);
+        }
+        else{
+            _ArmRotatePidRamp.setReference(_ArmRotateSetpoint);
+        }
+
         _ElevatorPidRamp.Periodic(ConvertElevatorInchesToNeoRotations(elevatorPosition));
         _ArmRotatePidRamp.Periodic(ConvertArmRotateAngleToNeoRotations(armRotatePosition));
         _ArmExtendPidRamp.Periodic(ConvertArmExtendInchesToRotations(armExtendPosition));
 
-        SmartDashboard.putNumber("ArmExtPos", armExtendPosition);
-        SmartDashboard.putNumber("ArmRotPos", armRotatePosition);
-        SmartDashboard.putNumber("ArmExtRef", _ArmExtendSetpoint);
-        SmartDashboard.putNumber("ElevatorPos", elevatorPosition);
-        SmartDashboard.putNumber("ElevatorPosRef", _ElevatorSetpoint);
-        SmartDashboard.putNumber("ArmRotRef", _ArmRotateSetpoint);
+        if (DebugSetting.TraceLevel == DebugLevel.ArmExtend || DebugSetting.TraceLevel == DebugLevel.All){
+            SmartDashboard.putNumber("ArmExtPos", armExtendPosition);
+            SmartDashboard.putNumber("ArmExtRef", _ArmExtendSetpoint);
+        }
+        if (DebugSetting.TraceLevel == DebugLevel.ArmRotate || DebugSetting.TraceLevel == DebugLevel.All){
+            SmartDashboard.putNumber("ArmRotPos", armRotatePosition);
+            SmartDashboard.putNumber("ArmRotRef", _ArmRotateSetpoint);
+        }
+        if (DebugSetting.TraceLevel == DebugLevel.Elevator || DebugSetting.TraceLevel == DebugLevel.All){
+            SmartDashboard.putNumber("ElevatorPos", elevatorPosition);
+            SmartDashboard.putNumber("ElevatorPosRef", _ElevatorSetpoint);
+        }
+        SmartDashboard.putBoolean("ElevatorStalled", GetElevatorLikelySufferedChainJump());
 
         if (ClawIsUsingLotsOfCurrent()) {
             _LedSubsystem.setColor(LedSubsystem.kDefaultActiveColor);
         } else {
             _LedSubsystem.reset();
         }
-    }
-
-    /**
-     * Call this at teleop init, so if we disabled with a setpoint and
-     * an arm or elevator drifted, we can set the motor controller's PID setpoint
-     * to match the current state.
-     */
-    public void SetPositionRegulatorsSetpointToMatchFeedback() {
-        _ArmExtendMtrPidController.setReference(_ArmExtenMtrEncoder.getPosition(), ControlType.kPosition);
-        _ArmRotateMtr1PidController.setReference(_ArmRotateMtr1Encoder.getPosition(), ControlType.kPosition);
-        _ElevatorMtr1PidController.setReference(_ElevatorMtr1Encoder.getPosition(), ControlType.kPosition);
-    }
-
-    public void MoveToL4()
-    {
-        
-    }
-
-    public void MoveToL3()
-    {
-
-    }
-
-    public void MoveToL2()
-    {
-
-    }
-
-    public void MoveToL1()
-    {
-        
     }
 
     public boolean ClawIsUsingLotsOfCurrent() {
@@ -192,6 +183,38 @@ public class ElevatorAndArmSubSys extends SubsystemBase {
     public double GetElevatorHeightInches()
     {
         return _ElevatorMtr1Encoder.getPosition() / ElevatorAndArmConstants.ElevatorGearRatio * Math.PI * ElevatorAndArmConstants.ElevatorChainSproketDiameter;
+    }
+
+    /**
+     * if the elevator chain slips (which would happen only on raising), then when it returns to zero
+     * height, the position regulator will continue to attempt to drive it lower against the stops.
+     * We will detect this by looking for:
+     *  - Ramped position reference is zero 
+     *  - The absolute value of motor current is above some set value (emperical stall current is 105 Amps)
+     *  - The position is not near zero and is not changing.
+     * The above 3 conditions have been in effect for 3 seconds.
+     * @return
+     */
+    private boolean GetElevatorLikelySufferedChainJump()
+    {
+        double elevatorPosn = GetElevatorHeightInches();
+        boolean stallLikely = _ElevatorPidRamp.GetCurrentRampedSetpoint() == 0 &&
+        Math.abs(_ElevatorMtrCtrl1.getOutputCurrent()) > 85.0 &&
+        Math.abs(elevatorPosn - _ElevatorPosnLastStallCheck) <= 0.1 &&//indication of not moving
+        elevatorPosn > 0.75;
+        _ElevatorPosnLastStallCheck = elevatorPosn;
+        if (_DateTimeOfLastElevatorStall == Instant.MIN && stallLikely)
+        {
+            _DateTimeOfLastElevatorStall = Instant.now();
+        }
+        else if (!stallLikely)
+        {
+            _DateTimeOfLastElevatorStall = Instant.MIN;
+        }
+        if (_DateTimeOfLastElevatorStall != Instant.MIN && 
+        Duration.between(_DateTimeOfLastElevatorStall, Instant.now()).compareTo(Duration.ofSeconds(3)) > 0)
+            return true;
+        return false;
     }
 
     public double GetArmRotateAngleDegrees()
@@ -312,6 +335,30 @@ public class ElevatorAndArmSubSys extends SubsystemBase {
         _ArmRotatePidRamp.setReference(setpoint);
     }
 
+    public void ArmRotateToPositionMoreThanCurrent()
+    {
+        _ArmRotateSetpoint = GetArmRotateAngleDegrees() + 1.0;
+        if (_ArmRotateSetpoint > ElevatorAndArmConstants.ArmRotateMax)
+            _ArmRotateSetpoint = ElevatorAndArmConstants.ArmRotateMax;
+        if (_ArmRotateSetpoint < 0)
+            _ArmRotateSetpoint = 0;
+        //convert to motor rotations
+        double setpoint = ConvertArmRotateAngleToNeoRotations(_ArmRotateSetpoint);
+        _ArmRotatePidRamp.setReference(setpoint);
+    }
+
+    public void ArmRotateToPositionLessThanCurrent()
+    {
+        _ArmRotateSetpoint = GetArmRotateAngleDegrees() - 1.0;
+        if (_ArmRotateSetpoint > ElevatorAndArmConstants.ArmRotateMax)
+            _ArmRotateSetpoint = ElevatorAndArmConstants.ArmRotateMax;
+        if (_ArmRotateSetpoint < 0)
+            _ArmRotateSetpoint = 0;
+        //convert to motor rotations
+        double setpoint = ConvertArmRotateAngleToNeoRotations(_ArmRotateSetpoint);
+        _ArmRotatePidRamp.setReference(setpoint);
+    }
+
     public void IncrementArmExtend()
     {
         _ArmExtendSetpoint += 1;
@@ -356,7 +403,8 @@ public class ElevatorAndArmSubSys extends SubsystemBase {
 
     public void ClawRun(double speed)
     {
-        SmartDashboard.putNumber("ClawSpeed", speed);
+        if (DebugSetting.TraceLevel == DebugLevel.Claw || DebugSetting.TraceLevel == DebugLevel.All)
+            SmartDashboard.putNumber("ClawSpeedRef", speed);
         _ClawIntake.set(speed);
     }
 }

@@ -69,7 +69,6 @@ public class TeleopSwerve extends Command {
             double xAxis;
             double yAxis;
             double zAxis;
-            double speedMod = 1;
         // This chunk of code locks certain joystick directions if buttons are pressed
 
             yAxis = -controller.getY();
@@ -77,6 +76,8 @@ public class TeleopSwerve extends Command {
             xAxis = -controller.getX();
 
             zAxis = -controller.getTwist();
+
+            double speedMod = controller.button(1).getAsBoolean() ? 0.3 : 1.0;
 
         // Power Array Auto Align Code
         // Conditional is a check for having a combination of buttons pressed
@@ -91,7 +92,7 @@ public class TeleopSwerve extends Command {
             zAxis = (Math.abs(zAxis) < joystickZDeadband) ? 0 : zAxis * speedMod * 0.70;
 
             double rotation = zAxis * DriveConstants.maxAngularVelocityRadps;
-            if (DebugSetting.TraceLevel == DebugLevel.Swerve) {
+            if (DebugSetting.TraceLevel == DebugLevel.Swerve || DebugSetting.TraceLevel == DebugLevel.All) {
                 SmartDashboard.putNumber("ControllerRotation", rotation);
                 SmartDashboard.putNumber("ControllerX", xAxis);
                 SmartDashboard.putNumber("ControllerY", yAxis);
