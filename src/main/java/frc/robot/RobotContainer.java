@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
@@ -110,10 +111,10 @@ public class RobotContainer {
         }, _ElevatorAndArmSubSys));
 
         //arm rotate - main Y axis
-        _OperatorController.axisLessThan(1, -0.3).whileTrue(new InstantCommand(() ->{
+        _OperatorController.axisLessThan(1, -0.3).whileTrue(new RunCommand(() ->{
             _ElevatorAndArmSubSys.ArmRotateToPositionMoreThanCurrent();
         }, _ElevatorAndArmSubSys));
-        _OperatorController.axisGreaterThan(1, 0.3).whileTrue(new InstantCommand(() ->{
+        _OperatorController.axisGreaterThan(1, 0.3).whileTrue(new RunCommand(() ->{
             _ElevatorAndArmSubSys.ArmRotateToPositionLessThanCurrent();
         }, _ElevatorAndArmSubSys));
 

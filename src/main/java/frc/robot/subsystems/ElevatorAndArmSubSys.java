@@ -174,6 +174,10 @@ public class ElevatorAndArmSubSys extends SubsystemBase {
         } else {
             _LedSubsystem.reset();
         }
+
+        //reset the elevator position to zero to avoid motor / controller burn up.
+        if (GetElevatorLikelySufferedChainJump())
+            _ElevatorMtr1Encoder.setPosition(0);
     }
 
     public boolean ClawIsUsingLotsOfCurrent() {
@@ -199,7 +203,7 @@ public class ElevatorAndArmSubSys extends SubsystemBase {
     {
         double elevatorPosn = GetElevatorHeightInches();
         boolean stallLikely = _ElevatorPidRamp.GetCurrentRampedSetpoint() == 0 &&
-        Math.abs(_ElevatorMtrCtrl1.getOutputCurrent()) > 85.0 &&
+        Math.abs(_ElevatorMtrCtrl1.getOutputCurrent()) > 70.0 &&
         Math.abs(elevatorPosn - _ElevatorPosnLastStallCheck) <= 0.1 &&//indication of not moving
         elevatorPosn > 0.75;
         _ElevatorPosnLastStallCheck = elevatorPosn;

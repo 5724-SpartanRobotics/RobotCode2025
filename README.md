@@ -1,6 +1,10 @@
 # Changelog
 Changelog based on what we do, but some of it may have to come from git commit history.
-
+## Feb 24, 2025
+* Changed the Y axis from an instantcommand to a runcommand. Before, the result was Y axis forward
+  and arm went to full out.
+* Tested the chain likely jumped method. Seems to work, so implemented it to reset the elevator to 
+  zero position when it detects stall.
 ## Feb 23, 2025
 * Added a slow multiplier button for the driver joystick using trigger 1.
 * Altered the debug level code so it includes current subsystems and added conditional statements
