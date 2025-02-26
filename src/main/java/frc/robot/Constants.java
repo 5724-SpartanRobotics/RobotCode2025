@@ -84,7 +84,7 @@ public final class Constants {
         public static final double ElevatorChainSproketDiameter = 1.5;//inches
         public static final double ArmExtendSpoolDiameter = 1.0;
         public static final double ArmPivotPointToFrameEdgeInches = 18.0;
-        public static final double ArmLengthRetractedInches = 14.0;
+        public static final double ArmLengthRetractedInches = 33.0;
         public static final double ArmMaxOutsideOfFrameInches = 17.0;
         public static final double ArmAlgaeZoneAngle = 5;//degrees
         public static final double ArmExtendMaxWhenInRobot = 1;//inches
@@ -101,7 +101,7 @@ public final class Constants {
         public static final double ArmExtendL3Posn = 8;
         public static final double ArmExtendL2Posn = 7;
         public static final double ArmExtendL1Posn = 6;
-        public static final double ElevatorSetpointRampRate = 2;//inches per second
+        public static final double ElevatorSetpointRampRate = 4;//inches per second
         public static final double ArmRotateSetpointRampRate = 40;//degrees per second
         public static final double ArmExtendSetpointRampRate = 4;//inches per second
 
@@ -111,16 +111,16 @@ public final class Constants {
        }
 
     public final class AlgaeConstants {
-        public static final double RotatePidP = 0.8;
-        public static final double RotatePidFF = 0.0000;
+        public static final double RotatePidP = .1;
+        public static final double RotatePidFF = 0.000;
         public static final double RotatePidI = 0.0000;
         public static final double RotatePidD = 0;
-        public static final double GearRatio = 9;
+        public static final double GearRatio = 81;
         public static final double IncrementDegrees = 5;
         public static final double AlgaeMinAngleForArmRotationClearance = 35;//degrees
         public static final double AlgaeHoldGamepieceAngle = 40;
         public static final double AlgaeFullOutAngle = 115;
-        public static final double AlgaeSetpointRampRate = 50;//degrees per second
+        public static final double AlgaeSetpointRampRate = 60;//degrees per second
         public static final double AlgaeClearOfArmMinimumAngle = 60;
         public static final double RotateMaxAccel = 3000; // RPM/s
         public static final double RotateMaxVelocity = 5000; // RPM

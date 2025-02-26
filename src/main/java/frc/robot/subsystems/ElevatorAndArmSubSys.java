@@ -141,14 +141,12 @@ public class ElevatorAndArmSubSys extends SubsystemBase {
         double armExtendPosition = GetArmExtendPosnInches();
         double armRotatePosition = GetArmRotateAngleDegrees();
         double elevatorPosition = GetElevatorHeightInches();
+        double outsideFrame = GetArmOutsideFrameInches();
 
         //Keep the arm within the frame paremeter
-        if (GetArmOutsideFrameInches() > 0){
-            _ArmRotatePidRamp.setReference(armRotatePosition);
+        if (outsideFrame > 17){
+            _ArmRotatePidRamp.setReference(ConvertArmRotateAngleToNeoRotations(armRotatePosition));
             _ArmExtendPidRamp.setReference(0);
-        }
-        else{
-            _ArmRotatePidRamp.setReference(_ArmRotateSetpoint);
         }
 
         _ElevatorPidRamp.Periodic(ConvertElevatorInchesToNeoRotations(elevatorPosition));
@@ -162,6 +160,7 @@ public class ElevatorAndArmSubSys extends SubsystemBase {
         if (DebugSetting.TraceLevel == DebugLevel.ArmRotate || DebugSetting.TraceLevel == DebugLevel.All){
             SmartDashboard.putNumber("ArmRotPos", armRotatePosition);
             SmartDashboard.putNumber("ArmRotRef", _ArmRotateSetpoint);
+            SmartDashboard.putNumber("ArmOutsideFrame", outsideFrame);
         }
         if (DebugSetting.TraceLevel == DebugLevel.Elevator || DebugSetting.TraceLevel == DebugLevel.All){
             SmartDashboard.putNumber("ElevatorPos", elevatorPosition);
@@ -236,7 +235,7 @@ public class ElevatorAndArmSubSys extends SubsystemBase {
         double armCurrentLength = ElevatorAndArmConstants.ArmLengthRetractedInches + GetArmExtendPosnInches();
         double armRotation = 90 - GetArmRotateAngleDegrees();
         double armAngleToHorizontal = Math.abs(armRotation);
-        return (Math.cos(Math.toRadians(armAngleToHorizontal))/armCurrentLength) - ElevatorAndArmConstants.ArmPivotPointToFrameEdgeInches;
+        return (Math.cos(Math.toRadians(armAngleToHorizontal))*armCurrentLength) - ElevatorAndArmConstants.ArmPivotPointToFrameEdgeInches;
     }
 
     public void IncrementElevatorUp()
@@ -341,7 +340,7 @@ public class ElevatorAndArmSubSys extends SubsystemBase {
 
     public void ArmRotateToPositionMoreThanCurrent()
     {
-        _ArmRotateSetpoint = GetArmRotateAngleDegrees() + 1.0;
+        _ArmRotateSetpoint = GetArmRotateAngleDegrees() + 5.0;
         if (_ArmRotateSetpoint > ElevatorAndArmConstants.ArmRotateMax)
             _ArmRotateSetpoint = ElevatorAndArmConstants.ArmRotateMax;
         if (_ArmRotateSetpoint < 0)
@@ -353,7 +352,7 @@ public class ElevatorAndArmSubSys extends SubsystemBase {
 
     public void ArmRotateToPositionLessThanCurrent()
     {
-        _ArmRotateSetpoint = GetArmRotateAngleDegrees() - 1.0;
+        _ArmRotateSetpoint = GetArmRotateAngleDegrees() - 5.0;
         if (_ArmRotateSetpoint > ElevatorAndArmConstants.ArmRotateMax)
             _ArmRotateSetpoint = ElevatorAndArmConstants.ArmRotateMax;
         if (_ArmRotateSetpoint < 0)

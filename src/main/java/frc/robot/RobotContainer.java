@@ -1,8 +1,5 @@
 package frc.robot;
 
-import com.fasterxml.jackson.databind.deser.std.EnumDeserializer;
-
-import choreo.Choreo.TrajectoryLogger;
 import choreo.auto.AutoChooser;
 import choreo.auto.AutoFactory;
 import choreo.auto.AutoRoutine;
