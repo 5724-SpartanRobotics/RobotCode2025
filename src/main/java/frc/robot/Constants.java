@@ -119,7 +119,7 @@ public final class Constants {
         public static final double IncrementDegrees = 5;
         public static final double AlgaeMinAngleForArmRotationClearance = 35;//degrees
         public static final double AlgaeHoldGamepieceAngle = 40;
-        public static final double AlgaeFullOutAngle = 120;
+        public static final double AlgaeFullOutAngle = 115;
         public static final double AlgaeSetpointRampRate = 50;//degrees per second
         public static final double AlgaeClearOfArmMinimumAngle = 60;
         public static final double RotateMaxAccel = 3000; // RPM/s
@@ -137,7 +137,7 @@ public final class Constants {
 
     public static final class DebugSetting{
         //set this to get more values to smart dashboard. Leave it off for competition.
-        public static final DebugLevel TraceLevel = DebugLevel.Elevator;
+        public static final DebugLevel TraceLevel = DebugLevel.Algae;
     }
     public static enum DebugLevel{
         Off,
