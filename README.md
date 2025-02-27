@@ -1,5 +1,9 @@
 # Changelog
 Changelog based on what we do, but some of it may have to come from git commit history.
+## Feb 26, 2025
+* Corrected the Arm rotation incremental ramping code when the y-axis is forward or reversed.
+* Fixed the 'keep the arm inside the 18" limit' code. (still has a in and out osilation to fix)
+* Changed the Algae gear ratio to 81, but believe we have a bad NEO so will likely go back to 9.
 ## Feb 24, 2025
 * Changed the Y axis from an instantcommand to a runcommand. Before, the result was Y axis forward
   and arm went to full out.
