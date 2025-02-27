@@ -146,7 +146,7 @@ public class ElevatorAndArmSubSys extends SubsystemBase {
         //Keep the arm within the frame paremeter
         if (outsideFrame > 17){
             _ArmRotatePidRamp.setReference(ConvertArmRotateAngleToNeoRotations(armRotatePosition));
-            _ArmExtendPidRamp.setReference(0);
+            ArmExtendToPosition(armExtendPosition - 1);
         }
 
         _ElevatorPidRamp.Periodic(ConvertElevatorInchesToNeoRotations(elevatorPosition));
@@ -156,6 +156,7 @@ public class ElevatorAndArmSubSys extends SubsystemBase {
         if (DebugSetting.TraceLevel == DebugLevel.ArmExtend || DebugSetting.TraceLevel == DebugLevel.All){
             SmartDashboard.putNumber("ArmExtPos", armExtendPosition);
             SmartDashboard.putNumber("ArmExtRef", _ArmExtendSetpoint);
+            SmartDashboard.putNumber("ArmExtendRameOutRef", _ArmExtendPidRamp.GetCurrentRampedSetpoint());
         }
         if (DebugSetting.TraceLevel == DebugLevel.ArmRotate || DebugSetting.TraceLevel == DebugLevel.All){
             SmartDashboard.putNumber("ArmRotPos", armRotatePosition);

@@ -1,5 +1,10 @@
 # Changelog
 Changelog based on what we do, but some of it may have to come from git commit history.
+## Feb 27, 2025
+* Changed the algae back to 9 gear ratio after replacing motor
+* Changed the auto detract the arm code to decrement it 1 inch in setpoint every pass it is
+*  outside the max boundary, rather than leaving the setpoint alone and sending the reference to 0.
+* Changed the L1 extend setpoint to not be outside the 18"
 ## Feb 26, 2025
 * Corrected the Arm rotation incremental ramping code when the y-axis is forward or reversed.
 * Fixed the 'keep the arm inside the 18" limit' code. (still has a in and out osilation to fix)

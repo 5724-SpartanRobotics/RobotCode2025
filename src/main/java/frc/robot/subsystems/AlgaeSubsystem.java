@@ -56,6 +56,7 @@ public class AlgaeSubsystem extends SubsystemBase{
             SmartDashboard.putNumber("AlgaeRef", _AlgaeRotateSetpoint);
             SmartDashboard.putNumber("AlgaeRampRef", _PidRamp.GetCurrentRampedSetpoint());
             SmartDashboard.putBoolean("AlgaeStopActive", _PidRamp.GetStopIsActive());
+            SmartDashboard.putNumber("AlgaeCurrentAmps", _AlgaeRotateMtrCtrl.getOutputCurrent());
         }
     }
 

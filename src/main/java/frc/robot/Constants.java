@@ -99,8 +99,8 @@ public final class Constants {
         public static final double ArmRotateL1Posn = 70;
         public static final double ArmExtendL4Posn = 10;
         public static final double ArmExtendL3Posn = 8;
-        public static final double ArmExtendL2Posn = 7;
-        public static final double ArmExtendL1Posn = 6;
+        public static final double ArmExtendL2Posn = 3;
+        public static final double ArmExtendL1Posn = 3;
         public static final double ElevatorSetpointRampRate = 4;//inches per second
         public static final double ArmRotateSetpointRampRate = 40;//degrees per second
         public static final double ArmExtendSetpointRampRate = 4;//inches per second
@@ -111,15 +111,15 @@ public final class Constants {
        }
 
     public final class AlgaeConstants {
-        public static final double RotatePidP = .1;
+        public static final double RotatePidP = 1.3;
         public static final double RotatePidFF = 0.000;
         public static final double RotatePidI = 0.0000;
         public static final double RotatePidD = 0;
-        public static final double GearRatio = 81;
+        public static final double GearRatio = 9;
         public static final double IncrementDegrees = 5;
         public static final double AlgaeMinAngleForArmRotationClearance = 35;//degrees
         public static final double AlgaeHoldGamepieceAngle = 40;
-        public static final double AlgaeFullOutAngle = 115;
+        public static final double AlgaeFullOutAngle = 105;
         public static final double AlgaeSetpointRampRate = 60;//degrees per second
         public static final double AlgaeClearOfArmMinimumAngle = 60;
         public static final double RotateMaxAccel = 3000; // RPM/s
@@ -137,7 +137,7 @@ public final class Constants {
 
     public static final class DebugSetting{
         //set this to get more values to smart dashboard. Leave it off for competition.
-        public static final DebugLevel TraceLevel = DebugLevel.Algae;
+        public static final DebugLevel TraceLevel = DebugLevel.ArmExtend;
     }
     public static enum DebugLevel{
         Off,
