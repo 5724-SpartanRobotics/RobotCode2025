@@ -5,7 +5,6 @@ import choreo.auto.AutoFactory;
 import choreo.auto.AutoRoutine;
 import choreo.auto.AutoTrajectory;
 import edu.wpi.first.cameraserver.CameraServer;
-import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -19,6 +18,7 @@ import frc.robot.commands.ArmRotateToSetpointCommand;
 import frc.robot.commands.ElevatorToSetpointCommand;
 import frc.robot.commands.TeleopSwerve;
 import frc.robot.subsystems.AlgaeSubsystem;
+import frc.robot.subsystems.ClawSubsystem;
 import frc.robot.subsystems.DriveTrainSubsystem;
 import frc.robot.subsystems.ElevatorAndArmSubSys;
 import frc.robot.subsystems.LedSubsystem;
@@ -29,6 +29,7 @@ public class RobotContainer {
     private TeleopSwerve _TeleopSwerve;
     private LedSubsystem _LedSubsystem;
     private ElevatorAndArmSubSys _ElevatorAndArmSubSys;
+    private ClawSubsystem _ClawSubsystem;
     private AlgaeSubsystem _AlgaeSubSys;
     @SuppressWarnings("unused")
     private VisionSubsystem _VisionSubSys;
@@ -44,12 +45,12 @@ public class RobotContainer {
         _DriveTrainSubsystem = new DriveTrainSubsystem();
         _LedSubsystem = new LedSubsystem();
         _VisionSubSys = new VisionSubsystem(_DriveTrainSubsystem);
-        _ElevatorAndArmSubSys = new ElevatorAndArmSubSys(_LedSubsystem);
+        _ElevatorAndArmSubSys = new ElevatorAndArmSubSys();
+        _ClawSubsystem = new ClawSubsystem(_LedSubsystem);
         _AlgaeSubSys = new AlgaeSubsystem();
         InterferenceHelper = new Interference(_ElevatorAndArmSubSys);
         _DriverController = new CommandJoystick(0);
         _OperatorController = new CommandJoystick(1);
-        Field2d m_field = new Field2d();
         autoFactory = new AutoFactory(
             _DriveTrainSubsystem::getPose, // A function that returns the current robot pose
             _DriveTrainSubsystem::resetOdometry, // A function that resets the current robot pose to the provided Pose2d
@@ -57,6 +58,7 @@ public class RobotContainer {
              true,// If alliance flipping should be enabled 
             _DriveTrainSubsystem
         );
+        @SuppressWarnings("unused")
         AutoRoutine routine = autoFactory.newRoutine("Blueleaveleft");
         autoChooser = new AutoChooser();
 
@@ -126,20 +128,20 @@ public class RobotContainer {
 
         //claw run 
         _OperatorController.button(1).onTrue(new InstantCommand(() ->{
-            _ElevatorAndArmSubSys.ClawRun(0.3);
-        }, _ElevatorAndArmSubSys));
+            _ClawSubsystem.ClawRun(0.3);
+        }, _ClawSubsystem));
         _OperatorController.button(1).onFalse(new InstantCommand(() ->{
-            _ElevatorAndArmSubSys.ClawRun(0);
-        }, _ElevatorAndArmSubSys));
+            _ClawSubsystem.ClawRun(0);
+        }, _ClawSubsystem));
         // _ElevatorAndArmSubSys.setDefaultCommand(new InstantCommand(() ->{
         //     _ElevatorAndArmSubSys.ClawRun(0);
         // }, _ElevatorAndArmSubSys));
         _OperatorController.button(2).onFalse(new InstantCommand(() ->{
-            _ElevatorAndArmSubSys.ClawRun(0);
-        }, _ElevatorAndArmSubSys));
+            _ClawSubsystem.ClawRun(0);
+        }, _ClawSubsystem));
         _OperatorController.button(2).onTrue(new InstantCommand(() ->{
-            _ElevatorAndArmSubSys.ClawRun(-0.3);
-        }, _ElevatorAndArmSubSys));
+            _ClawSubsystem.ClawRun(-0.3);
+        }, _ClawSubsystem));
         //sequencial commands
         SequentialCommandGroup l4CommandGroups = new SequentialCommandGroup(
             new ElevatorToSetpointCommand((_ElevatorAndArmSubSys), ElevatorAndArmConstants.ElevatorL4Posn)

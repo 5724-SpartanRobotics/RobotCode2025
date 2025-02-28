@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import java.time.Duration;
 import java.time.Instant;
+
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
@@ -9,8 +10,6 @@ import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
-import com.revrobotics.spark.config.LimitSwitchConfig;
-import com.revrobotics.spark.config.SoftLimitConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
@@ -30,7 +29,6 @@ public class ElevatorAndArmSubSys extends SubsystemBase {
     private SparkMax _ArmRotateMtrCtrl1;
     private SparkMax _ArmRotateMtrCtrl2;
     private SparkMax _ArmExtendMtrCtrl;
-    private SparkMax _ClawIntake;
 
     private SparkClosedLoopController _ElevatorMtr1PidController;
     private RelativeEncoder _ElevatorMtr1Encoder;
@@ -41,7 +39,6 @@ public class ElevatorAndArmSubSys extends SubsystemBase {
     private SparkClosedLoopController _ArmExtendMtrPidController;
     private RelativeEncoder _ArmExtenMtrEncoder;
 
-    private final LedSubsystem _LedSubsystem;
     private PidRamp _ElevatorPidRamp;
     private PidRamp _ArmRotatePidRamp;
     private PidRamp _ArmExtendPidRamp;
@@ -53,14 +50,13 @@ public class ElevatorAndArmSubSys extends SubsystemBase {
     private Instant _DateTimeOfLastElevatorStall = Instant.MIN;
     private double _ElevatorPosnLastStallCheck;
     
-    public ElevatorAndArmSubSys(LedSubsystem led)
+    public ElevatorAndArmSubSys()
     {
         _ElevatorMtrCtrl1 = new SparkMax(CanIdConstants.ElevatorMtrCtrl1CanId, MotorType.kBrushless);
         _ElevatorMtrCtrl2 = new SparkMax(CanIdConstants.ElevatorMtrCtrl2CanId, MotorType.kBrushless);
         _ArmRotateMtrCtrl1 = new SparkMax(CanIdConstants.ArmRotateMtrCtrl1CanId, MotorType.kBrushless);
         _ArmRotateMtrCtrl2 = new SparkMax(CanIdConstants.ArmRotateMtrCtrl2CanId, MotorType.kBrushless);
         _ArmExtendMtrCtrl = new SparkMax(CanIdConstants.ArmExtendMtrCtrlCanId, MotorType.kBrushless);
-        _ClawIntake = new SparkMax(CanIdConstants.ClawMtrCtrlCanId, MotorType.kBrushless);
 
         SparkMaxConfig cfg = new SparkMaxConfig();
         cfg.inverted(true)
@@ -105,14 +101,6 @@ public class ElevatorAndArmSubSys extends SubsystemBase {
         .velocityFF(ElevatorAndArmConstants.ArmRotatePidFF);
         _ArmRotateMtrCtrl1.configure(cfg, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
 
-        _ClawIntake.configure(new SparkMaxConfig()
-            .inverted(false)
-            .smartCurrentLimit(50)
-            .apply(new SoftLimitConfig().forwardSoftLimitEnabled(false).reverseSoftLimitEnabled(false))
-            .apply(new LimitSwitchConfig().forwardLimitSwitchEnabled(false).reverseLimitSwitchEnabled(false))
-            .idleMode(IdleMode.kBrake), 
-            ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-
 
         cfg = new SparkMaxConfig();
         cfg.inverted(true)
@@ -134,8 +122,6 @@ public class ElevatorAndArmSubSys extends SubsystemBase {
         _ElevatorPidRamp = new PidRamp(_ElevatorMtr1PidController, _ElevatorMtr2PidController, ConvertElevatorInchesToNeoRotations(ElevatorAndArmConstants.ElevatorSetpointRampRate));
         _ArmRotatePidRamp = new PidRamp(_ArmRotateMtr1PidController, null, ConvertArmRotateAngleToNeoRotations(ElevatorAndArmConstants.ArmRotateSetpointRampRate));
         _ArmExtendPidRamp = new PidRamp(_ArmExtendMtrPidController, null, ConvertArmExtendInchesToRotations(ElevatorAndArmConstants.ArmExtendSetpointRampRate));
-
-        _LedSubsystem = led;
     }
 
     @Override
@@ -175,19 +161,9 @@ public class ElevatorAndArmSubSys extends SubsystemBase {
         }
         SmartDashboard.putBoolean("ElevatorStalled", GetElevatorLikelySufferedChainJump());
 
-        if (ClawIsUsingLotsOfCurrent()) {
-            _LedSubsystem.setColor(LedSubsystem.kDefaultActiveColor);
-        } else {
-            _LedSubsystem.reset();
-        }
-
         //reset the elevator position to zero to avoid motor / controller burn up.
         if (GetElevatorLikelySufferedChainJump())
             _ElevatorMtr1Encoder.setPosition(0);
-    }
-
-    public boolean ClawIsUsingLotsOfCurrent() {
-        return _ClawIntake.getOutputCurrent() > 15.0;
     }
 
     public double GetElevatorHeightInches(Boolean motor2)
@@ -415,12 +391,5 @@ public class ElevatorAndArmSubSys extends SubsystemBase {
     private double ConvertArmExtendInchesToRotations(double dist)
     {
         return dist / (Math.PI * ElevatorAndArmConstants.ArmExtendSpoolDiameter) * ElevatorAndArmConstants.ArmExtendGearRatio;
-    }
-
-    public void ClawRun(double speed)
-    {
-        if (DebugSetting.TraceLevel == DebugLevel.Claw || DebugSetting.TraceLevel == DebugLevel.All)
-            SmartDashboard.putNumber("ClawSpeedRef", speed);
-        _ClawIntake.set(speed);
     }
 }
