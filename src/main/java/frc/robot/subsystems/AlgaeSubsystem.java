@@ -41,7 +41,7 @@ public class AlgaeSubsystem extends SubsystemBase{
         _AlgaeRotateMtrCtrl.configure(cfg, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
         _AlgaeRotateMtrPidController = _AlgaeRotateMtrCtrl.getClosedLoopController();
         _AlgaeRotateMtrEncoder = _AlgaeRotateMtrCtrl.getEncoder();
-        _PidRamp = new PidRamp(_AlgaeRotateMtrPidController, (AlgaeConstants.AlgaeSetpointRampRate * NeoConstants.CountsPerRevolution * AlgaeConstants.GearRatio / 360.0));
+        _PidRamp = new PidRamp(_AlgaeRotateMtrPidController, null, (AlgaeConstants.AlgaeSetpointRampRate * NeoConstants.CountsPerRevolution * AlgaeConstants.GearRatio / 360.0));
     }
     @Override
     public void periodic(){

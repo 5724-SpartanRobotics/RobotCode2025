@@ -34,6 +34,8 @@ public class ElevatorAndArmSubSys extends SubsystemBase {
 
     private SparkClosedLoopController _ElevatorMtr1PidController;
     private RelativeEncoder _ElevatorMtr1Encoder;
+    private SparkClosedLoopController _ElevatorMtr2PidController;
+    private RelativeEncoder _ElevatorMtr2Encoder;
     private SparkClosedLoopController _ArmRotateMtr1PidController;
     private RelativeEncoder _ArmRotateMtr1Encoder;
     private SparkClosedLoopController _ArmExtendMtrPidController;
@@ -71,13 +73,12 @@ public class ElevatorAndArmSubSys extends SubsystemBase {
         _ElevatorMtrCtrl1.configure(cfg, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
 
         cfg = new SparkMaxConfig();
-        cfg//.inverted(false)
-        .idleMode(IdleMode.kBrake)
-        .follow(CanIdConstants.ElevatorMtrCtrl1CanId, true);
-        // cfg.closedLoop
-        // .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-        // .pid(ElevatorAndArmConstants.ElePidP, ElevatorAndArmConstants.ElePidI, ElevatorAndArmConstants.ElePidD)
-        // .velocityFF(ElevatorAndArmConstants.ElePidFF);
+        cfg.inverted(false)
+        .idleMode(IdleMode.kBrake);
+        cfg.closedLoop
+        .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
+        .pid(ElevatorAndArmConstants.ElePidP, ElevatorAndArmConstants.ElePidI, ElevatorAndArmConstants.ElePidD)
+        .velocityFF(ElevatorAndArmConstants.ElePidFF);
         _ElevatorMtrCtrl2.configure(cfg, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
 
         cfg = new SparkMaxConfig();
@@ -124,13 +125,15 @@ public class ElevatorAndArmSubSys extends SubsystemBase {
 
         _ElevatorMtr1PidController = _ElevatorMtrCtrl1.getClosedLoopController();
         _ElevatorMtr1Encoder = _ElevatorMtrCtrl1.getEncoder();
+        _ElevatorMtr2PidController = _ElevatorMtrCtrl2.getClosedLoopController();
+        _ElevatorMtr2Encoder = _ElevatorMtrCtrl2.getEncoder();
         _ArmRotateMtr1PidController = _ArmRotateMtrCtrl1.getClosedLoopController();
         _ArmRotateMtr1Encoder = _ArmRotateMtrCtrl1.getEncoder();
         _ArmExtendMtrPidController = _ArmExtendMtrCtrl.getClosedLoopController();
         _ArmExtenMtrEncoder = _ArmExtendMtrCtrl.getEncoder();
-        _ElevatorPidRamp = new PidRamp(_ElevatorMtr1PidController, ConvertElevatorInchesToNeoRotations(ElevatorAndArmConstants.ElevatorSetpointRampRate));
-        _ArmRotatePidRamp = new PidRamp(_ArmRotateMtr1PidController, ConvertArmRotateAngleToNeoRotations(ElevatorAndArmConstants.ArmRotateSetpointRampRate));
-        _ArmExtendPidRamp = new PidRamp(_ArmExtendMtrPidController, ConvertArmExtendInchesToRotations(ElevatorAndArmConstants.ArmExtendSetpointRampRate));
+        _ElevatorPidRamp = new PidRamp(_ElevatorMtr1PidController, _ElevatorMtr2PidController, ConvertElevatorInchesToNeoRotations(ElevatorAndArmConstants.ElevatorSetpointRampRate));
+        _ArmRotatePidRamp = new PidRamp(_ArmRotateMtr1PidController, null, ConvertArmRotateAngleToNeoRotations(ElevatorAndArmConstants.ArmRotateSetpointRampRate));
+        _ArmExtendPidRamp = new PidRamp(_ArmExtendMtrPidController, null, ConvertArmExtendInchesToRotations(ElevatorAndArmConstants.ArmExtendSetpointRampRate));
 
         _LedSubsystem = led;
     }
@@ -161,11 +164,14 @@ public class ElevatorAndArmSubSys extends SubsystemBase {
         if (DebugSetting.TraceLevel == DebugLevel.ArmRotate || DebugSetting.TraceLevel == DebugLevel.All){
             SmartDashboard.putNumber("ArmRotPos", armRotatePosition);
             SmartDashboard.putNumber("ArmRotRef", _ArmRotateSetpoint);
+            SmartDashboard.putNumber("ArmRotCurrentM1", _ArmRotateMtrCtrl1.getOutputCurrent());
+            SmartDashboard.putNumber("ArmRotCurrentM2", _ArmRotateMtrCtrl2.getOutputCurrent());
             SmartDashboard.putNumber("ArmOutsideFrame", outsideFrame);
         }
         if (DebugSetting.TraceLevel == DebugLevel.Elevator || DebugSetting.TraceLevel == DebugLevel.All){
             SmartDashboard.putNumber("ElevatorPos", elevatorPosition);
             SmartDashboard.putNumber("ElevatorPosRef", _ElevatorSetpoint);
+            SmartDashboard.putNumber("ElevatorPosM2", GetElevatorHeightInches(true));
         }
         SmartDashboard.putBoolean("ElevatorStalled", GetElevatorLikelySufferedChainJump());
 
@@ -182,6 +188,12 @@ public class ElevatorAndArmSubSys extends SubsystemBase {
 
     public boolean ClawIsUsingLotsOfCurrent() {
         return _ClawIntake.getOutputCurrent() > 15.0;
+    }
+
+    public double GetElevatorHeightInches(Boolean motor2)
+    {
+        return (motor2 == null || !motor2.booleanValue()) ? _ElevatorMtr1Encoder.getPosition() / ElevatorAndArmConstants.ElevatorGearRatio * Math.PI * ElevatorAndArmConstants.ElevatorChainSproketDiameter :
+            _ElevatorMtr2Encoder.getPosition() / ElevatorAndArmConstants.ElevatorGearRatio * Math.PI * ElevatorAndArmConstants.ElevatorChainSproketDiameter;
     }
 
     public double GetElevatorHeightInches()

@@ -12,16 +12,19 @@ public class PidRamp {
 
     private SlewRateLimiter _Ramp;
     private SparkClosedLoopController _Pid;
+    private SparkClosedLoopController _Pid2;
     private boolean _StopIsActive;
     private double _Setpoint;
     private double _RampedSetpoint;
     /**
      * Creates a new PID ramp using the given units/second rate
-     * @param pidController - The PID controller
+     * @param pidController - The PID controller (canNOT be null)
+     * @param pidController2 - The second PID controller (can be null)
      * @param rampRate - The ramp rate. The rate is in motor rotations per second per second.
      */
-    public PidRamp(SparkClosedLoopController pidController, double rampRate) {
+    public PidRamp(SparkClosedLoopController pidController, SparkClosedLoopController pidController2, double rampRate) {
         _Pid = pidController;
+        _Pid2 = pidController2;
         _Ramp = new SlewRateLimiter(rampRate);
     }
 
@@ -54,6 +57,7 @@ public class PidRamp {
         {
             _RampedSetpoint = _Ramp.calculate(_Setpoint);
             _Pid.setReference(_RampedSetpoint, ControlType.kPosition);
+            if (_Pid2 != null) _Pid2.setReference(_RampedSetpoint, ControlType.kPosition);
         }
     }
 

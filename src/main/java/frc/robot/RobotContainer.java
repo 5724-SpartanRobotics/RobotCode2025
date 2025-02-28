@@ -64,6 +64,7 @@ public class RobotContainer {
 
         _DriveTrainSubsystem.setDefaultCommand(_TeleopSwerve);
         CameraServer.startAutomaticCapture(); // Start camera server on zeroth index video device
+        CameraServer.startAutomaticCapture(); // Start camera server on first index video device (auto inc)
 
         _DriveTrainSubsystem.zeroGyro();
         _DriveTrainSubsystem.flipGyro();
@@ -206,4 +207,8 @@ public class RobotContainer {
         return routine;
     }
 
+    public void ElevtorToStartingHeight()
+    {
+        _ElevatorAndArmSubSys.ElevatorToPosition(2);
+    }
 }

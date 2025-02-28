@@ -68,12 +68,12 @@ public final class Constants {
         public static final double ArmExtendPidI = 0;
         public static final double ArmExtendPidD = 0;
 
-        public static final double ArmRotatePidP = 0.1;
+        public static final double ArmRotatePidP = 0.3;
         public static final double ArmRotatePidFF = 0.0035;
         public static final double ArmRotatePidI = 0;
         public static final double ArmRotatePidD = 0;
 
-        public static final double ElePidP = 0.035;
+        public static final double ElePidP = 0.04;
         public static final double ElePidFF = 0.0025;
         public static final double ElePidI = 0;
         public static final double ElePidD = 0;
@@ -105,20 +105,20 @@ public final class Constants {
         public static final double ArmRotateSetpointRampRate = 40;//degrees per second
         public static final double ArmExtendSetpointRampRate = 4;//inches per second
 
-        public static final double ElevatorMax = 14.0; // inches
+        public static final double ElevatorMax = 10.5; // inches
         public static final double ArmRotateMax = 130.0; // degrees
         public static final double ArmExtendMax = 12.0; // inches
        }
 
     public final class AlgaeConstants {
-        public static final double RotatePidP = 1.3;
+        public static final double RotatePidP = 0.9;
         public static final double RotatePidFF = 0.000;
         public static final double RotatePidI = 0.0000;
         public static final double RotatePidD = 0;
-        public static final double GearRatio = 9;
+        public static final double GearRatio = 81;
         public static final double IncrementDegrees = 5;
         public static final double AlgaeMinAngleForArmRotationClearance = 35;//degrees
-        public static final double AlgaeHoldGamepieceAngle = 40;
+        public static final double AlgaeHoldGamepieceAngle = 30;
         public static final double AlgaeFullOutAngle = 105;
         public static final double AlgaeSetpointRampRate = 60;//degrees per second
         public static final double AlgaeClearOfArmMinimumAngle = 60;
@@ -137,7 +137,7 @@ public final class Constants {
 
     public static final class DebugSetting{
         //set this to get more values to smart dashboard. Leave it off for competition.
-        public static final DebugLevel TraceLevel = DebugLevel.ArmExtend;
+        public static final DebugLevel TraceLevel = DebugLevel.All;
     }
     public static enum DebugLevel{
         Off,
