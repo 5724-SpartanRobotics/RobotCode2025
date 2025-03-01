@@ -53,7 +53,10 @@ public class Robot extends TimedRobot {
      * chooser code above as well.
      */
     @Override
-    public void autonomousInit() { }
+    public void autonomousInit() {
+        _RobotContainer.m_autos.getSelected().schedule();
+        CommandScheduler.getInstance().run();
+    }
 
     /** This function is called periodically during autonomous. */
     @Override
