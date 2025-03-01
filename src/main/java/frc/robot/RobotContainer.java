@@ -99,14 +99,20 @@ public class RobotContainer {
         // _DriverController.button(11).whileTrue(new AprilTagLockonCommand(_DriveTrainSubsystem, _VisionSubSys));
        
         //algae controls
+        _OperatorController.button(8).whileTrue(new RunCommand(() ->{
+            _AlgaeSubSys.AlgaeRotateAtSpeed(0.3);
+        }, _AlgaeSubSys));
+        _OperatorController.button(8).onFalse(new InstantCommand(() -> {
+            _AlgaeSubSys.AlgaeRotateAtSpeed(0);
+        }, _AlgaeSubSys));
+        _OperatorController.button(10).whileTrue(new RunCommand(() ->{
+            _AlgaeSubSys.AlgaeRotateAtSpeed(-0.3);
+        }, _AlgaeSubSys));
+        _OperatorController.button(10).onFalse(new InstantCommand(() -> {
+            _AlgaeSubSys.AlgaeRotateAtSpeed(0);
+        }, _AlgaeSubSys));
         _OperatorController.button(7).onTrue(new InstantCommand(() -> {
             _AlgaeSubSys.RotateToOut();
-        }, _AlgaeSubSys));
-        _OperatorController.button(8).onTrue(new InstantCommand(() ->{
-            _AlgaeSubSys.IncrementSmallDegrees();
-        }, _AlgaeSubSys));
-        _OperatorController.button(10).onTrue(new InstantCommand(() ->{
-            _AlgaeSubSys.DecrementSmallDegrees();
         }, _AlgaeSubSys));
         _OperatorController.button(11).onTrue(new InstantCommand(() ->{
             _AlgaeSubSys.RotateToIn();

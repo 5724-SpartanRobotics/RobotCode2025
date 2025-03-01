@@ -123,4 +123,9 @@ public class AlgaeSubsystem extends SubsystemBase{
         double neoRotations = _AlgaeRotateMtrEncoder.getPosition();
         return neoRotations / AlgaeConstants.GearRatio * 360;
     }
+
+    public void AlgaeRotateAtSpeed(double speed){
+        _PidRamp.Stop();
+        _AlgaeRotateMtrCtrl.set(speed);
+    }
 }

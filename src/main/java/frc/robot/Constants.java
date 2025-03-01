@@ -111,7 +111,7 @@ public final class Constants {
        }
 
     public final class AlgaeConstants {
-        public static final double RotatePidP = 0.9;
+        public static final double RotatePidP = 0.5;
         public static final double RotatePidFF = 0.000;
         public static final double RotatePidI = 0.0000;
         public static final double RotatePidD = 0;
