@@ -5,18 +5,20 @@ import choreo.auto.AutoFactory;
 import choreo.auto.AutoRoutine;
 import choreo.auto.AutoTrajectory;
 import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
-import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import frc.robot.Constants.ElevatorAndArmConstants;
 import frc.robot.commands.ArmExtendToSetpointCommand;
 import frc.robot.commands.ArmRotateToSetpointCommand;
 import frc.robot.commands.ElevatorToSetpointCommand;
 import frc.robot.commands.TeleopSwerve;
+import frc.robot.commands.autos.Leave;
 import frc.robot.subsystems.AlgaeSubsystem;
 import frc.robot.subsystems.ClawSubsystem;
 import frc.robot.subsystems.DriveTrainSubsystem;
@@ -35,10 +37,11 @@ public class RobotContainer {
     private VisionSubsystem _VisionSubSys;
     private CommandJoystick _DriverController;
     private CommandJoystick _OperatorController;
+
     public static Interference InterferenceHelper;
     public final AutoFactory autoFactory;
     public AutoChooser autoChooser;
-
+    public final SendableChooser<Command> m_autos = new SendableChooser<Command>();
 
 
     public RobotContainer(){
@@ -60,7 +63,9 @@ public class RobotContainer {
         );
         @SuppressWarnings("unused")
         AutoRoutine routine = autoFactory.newRoutine("Blueleaveleft");
-        autoChooser = new AutoChooser();
+        // autoChooser = new AutoChooser();
+
+        
 
         _TeleopSwerve = new TeleopSwerve(_DriveTrainSubsystem, _DriverController);
 
@@ -73,9 +78,17 @@ public class RobotContainer {
        
 
         configureBindings();
-        autoChooser.addRoutine("Blueleaveleft", null);
-        SmartDashboard.putData(autoChooser);
-        RobotModeTriggers.autonomous().whileTrue(autoChooser.selectedCommandScheduler());
+        // autoChooser.addRoutine("Blueleaveleft", null);
+        // autoChooser.addCmd("Basic 2s Leave", );
+        // RobotModeTriggers.autonomous().whileTrue(autoChooser.selectedCommandScheduler());
+        configureAutos();
+    }
+
+    private void configureAutos() {
+        m_autos.setDefaultOption("Default (noting)", new Command() {});
+        m_autos.addOption("Basic 2s Leave", new Leave(_DriveTrainSubsystem));
+
+        SmartDashboard.putData("Auto choices", m_autos);
     }
 
     private void configureBindings()
