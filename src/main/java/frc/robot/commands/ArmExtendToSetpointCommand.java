@@ -1,14 +1,14 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.ElevatorAndArmSubSys;
+import frc.robot.subsystems.ArmSubSys;
 
 public class ArmExtendToSetpointCommand extends Command{
 
-    private ElevatorAndArmSubSys _ElevatorAndArmSubSystem;
+    private ArmSubSys _ElevatorAndArmSubSystem;
     private double _Setpoint;
 
-    public ArmExtendToSetpointCommand(ElevatorAndArmSubSys eleArmSs, double setpoint)
+    public ArmExtendToSetpointCommand(ArmSubSys eleArmSs, double setpoint)
     {
         _ElevatorAndArmSubSystem = eleArmSs;
         _Setpoint = setpoint;

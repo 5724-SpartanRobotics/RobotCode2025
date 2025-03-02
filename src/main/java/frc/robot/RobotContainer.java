@@ -22,7 +22,8 @@ import frc.robot.commands.autos.Leave;
 import frc.robot.subsystems.AlgaeSubsystem;
 import frc.robot.subsystems.ClawSubsystem;
 import frc.robot.subsystems.DriveTrainSubsystem;
-import frc.robot.subsystems.ElevatorAndArmSubSys;
+import frc.robot.subsystems.ElevatorSubsystem;
+import frc.robot.subsystems.ArmSubSys;
 import frc.robot.subsystems.LedSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 
@@ -30,7 +31,8 @@ public class RobotContainer {
     private DriveTrainSubsystem _DriveTrainSubsystem;
     private TeleopSwerve _TeleopSwerve;
     private LedSubsystem _LedSubsystem;
-    private ElevatorAndArmSubSys _ElevatorAndArmSubSys;
+    private ArmSubSys _ArmSubSys;
+    private ElevatorSubsystem _ElevatorSubSys;
     private ClawSubsystem _ClawSubsystem;
     private AlgaeSubsystem _AlgaeSubSys;
     @SuppressWarnings("unused")
@@ -48,10 +50,11 @@ public class RobotContainer {
         _DriveTrainSubsystem = new DriveTrainSubsystem();
         _LedSubsystem = new LedSubsystem();
         _VisionSubSys = new VisionSubsystem(_DriveTrainSubsystem);
-        _ElevatorAndArmSubSys = new ElevatorAndArmSubSys();
+        _ArmSubSys = new ArmSubSys();
+        _ElevatorSubSys = new ElevatorSubsystem();
         _ClawSubsystem = new ClawSubsystem(_LedSubsystem);
         _AlgaeSubSys = new AlgaeSubsystem();
-        InterferenceHelper = new Interference(_ElevatorAndArmSubSys);
+        InterferenceHelper = new Interference(_ArmSubSys);
         _DriverController = new CommandJoystick(0);
         _OperatorController = new CommandJoystick(1);
         autoFactory = new AutoFactory(
@@ -123,27 +126,27 @@ public class RobotContainer {
 
         //elevator increment up and down
         _OperatorController.povUp().onTrue(new InstantCommand(() ->{
-            _ElevatorAndArmSubSys.IncrementElevatorUp();
-        }, _ElevatorAndArmSubSys));
+            _ElevatorSubSys.IncrementElevatorUp();
+        }, _ElevatorSubSys));
         _OperatorController.povDown().onTrue(new InstantCommand(() ->{
-            _ElevatorAndArmSubSys.DecrementElevatorUp();
-        }, _ElevatorAndArmSubSys));
+            _ElevatorSubSys.DecrementElevatorUp();
+        }, _ElevatorSubSys));
 
         //arm rotate - main Y axis
         _OperatorController.axisLessThan(1, -0.3).whileTrue(new RunCommand(() ->{
-            _ElevatorAndArmSubSys.ArmRotateToPositionMoreThanCurrent();
-        }, _ElevatorAndArmSubSys));
+            _ArmSubSys.ArmRotateToPositionMoreThanCurrent();
+        }, _ArmSubSys));
         _OperatorController.axisGreaterThan(1, 0.3).whileTrue(new RunCommand(() ->{
-            _ElevatorAndArmSubSys.ArmRotateToPositionLessThanCurrent();
-        }, _ElevatorAndArmSubSys));
+            _ArmSubSys.ArmRotateToPositionLessThanCurrent();
+        }, _ArmSubSys));
 
         //arm extend
         _OperatorController.povRight().onTrue(new InstantCommand(() ->{
-            _ElevatorAndArmSubSys.IncrementArmExtend();
-        }, _ElevatorAndArmSubSys));
+            _ArmSubSys.IncrementArmExtend();
+        }, _ArmSubSys));
         _OperatorController.povLeft().onTrue(new InstantCommand(() ->{
-            _ElevatorAndArmSubSys.DecrementArmExtend();
-        }, _ElevatorAndArmSubSys));
+            _ArmSubSys.DecrementArmExtend();
+        }, _ArmSubSys));
 
         //claw run 
         _OperatorController.button(1).onTrue(new InstantCommand(() ->{
@@ -163,30 +166,30 @@ public class RobotContainer {
         }, _ClawSubsystem));
         //sequencial commands
         SequentialCommandGroup l4CommandGroups = new SequentialCommandGroup(
-            new ElevatorToSetpointCommand((_ElevatorAndArmSubSys), ElevatorAndArmConstants.ElevatorL4Posn)
+            new ElevatorToSetpointCommand((_ElevatorSubSys), ElevatorAndArmConstants.ElevatorL4Posn)
             // .alongWith(new AlgaeRotateToSetpointCommand(_AlgaeSubSys, AlgaeConstants.AlgaeClearOfArmMinimumAngle))
-            .andThen(new ArmRotateToSetpointCommand(_ElevatorAndArmSubSys, ElevatorAndArmConstants.ArmRotateL4Posn))
-            .andThen(new ArmExtendToSetpointCommand(_ElevatorAndArmSubSys, ElevatorAndArmConstants.ArmExtendL4Posn)));
+            .andThen(new ArmRotateToSetpointCommand(_ArmSubSys, ElevatorAndArmConstants.ArmRotateL4Posn))
+            .andThen(new ArmExtendToSetpointCommand(_ArmSubSys, ElevatorAndArmConstants.ArmExtendL4Posn)));
         SequentialCommandGroup l3CommandGroups = new SequentialCommandGroup(
-                new ElevatorToSetpointCommand((_ElevatorAndArmSubSys), ElevatorAndArmConstants.ElevatorL3Posn)
+                new ElevatorToSetpointCommand((_ElevatorSubSys), ElevatorAndArmConstants.ElevatorL3Posn)
                 // .alongWith(new AlgaeRotateToSetpointCommand(_AlgaeSubSys, AlgaeConstants.AlgaeClearOfArmMinimumAngle))
-                .andThen(new ArmRotateToSetpointCommand(_ElevatorAndArmSubSys, ElevatorAndArmConstants.ArmRotateL3Posn))
-                .andThen(new ArmExtendToSetpointCommand(_ElevatorAndArmSubSys, ElevatorAndArmConstants.ArmExtendL3Posn)));
+                .andThen(new ArmRotateToSetpointCommand(_ArmSubSys, ElevatorAndArmConstants.ArmRotateL3Posn))
+                .andThen(new ArmExtendToSetpointCommand(_ArmSubSys, ElevatorAndArmConstants.ArmExtendL3Posn)));
         SequentialCommandGroup l2CommandGroups = new SequentialCommandGroup(
-                new ElevatorToSetpointCommand((_ElevatorAndArmSubSys), ElevatorAndArmConstants.ElevatorL2Posn)
+                new ElevatorToSetpointCommand((_ElevatorSubSys), ElevatorAndArmConstants.ElevatorL2Posn)
                 // .alongWith(new AlgaeRotateToSetpointCommand(_AlgaeSubSys, AlgaeConstants.AlgaeClearOfArmMinimumAngle))
-                .andThen(new ArmRotateToSetpointCommand(_ElevatorAndArmSubSys, ElevatorAndArmConstants.ArmRotateL2Posn))
-                .andThen(new ArmExtendToSetpointCommand(_ElevatorAndArmSubSys, ElevatorAndArmConstants.ArmExtendL2Posn)));
+                .andThen(new ArmRotateToSetpointCommand(_ArmSubSys, ElevatorAndArmConstants.ArmRotateL2Posn))
+                .andThen(new ArmExtendToSetpointCommand(_ArmSubSys, ElevatorAndArmConstants.ArmExtendL2Posn)));
         SequentialCommandGroup l1CommandGroups = new SequentialCommandGroup(
-                new ElevatorToSetpointCommand((_ElevatorAndArmSubSys), ElevatorAndArmConstants.ElevatorL1Posn)
+                new ElevatorToSetpointCommand((_ElevatorSubSys), ElevatorAndArmConstants.ElevatorL1Posn)
                 // .alongWith(new AlgaeRotateToSetpointCommand(_AlgaeSubSys, AlgaeConstants.AlgaeClearOfArmMinimumAngle))
-                .andThen(new ArmRotateToSetpointCommand(_ElevatorAndArmSubSys, ElevatorAndArmConstants.ArmRotateL1Posn))
-                .andThen(new ArmExtendToSetpointCommand(_ElevatorAndArmSubSys, ElevatorAndArmConstants.ArmExtendL1Posn)));
+                .andThen(new ArmRotateToSetpointCommand(_ArmSubSys, ElevatorAndArmConstants.ArmRotateL1Posn))
+                .andThen(new ArmExtendToSetpointCommand(_ArmSubSys, ElevatorAndArmConstants.ArmExtendL1Posn)));
         SequentialCommandGroup returnHomeCommandGroup = new SequentialCommandGroup(
-                    new ArmExtendToSetpointCommand((_ElevatorAndArmSubSys), 0.0)
+                    new ArmExtendToSetpointCommand((_ArmSubSys), 0.0)
                     // .alongWith(new AlgaeRotateToSetpointCommand(_AlgaeSubSys, AlgaeConstants.AlgaeClearOfArmMinimumAngle))
-                    .andThen(new ArmRotateToSetpointCommand(_ElevatorAndArmSubSys, 0.0))
-                    .andThen(new ElevatorToSetpointCommand(_ElevatorAndArmSubSys, 0.0)));
+                    .andThen(new ArmRotateToSetpointCommand(_ArmSubSys, 0.0))
+                    .andThen(new ElevatorToSetpointCommand(_ElevatorSubSys, 0.0)));
         _OperatorController.button(5).onTrue(l4CommandGroups);
         _OperatorController.button(3).onTrue(l3CommandGroups);
         _OperatorController.button(6).onTrue(l2CommandGroups);
@@ -206,9 +209,9 @@ public class RobotContainer {
     public void StopPidRamps()
     {
         _AlgaeSubSys.AlgaeStop();
-        _ElevatorAndArmSubSys.ArmExtendStop();
-        _ElevatorAndArmSubSys.ArmRotateStop();
-        _ElevatorAndArmSubSys.ElevatorStop();
+        _ArmSubSys.ArmExtendStop();
+        _ArmSubSys.ArmRotateStop();
+        _ElevatorSubSys.ElevatorStop();
     }
 
     public AutoRoutine Blueleaveleft() {
@@ -230,6 +233,6 @@ public class RobotContainer {
 
     public void ElevtorToStartingHeight()
     {
-        _ElevatorAndArmSubSys.ElevatorToPosition(2);
+        _ElevatorSubSys.ElevatorToPosition(2);
     }
 }

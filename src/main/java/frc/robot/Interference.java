@@ -1,14 +1,14 @@
 package frc.robot;
 
 import frc.robot.Constants.ElevatorAndArmConstants;
-import frc.robot.subsystems.ElevatorAndArmSubSys;
+import frc.robot.subsystems.ArmSubSys;
 
 /*Provides indications of interference between different mechanisms
  */
 public class Interference {
 
-    private ElevatorAndArmSubSys _EleArm;
-    public Interference(ElevatorAndArmSubSys elevatorAndArm) {
+    private ArmSubSys _EleArm;
+    public Interference(ArmSubSys elevatorAndArm) {
         _EleArm = elevatorAndArm;
     }
 

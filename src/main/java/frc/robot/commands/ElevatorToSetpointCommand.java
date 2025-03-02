@@ -1,31 +1,31 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.ElevatorAndArmSubSys;
+import frc.robot.subsystems.ElevatorSubsystem;
 
 public class ElevatorToSetpointCommand extends Command{
 
-    ElevatorAndArmSubSys _ElevatorAndArmSubSys;
+    ElevatorSubsystem _ElevatorSubSys;
     double _Setpoint;
-    public ElevatorToSetpointCommand(ElevatorAndArmSubSys eleArmSubSys, double setpoint) {
-        _ElevatorAndArmSubSys = eleArmSubSys;
+    public ElevatorToSetpointCommand(ElevatorSubsystem eleSubSys, double setpoint) {
+        _ElevatorSubSys = eleSubSys;
         _Setpoint = setpoint;
-        addRequirements(eleArmSubSys);
+        addRequirements(eleSubSys);
     }
 
     @Override
     public void execute() {
-        _ElevatorAndArmSubSys.ElevatorToPosition(_Setpoint);
+        _ElevatorSubSys.ElevatorToPosition(_Setpoint);
     }
     @Override
     public void end(boolean interrupted) {
         if (interrupted)
-            _ElevatorAndArmSubSys.ElevatorStop();
+            _ElevatorSubSys.ElevatorStop();
     }
 
     @Override
     public boolean isFinished() {
-        double diff = Math.abs(_ElevatorAndArmSubSys.GetElevatorHeightInches() - _Setpoint);
+        double diff = Math.abs(_ElevatorSubSys.GetElevatorHeightInches() - _Setpoint);
         return diff <= 1.0;
       }
 }
