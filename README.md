@@ -1,5 +1,8 @@
 # Changelog
 Changelog based on what we do, but some of it may have to come from git commit history.
+## Mar 7, 2025
+* Added a wrist subsystem, move to position command and integrated them into robot container.
+* Still need to find a button for move to coral loading position.
 ## Feb 27, 2025
 * Changed the algae back to 9 gear ratio after replacing motor
 * Changed the auto detract the arm code to decrement it 1 inch in setpoint every pass it is
