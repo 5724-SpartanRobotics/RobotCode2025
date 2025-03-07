@@ -36,7 +36,10 @@ public class C2PF15 extends SequentialCommandGroup {
                     new ElevatorToSetpointCommand(elevatorSubsystem, ElevatorAndArmConstants.ElevatorL4Posn) // Set the elevator to setpoint while moving
                 ),
                 new ArmRotateToSetpointCommand(armSubSystem, ElevatorAndArmConstants.ArmRotateL4Posn), // Move the arm while stopped
-                Commands.deadline(new WaitCommand(0.5), new RunCommand(() -> {clawSubsystem.ClawRun(0.3);}, clawSubsystem)), // Run the claw for 0.5s
+                Commands.sequence(
+                    Commands.deadline(new WaitCommand(0.5), new RunCommand(() -> {clawSubsystem.ClawRun(0.3);}, clawSubsystem)),
+                    new RunCommand(() -> {clawSubsystem.ClawRun(0.0);}, clawSubsystem)
+                ),
                 new ArmRotateToSetpointCommand(armSubSystem, 0.0),
                 Commands.parallel(
                     autoFactory.resetOdometry("C 2P F1,5 2-3"),
@@ -48,7 +51,10 @@ public class C2PF15 extends SequentialCommandGroup {
                     new ElevatorToSetpointCommand(elevatorSubsystem, ElevatorAndArmConstants.ElevatorL4Posn)
                 ),
                 new ArmRotateToSetpointCommand(armSubSystem, 0.0),
-                Commands.deadline(new WaitCommand(0.5), new RunCommand(() -> {clawSubsystem.ClawRun(0.3);}, clawSubsystem)),
+                Commands.sequence(
+                    Commands.deadline(new WaitCommand(0.5), new RunCommand(() -> {clawSubsystem.ClawRun(0.3);}, clawSubsystem)),
+                    new RunCommand(() -> {clawSubsystem.ClawRun(0.0);}, clawSubsystem)
+                ),
                 new RunCommand(() -> {})
             )
         );
