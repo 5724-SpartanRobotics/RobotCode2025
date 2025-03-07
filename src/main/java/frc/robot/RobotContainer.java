@@ -13,6 +13,7 @@ import frc.robot.commands.ArmExtendToSetpointCommand;
 import frc.robot.commands.ArmRotateToSetpointCommand;
 import frc.robot.commands.ElevatorToSetpointCommand;
 import frc.robot.commands.TeleopSwerve;
+import frc.robot.commands.WristRotateToSetpointCommand;
 import frc.robot.commands.autos.Autos;
 import frc.robot.subsystems.AlgaeSubsystem;
 import frc.robot.subsystems.ArmSubSys;
@@ -21,6 +22,7 @@ import frc.robot.subsystems.DriveTrainSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.LedSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
+import frc.robot.subsystems.WristSubSys;
 
 public class RobotContainer {
     private DriveTrainSubsystem _DriveTrainSubsystem;
@@ -30,6 +32,7 @@ public class RobotContainer {
     private ElevatorSubsystem _ElevatorSubSys;
     private ClawSubsystem _ClawSubsystem;
     private AlgaeSubsystem _AlgaeSubSys;
+    private WristSubSys _WristSubSys;
     @SuppressWarnings("unused")
     private VisionSubsystem _VisionSubSys;
     private CommandJoystick _DriverController;
@@ -48,12 +51,13 @@ public class RobotContainer {
         _ElevatorSubSys = new ElevatorSubsystem();
         _ClawSubsystem = new ClawSubsystem(_LedSubsystem);
         _AlgaeSubSys = new AlgaeSubsystem();
+        _WristSubSys = new WristSubSys();
         InterferenceHelper = new Interference(_ArmSubSys);
         _DriverController = new CommandJoystick(0);
         _OperatorController = new CommandJoystick(1);      
 
         _TeleopSwerve = new TeleopSwerve(_DriveTrainSubsystem, _DriverController);
-        _Autos = new Autos(_DriveTrainSubsystem, _ElevatorSubSys, _ArmSubSys, _ClawSubsystem);
+        _Autos = new Autos(_DriveTrainSubsystem, _ElevatorSubSys, _ArmSubSys, _ClawSubsystem, _WristSubSys);
 
         _DriveTrainSubsystem.setDefaultCommand(_TeleopSwerve);
         CameraServer.startAutomaticCapture(); // Start camera server on zeroth index video device
@@ -126,11 +130,11 @@ public class RobotContainer {
 
         //arm extend
         _OperatorController.povRight().onTrue(new InstantCommand(() ->{
-            _ArmSubSys.IncrementArmExtend();
-        }, _ArmSubSys));
+            _WristSubSys.WristToPosition(180);
+        }, _WristSubSys));
         _OperatorController.povLeft().onTrue(new InstantCommand(() ->{
-            _ArmSubSys.DecrementArmExtend();
-        }, _ArmSubSys));
+            _WristSubSys.WristToPosition(0);
+        }, _WristSubSys));
 
         //claw run 
         _OperatorController.button(1).onTrue(new InstantCommand(() ->{
@@ -139,9 +143,6 @@ public class RobotContainer {
         _OperatorController.button(1).onFalse(new InstantCommand(() ->{
             _ClawSubsystem.ClawRun(0);
         }, _ClawSubsystem));
-        // _ElevatorAndArmSubSys.setDefaultCommand(new InstantCommand(() ->{
-        //     _ElevatorAndArmSubSys.ClawRun(0);
-        // }, _ElevatorAndArmSubSys));
         _OperatorController.button(2).onFalse(new InstantCommand(() ->{
             _ClawSubsystem.ClawRun(0);
         }, _ClawSubsystem));
@@ -151,29 +152,38 @@ public class RobotContainer {
         //sequencial commands
         SequentialCommandGroup l4CommandGroups = new SequentialCommandGroup(
             new ElevatorToSetpointCommand((_ElevatorSubSys), ElevatorAndArmConstants.ElevatorL4Posn)
+            .alongWith(new WristRotateToSetpointCommand(_WristSubSys, ElevatorAndArmConstants.WristMax))
             // .alongWith(new AlgaeRotateToSetpointCommand(_AlgaeSubSys, AlgaeConstants.AlgaeClearOfArmMinimumAngle))
             .andThen(new ArmRotateToSetpointCommand(_ArmSubSys, ElevatorAndArmConstants.ArmRotateL4Posn))
             .andThen(new ArmExtendToSetpointCommand(_ArmSubSys, ElevatorAndArmConstants.ArmExtendL4Posn)));
         SequentialCommandGroup l3CommandGroups = new SequentialCommandGroup(
                 new ElevatorToSetpointCommand((_ElevatorSubSys), ElevatorAndArmConstants.ElevatorL3Posn)
+                .alongWith(new WristRotateToSetpointCommand(_WristSubSys, 0))
                 // .alongWith(new AlgaeRotateToSetpointCommand(_AlgaeSubSys, AlgaeConstants.AlgaeClearOfArmMinimumAngle))
                 .andThen(new ArmRotateToSetpointCommand(_ArmSubSys, ElevatorAndArmConstants.ArmRotateL3Posn))
                 .andThen(new ArmExtendToSetpointCommand(_ArmSubSys, ElevatorAndArmConstants.ArmExtendL3Posn)));
         SequentialCommandGroup l2CommandGroups = new SequentialCommandGroup(
                 new ElevatorToSetpointCommand((_ElevatorSubSys), ElevatorAndArmConstants.ElevatorL2Posn)
+                .alongWith(new WristRotateToSetpointCommand(_WristSubSys, 0))
                 // .alongWith(new AlgaeRotateToSetpointCommand(_AlgaeSubSys, AlgaeConstants.AlgaeClearOfArmMinimumAngle))
                 .andThen(new ArmRotateToSetpointCommand(_ArmSubSys, ElevatorAndArmConstants.ArmRotateL2Posn))
                 .andThen(new ArmExtendToSetpointCommand(_ArmSubSys, ElevatorAndArmConstants.ArmExtendL2Posn)));
         SequentialCommandGroup l1CommandGroups = new SequentialCommandGroup(
                 new ElevatorToSetpointCommand((_ElevatorSubSys), ElevatorAndArmConstants.ElevatorL1Posn)
+                .alongWith(new WristRotateToSetpointCommand(_WristSubSys, 0))
                 // .alongWith(new AlgaeRotateToSetpointCommand(_AlgaeSubSys, AlgaeConstants.AlgaeClearOfArmMinimumAngle))
                 .andThen(new ArmRotateToSetpointCommand(_ArmSubSys, ElevatorAndArmConstants.ArmRotateL1Posn))
                 .andThen(new ArmExtendToSetpointCommand(_ArmSubSys, ElevatorAndArmConstants.ArmExtendL1Posn)));
         SequentialCommandGroup returnHomeCommandGroup = new SequentialCommandGroup(
                     new ArmExtendToSetpointCommand((_ArmSubSys), 0.0)
+                    .alongWith(new WristRotateToSetpointCommand(_WristSubSys, 0))
                     // .alongWith(new AlgaeRotateToSetpointCommand(_AlgaeSubSys, AlgaeConstants.AlgaeClearOfArmMinimumAngle))
                     .andThen(new ArmRotateToSetpointCommand(_ArmSubSys, 0.0))
                     .andThen(new ElevatorToSetpointCommand(_ElevatorSubSys, 0.0)));
+        SequentialCommandGroup coralPickupGroup = new SequentialCommandGroup(
+            new ElevatorToSetpointCommand(_ElevatorSubSys, ElevatorAndArmConstants.ElevatorCoralPosn)
+            .alongWith(new WristRotateToSetpointCommand(_WristSubSys, ElevatorAndArmConstants.WristMax))
+            .andThen(new ArmRotateToSetpointCommand(_ArmSubSys, ElevatorAndArmConstants.ArmRotateCoralPosn)));
         _OperatorController.button(5).onTrue(l4CommandGroups);
         _OperatorController.button(3).onTrue(l3CommandGroups);
         _OperatorController.button(6).onTrue(l2CommandGroups);

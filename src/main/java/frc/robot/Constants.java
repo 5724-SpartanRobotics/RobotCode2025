@@ -28,6 +28,7 @@ public final class Constants {
         public static final int ElevatorMtrCtrl2CanId = 21;
         public static final int AlgaeRotateMtrCtrlCanId = 22;
         public static final int ClawMtrCtrlCanId = 17;
+        public static final int WristMtrCtrlCanId = 23;
     }
     public final class DriveConstants {
         public static final double maxRobotSpeedmps = 4.5;
@@ -93,10 +94,12 @@ public final class Constants {
         public static final double ElevatorL3Posn = 8;
         public static final double ElevatorL2Posn = 6;
         public static final double ElevatorL1Posn = 4;
+        public static final double ElevatorCoralPosn = 10;
         public static final double ArmRotateL4Posn = 130;
         public static final double ArmRotateL3Posn = 90;
         public static final double ArmRotateL2Posn = 80;
         public static final double ArmRotateL1Posn = 70;
+        public static final double ArmRotateCoralPosn = 20;
         public static final double ArmExtendL4Posn = 10;
         public static final double ArmExtendL3Posn = 8;
         public static final double ArmExtendL2Posn = 3;
@@ -108,6 +111,15 @@ public final class Constants {
         public static final double ElevatorMax = 10.5; // inches
         public static final double ArmRotateMax = 130.0; // degrees
         public static final double ArmExtendMax = 12.0; // inches
+
+        public static final double WristPidP = 0.035;
+        public static final double WristPidFF = 0.000325;
+        public static final double WristPidI = 0;
+        public static final double WristPidD = 0;
+        public static final double WristRotateMax = 180; //degrees
+        public static final double WristSetpointRampRate = 20;//degrees per second
+        public static final double WristGearRatio = 9.0;
+        public static final double WristMax = 180;
        }
 
     public final class AlgaeConstants {
@@ -149,6 +161,7 @@ public final class Constants {
         Claw,
         Autonomous,
         Vision,
+        Wrist,
         All
     }
 }

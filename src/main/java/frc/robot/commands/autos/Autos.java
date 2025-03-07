@@ -5,6 +5,7 @@ import frc.robot.subsystems.ArmSubSys;
 import frc.robot.subsystems.ClawSubsystem;
 import frc.robot.subsystems.DriveTrainSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
+import frc.robot.subsystems.WristSubSys;
 
 public final class Autos {
     private final AutoFactory _AutoFactory;
@@ -16,7 +17,8 @@ public final class Autos {
         DriveTrainSubsystem driveTrainSubsystem,
         ElevatorSubsystem elevatorSubsystem,
         ArmSubSys armSubsystem,
-        ClawSubsystem clawSubsystem
+        ClawSubsystem clawSubsystem,
+        WristSubSys wristSubsystem
     ) {
         _AutoFactory = new AutoFactory(
             driveTrainSubsystem::getPose, // A function that returns the current robot pose
@@ -27,6 +29,6 @@ public final class Autos {
         );  
 
         Leave = new Leave(driveTrainSubsystem);
-        Center_2Piece_Faces15 = new C2PF15(_AutoFactory, driveTrainSubsystem, elevatorSubsystem, armSubsystem, clawSubsystem);
+        Center_2Piece_Faces15 = new C2PF15(_AutoFactory, driveTrainSubsystem, elevatorSubsystem, armSubsystem, clawSubsystem, wristSubsystem);
     }
 }

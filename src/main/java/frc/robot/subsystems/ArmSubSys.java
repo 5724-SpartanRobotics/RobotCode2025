@@ -138,16 +138,6 @@ public class ArmSubSys extends SubsystemBase {
     }
     public void IncrementArmRotate()
     {
-        InterferenceInfo info = new InterferenceInfo();
-        if (RobotContainer.InterferenceHelper.ArmCannotRotateUp(info))
-        {
-            SmartDashboard.putString("InterferenceMessage", info.Message);
-            return;
-        }
-        else
-        {
-            SmartDashboard.putString("InterferenceMessage", "");
-        }
         _ArmRotateSetpoint += 5;
         if (_ArmRotateSetpoint > ElevatorAndArmConstants.ArmRotateMax)
             _ArmRotateSetpoint = ElevatorAndArmConstants.ArmRotateMax;
@@ -159,16 +149,6 @@ public class ArmSubSys extends SubsystemBase {
 
     public void DecrementArmRotate()
     {
-        InterferenceInfo info = new InterferenceInfo();
-        if (RobotContainer.InterferenceHelper.ArmCannotRotateDown(info))
-        {
-            SmartDashboard.putString("InterferenceMessage", info.Message);
-            return;
-        }
-        else
-        {
-            SmartDashboard.putString("InterferenceMessage", "");
-        }
         _ArmRotateSetpoint -= 5;
         if (_ArmRotateSetpoint < 0)
             _ArmRotateSetpoint = 0;

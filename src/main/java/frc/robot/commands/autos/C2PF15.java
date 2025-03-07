@@ -12,6 +12,7 @@ import frc.robot.subsystems.ArmSubSys;
 import frc.robot.subsystems.ClawSubsystem;
 import frc.robot.subsystems.DriveTrainSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
+import frc.robot.subsystems.WristSubSys;
 
 /**
  * Auto: <b>C 2P F1,5</b>
@@ -27,7 +28,8 @@ public class C2PF15 extends SequentialCommandGroup {
         DriveTrainSubsystem driveTrainSubsystem,
         ElevatorSubsystem elevatorSubsystem,
         ArmSubSys armSubSystem,
-        ClawSubsystem clawSubsystem
+        ClawSubsystem clawSubsystem,
+        WristSubSys wristSubsystem
     ) {
         addCommands(
             Commands.sequence(
