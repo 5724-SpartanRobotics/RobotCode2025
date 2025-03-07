@@ -1,14 +1,9 @@
 package frc.robot;
 
-import choreo.auto.AutoChooser;
-import choreo.auto.AutoFactory;
-import choreo.auto.AutoRoutine;
-import choreo.auto.AutoTrajectory;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -18,12 +13,12 @@ import frc.robot.commands.ArmExtendToSetpointCommand;
 import frc.robot.commands.ArmRotateToSetpointCommand;
 import frc.robot.commands.ElevatorToSetpointCommand;
 import frc.robot.commands.TeleopSwerve;
-import frc.robot.commands.autos.Leave;
+import frc.robot.commands.autos.Autos;
 import frc.robot.subsystems.AlgaeSubsystem;
+import frc.robot.subsystems.ArmSubSys;
 import frc.robot.subsystems.ClawSubsystem;
 import frc.robot.subsystems.DriveTrainSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
-import frc.robot.subsystems.ArmSubSys;
 import frc.robot.subsystems.LedSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 
@@ -39,10 +34,9 @@ public class RobotContainer {
     private VisionSubsystem _VisionSubSys;
     private CommandJoystick _DriverController;
     private CommandJoystick _OperatorController;
+    private Autos _Autos;
 
     public static Interference InterferenceHelper;
-    public final AutoFactory autoFactory;
-    public AutoChooser autoChooser;
     public final SendableChooser<Command> m_autos = new SendableChooser<Command>();
 
 
@@ -56,21 +50,10 @@ public class RobotContainer {
         _AlgaeSubSys = new AlgaeSubsystem();
         InterferenceHelper = new Interference(_ArmSubSys);
         _DriverController = new CommandJoystick(0);
-        _OperatorController = new CommandJoystick(1);
-        autoFactory = new AutoFactory(
-            _DriveTrainSubsystem::getPose, // A function that returns the current robot pose
-            _DriveTrainSubsystem::resetOdometry, // A function that resets the current robot pose to the provided Pose2d
-            _DriveTrainSubsystem::followTrajectory, // The drive subsystem trajectory follower 
-             true,// If alliance flipping should be enabled 
-            _DriveTrainSubsystem
-        );
-        @SuppressWarnings("unused")
-        AutoRoutine routine = autoFactory.newRoutine("Blueleaveleft");
-        // autoChooser = new AutoChooser();
-
-        
+        _OperatorController = new CommandJoystick(1);      
 
         _TeleopSwerve = new TeleopSwerve(_DriveTrainSubsystem, _DriverController);
+        _Autos = new Autos(_DriveTrainSubsystem, _ElevatorSubSys, _ArmSubSys, _ClawSubsystem);
 
         _DriveTrainSubsystem.setDefaultCommand(_TeleopSwerve);
         CameraServer.startAutomaticCapture(); // Start camera server on zeroth index video device
@@ -88,8 +71,9 @@ public class RobotContainer {
     }
 
     private void configureAutos() {
-        m_autos.setDefaultOption("Default (noting)", new Command() {});
-        m_autos.addOption("Basic 2s Leave", new Leave(_DriveTrainSubsystem));
+        m_autos.setDefaultOption("!!! NO AUTO !!!", new Command() {});
+        m_autos.addOption("C 2P F1,5", _Autos.Center_2Piece_Faces15);
+        m_autos.addOption("Basic 2s Leave", _Autos.Leave);
 
         SmartDashboard.putData("Auto choices", m_autos);
     }
@@ -212,23 +196,6 @@ public class RobotContainer {
         _ArmSubSys.ArmExtendStop();
         _ArmSubSys.ArmRotateStop();
         _ElevatorSubSys.ElevatorStop();
-    }
-
-    public AutoRoutine Blueleaveleft() {
-        AutoRoutine routine = autoFactory.newRoutine("1");
-    
-        // Load the routine's trajectories
-        AutoTrajectory BlueLeaveLeft = routine.trajectory("Blue Leave Left");
-    
-        // When the routine begins, reset odometry and start the first trajectory (1)
-        routine.active().onTrue(
-            Commands.sequence(
-                BlueLeaveLeft.resetOdometry(),
-                BlueLeaveLeft.cmd()
-            )
-        );
-    
-        return routine;
     }
 
     public void ElevtorToStartingHeight()
