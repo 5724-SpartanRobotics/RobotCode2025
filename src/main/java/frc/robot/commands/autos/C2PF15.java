@@ -13,6 +13,14 @@ import frc.robot.subsystems.ClawSubsystem;
 import frc.robot.subsystems.DriveTrainSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 
+/**
+ * Auto: <b>C 2P F1,5</b>
+ * <ul>
+ * <li>Starting Position: Center</li>
+ * <li>Game Pieces scored: 2</li>
+ * <li>Scored on Reef Faces: 1 & 5 (clockwise from furthest center face)</li>
+ * </ul>
+ */
 public class C2PF15 extends SequentialCommandGroup {
     public C2PF15(
         AutoFactory autoFactory,
@@ -28,8 +36,20 @@ public class C2PF15 extends SequentialCommandGroup {
                     new ElevatorToSetpointCommand(elevatorSubsystem, ElevatorAndArmConstants.ElevatorL4Posn) // Set the elevator to setpoint while moving
                 ),
                 new ArmRotateToSetpointCommand(armSubSystem, ElevatorAndArmConstants.ArmRotateL4Posn), // Move the arm while stopped
-                Commands.deadline(new WaitCommand(0.5), new RunCommand(() -> {clawSubsystem.ClawRun(0.3);}, clawSubsystem)) // Run the claw for 0.5s
-                // Next is the rest of the path.
+                Commands.deadline(new WaitCommand(0.5), new RunCommand(() -> {clawSubsystem.ClawRun(0.3);}, clawSubsystem)), // Run the claw for 0.5s
+                new ArmRotateToSetpointCommand(armSubSystem, 0.0),
+                Commands.parallel(
+                    autoFactory.resetOdometry("C 2P F1,5 2-3"),
+                    new ElevatorToSetpointCommand(elevatorSubsystem, 0.0)
+                ),
+                new WaitCommand(2),
+                Commands.parallel(
+                    autoFactory.resetOdometry("C 2P F1,5 3-3"),
+                    new ElevatorToSetpointCommand(elevatorSubsystem, ElevatorAndArmConstants.ElevatorL4Posn)
+                ),
+                new ArmRotateToSetpointCommand(armSubSystem, 0.0),
+                Commands.deadline(new WaitCommand(0.5), new RunCommand(() -> {clawSubsystem.ClawRun(0.3);}, clawSubsystem)),
+                new RunCommand(() -> {})
             )
         );
     }
