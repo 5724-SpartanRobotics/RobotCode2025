@@ -182,9 +182,9 @@ public class DriveTrainSubsystem extends SubsystemBase {
     }
 
     public void resetOdometry(Pose2d pose) {
-      //  this.resetPose(pose);
-      //  m_vision.resetPose();
-      }
+        // robotPose = pose;
+        _SwerveDriveOdometry.resetPose(pose);
+    }
 
     public void followTrajectory(SwerveSample sample) {
         // Get the current pose of the robot

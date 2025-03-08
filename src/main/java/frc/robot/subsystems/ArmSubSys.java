@@ -16,8 +16,6 @@ import frc.robot.Constants.CanIdConstants;
 import frc.robot.Constants.DebugLevel;
 import frc.robot.Constants.DebugSetting;
 import frc.robot.Constants.ElevatorAndArmConstants;
-import frc.robot.InterferenceInfo;
-import frc.robot.RobotContainer;
 import frc.robot.lib.PidRamp;
 
 public class ArmSubSys extends SubsystemBase {
