@@ -15,15 +15,16 @@ import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.WristSubSys;
 
 /**
- * Auto: <b>C 2P F1,5</b>
+ * Auto: <b>B C 2P F1,5</b>
  * <ul>
+ * <li>Alliance: Blue</li>
  * <li>Starting Position: Center</li>
  * <li>Game Pieces scored: 2</li>
  * <li>Scored on Reef Faces: 1 & 5 (clockwise from furthest center face)</li>
  * </ul>
  */
-public class C2PF15 extends SequentialCommandGroup {
-    public C2PF15(
+public class BC2PF15 extends SequentialCommandGroup {
+    public BC2PF15(
         AutoFactory autoFactory,
         DriveTrainSubsystem driveTrainSubsystem,
         ElevatorSubsystem elevatorSubsystem,
@@ -34,7 +35,7 @@ public class C2PF15 extends SequentialCommandGroup {
         addCommands(
             Commands.sequence(
                 Commands.parallel(
-                    autoFactory.resetOdometry("C 2P F1,5 1-3"), // Reset odometry & run the robot
+                    autoFactory.resetOdometry("B C 2P F1,5 1-3"), // Reset odometry & run the robot
                     new ElevatorToSetpointCommand(elevatorSubsystem, ElevatorAndArmConstants.ElevatorL4Posn) // Set the elevator to setpoint while moving
                 ),
                 new ArmRotateToSetpointCommand(armSubSystem, ElevatorAndArmConstants.ArmRotateL4Posn), // Move the arm while stopped
@@ -44,12 +45,12 @@ public class C2PF15 extends SequentialCommandGroup {
                 ),
                 new ArmRotateToSetpointCommand(armSubSystem, 0.0),
                 Commands.parallel(
-                    autoFactory.resetOdometry("C 2P F1,5 2-3"),
+                    autoFactory.resetOdometry("B C 2P F1,5 2-3"),
                     new ElevatorToSetpointCommand(elevatorSubsystem, 0.0)
                 ),
                 new WaitCommand(2),
                 Commands.parallel(
-                    autoFactory.resetOdometry("C 2P F1,5 3-3"),
+                    autoFactory.resetOdometry("B C 2P F1,5 3-3"),
                     new ElevatorToSetpointCommand(elevatorSubsystem, ElevatorAndArmConstants.ElevatorL4Posn)
                 ),
                 new ArmRotateToSetpointCommand(armSubSystem, 0.0),

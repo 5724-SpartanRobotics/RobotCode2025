@@ -21,9 +21,9 @@ public final class Constants {
         public static final int RBCanID = 12;
         public static final int PigeonID = 14;
         public static final int PDHID = 50;
-        public static final int ArmRotateMtrCtrl1CanId = 18;
-        public static final int ArmRotateMtrCtrl2CanId = 19;
-        public static final int ArmExtendMtrCtrlCanId = 16;
+        public static final int ArmRotateMtrCtrl1CanId = 19;
+        public static final int ArmRotateMtrCtrl2CanId = 18;
+        // public static final int ArmExtendMtrCtrlCanId = 16;
         public static final int ElevatorMtrCtrl1CanId = 20;
         public static final int ElevatorMtrCtrl2CanId = 21;
         public static final int AlgaeRotateMtrCtrlCanId = 22;
@@ -69,8 +69,8 @@ public final class Constants {
         public static final double ArmExtendPidI = 0;
         public static final double ArmExtendPidD = 0;
 
-        public static final double ArmRotatePidP = 0.3;
-        public static final double ArmRotatePidFF = 0.0035;
+        public static final double ArmRotatePidP = 0.04;
+        public static final double ArmRotatePidFF = 0.005;
         public static final double ArmRotatePidI = 0;
         public static final double ArmRotatePidD = 0;
 
@@ -89,16 +89,17 @@ public final class Constants {
         public static final double ArmMaxOutsideOfFrameInches = 17.0;
         public static final double ArmAlgaeZoneAngle = 5;//degrees
         public static final double ArmExtendMaxWhenInRobot = 1;//inches
-        public static final double ElevatorL4Posn = 15;
-        public static final double ElevatorL3Posn = 10;
-        public static final double ElevatorL2Posn = 6;
-        public static final double ElevatorL1Posn = 4;
-        public static final double ElevatorCoralPosn = 10;
-        public static final double ArmRotateL4Posn = 95;
-        public static final double ArmRotateL3Posn = 25;
-        public static final double ArmRotateL2Posn = 20;
-        public static final double ArmRotateL1Posn = 20;
-        public static final double ArmRotateCoralPosn = 20;
+        public static final double ElevatorL4Posn = 4;//15;
+        public static final double ElevatorL3Posn = 2;//10;
+        public static final double ElevatorL2Posn = 2;//6;
+        public static final double ElevatorL1Posn = 2;//4;
+        public static final double ElevatorCoralPosn = 6;//10;
+        public static final double ArmRotateL4Posn = 130;
+        public static final double ArmRotateL3Posn = 45;//25;
+        public static final double ArmRotateL2Posn = 45;//20;
+        public static final double ArmRotateL1Posn = 45;//20;
+        public static final double ArmRotateMin = 24;
+        public static final double ArmRotateCoralPosn = 55;//20;
         public static final double ArmExtendL4Posn = 10;
         public static final double ArmExtendL3Posn = 8;
         public static final double ArmExtendL2Posn = 3;
@@ -107,17 +108,17 @@ public final class Constants {
         public static final double ArmRotateSetpointRampRate = 40;//degrees per second
         public static final double ArmExtendSetpointRampRate = 4;//inches per second
 
-        public static final double ElevatorMax = 10.5; // inches
+        public static final double ElevatorMax = 15; // inches
         public static final double ArmRotateMax = 130.0; // degrees
         public static final double ArmExtendMax = 12.0; // inches
 
-        public static final double WristPidP = 0.035;
-        public static final double WristPidFF = 0.000325;
-        public static final double WristPidI = 0;
+        public static final double WristPidP = 1.0;
+        public static final double WristPidFF = 0.005;
+        public static final double WristPidI = 0.000225;
         public static final double WristPidD = 0;
         public static final double WristRotateMax = 180; //degrees
-        public static final double WristSetpointRampRate = 20;//degrees per second
-        public static final double WristGearRatio = 9.0;
+        public static final double WristSetpointRampRate = 80;//degrees per second
+        public static final double WristGearRatio = 5.0;
         public static final double WristMax = 180;
        }
 

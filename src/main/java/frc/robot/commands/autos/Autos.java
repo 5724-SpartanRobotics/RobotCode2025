@@ -11,7 +11,9 @@ public final class Autos {
     private final AutoFactory _AutoFactory;
 
     public final Leave Leave;
-    public final C2PF15 Center_2Piece_Faces15;
+    public final BC2PF15 Blue_Center_2Piece_Faces15;
+    public final BL2PF65 Blue_Left_2Piece_Faces65;
+    public final BR2PF23 Blue_Right_2Piece_Faces23;
 
     public Autos(
         DriveTrainSubsystem driveTrainSubsystem,
@@ -29,6 +31,8 @@ public final class Autos {
         );  
 
         Leave = new Leave(driveTrainSubsystem);
-        Center_2Piece_Faces15 = new C2PF15(_AutoFactory, driveTrainSubsystem, elevatorSubsystem, armSubsystem, clawSubsystem, wristSubsystem);
+        Blue_Center_2Piece_Faces15 = new BC2PF15(_AutoFactory, driveTrainSubsystem, elevatorSubsystem, armSubsystem, clawSubsystem, wristSubsystem);
+        Blue_Left_2Piece_Faces65 = new BL2PF65(_AutoFactory, driveTrainSubsystem, elevatorSubsystem, armSubsystem, clawSubsystem, wristSubsystem);
+        Blue_Right_2Piece_Faces23 = new BR2PF23(_AutoFactory, driveTrainSubsystem, elevatorSubsystem, armSubsystem, clawSubsystem, wristSubsystem);
     }
 }

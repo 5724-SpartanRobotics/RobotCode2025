@@ -35,7 +35,8 @@ public class WristSubSys extends SubsystemBase{
         cfg.closedLoop
         .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
         .pid(ElevatorAndArmConstants.WristPidP, ElevatorAndArmConstants.WristPidI, ElevatorAndArmConstants.WristPidD)
-        .velocityFF(ElevatorAndArmConstants.WristPidFF);
+        .velocityFF(ElevatorAndArmConstants.WristPidFF)
+        .iMaxAccum(0.2);
 
         _WristMtrCtrl.configure(cfg, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
         _WristMtrPidController = _WristMtrCtrl.getClosedLoopController();

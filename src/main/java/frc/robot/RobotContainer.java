@@ -76,7 +76,9 @@ public class RobotContainer {
 
     private void configureAutos() {
         m_autos.setDefaultOption("!!! NO AUTO !!!", new Command() {});
-        m_autos.addOption("C 2P F1,5", _Autos.Center_2Piece_Faces15);
+        m_autos.addOption("B C 2P F1,5", _Autos.Blue_Center_2Piece_Faces15);
+        m_autos.addOption("B L 2P F6,5", _Autos.Blue_Left_2Piece_Faces65);
+        m_autos.addOption("B R 2P F2,3", _Autos.Blue_Right_2Piece_Faces23);
         m_autos.addOption("Basic 2s Leave", _Autos.Leave);
 
         SmartDashboard.putData("Auto choices", m_autos);
@@ -128,7 +130,7 @@ public class RobotContainer {
             _ArmSubSys.ArmRotateToPositionLessThanCurrent();
         }, _ArmSubSys));
 
-        //arm extend
+        //wrist rotate
         _OperatorController.povRight().onTrue(new InstantCommand(() ->{
             _WristSubSys.WristToPosition(180);
         }, _WristSubSys));
@@ -154,40 +156,34 @@ public class RobotContainer {
             new ElevatorToSetpointCommand((_ElevatorSubSys), ElevatorAndArmConstants.ElevatorL4Posn)
             .alongWith(new WristRotateToSetpointCommand(_WristSubSys, ElevatorAndArmConstants.WristMax))
             // .alongWith(new AlgaeRotateToSetpointCommand(_AlgaeSubSys, AlgaeConstants.AlgaeClearOfArmMinimumAngle))
-            .andThen(new ArmRotateToSetpointCommand(_ArmSubSys, ElevatorAndArmConstants.ArmRotateL4Posn))
-            .andThen(new ArmExtendToSetpointCommand(_ArmSubSys, ElevatorAndArmConstants.ArmExtendL4Posn)));
+            .alongWith(new ArmRotateToSetpointCommand(_ArmSubSys, ElevatorAndArmConstants.ArmRotateL4Posn)));
         SequentialCommandGroup l3CommandGroups = new SequentialCommandGroup(
                 new ElevatorToSetpointCommand((_ElevatorSubSys), ElevatorAndArmConstants.ElevatorL3Posn)
                 .alongWith(new WristRotateToSetpointCommand(_WristSubSys, 0))
                 // .alongWith(new AlgaeRotateToSetpointCommand(_AlgaeSubSys, AlgaeConstants.AlgaeClearOfArmMinimumAngle))
-                .andThen(new ArmRotateToSetpointCommand(_ArmSubSys, ElevatorAndArmConstants.ArmRotateL3Posn))
-                .andThen(new ArmExtendToSetpointCommand(_ArmSubSys, ElevatorAndArmConstants.ArmExtendL3Posn)));
+                .alongWith(new ArmRotateToSetpointCommand(_ArmSubSys, ElevatorAndArmConstants.ArmRotateL3Posn)));
         SequentialCommandGroup l2CommandGroups = new SequentialCommandGroup(
                 new ElevatorToSetpointCommand((_ElevatorSubSys), ElevatorAndArmConstants.ElevatorL2Posn)
                 .alongWith(new WristRotateToSetpointCommand(_WristSubSys, 0))
                 // .alongWith(new AlgaeRotateToSetpointCommand(_AlgaeSubSys, AlgaeConstants.AlgaeClearOfArmMinimumAngle))
-                .andThen(new ArmRotateToSetpointCommand(_ArmSubSys, ElevatorAndArmConstants.ArmRotateL2Posn))
-                .andThen(new ArmExtendToSetpointCommand(_ArmSubSys, ElevatorAndArmConstants.ArmExtendL2Posn)));
+                .alongWith(new ArmRotateToSetpointCommand(_ArmSubSys, ElevatorAndArmConstants.ArmRotateL2Posn)));
         SequentialCommandGroup l1CommandGroups = new SequentialCommandGroup(
                 new ElevatorToSetpointCommand((_ElevatorSubSys), ElevatorAndArmConstants.ElevatorL1Posn)
                 .alongWith(new WristRotateToSetpointCommand(_WristSubSys, 0))
                 // .alongWith(new AlgaeRotateToSetpointCommand(_AlgaeSubSys, AlgaeConstants.AlgaeClearOfArmMinimumAngle))
-                .andThen(new ArmRotateToSetpointCommand(_ArmSubSys, ElevatorAndArmConstants.ArmRotateL1Posn))
-                .andThen(new ArmExtendToSetpointCommand(_ArmSubSys, ElevatorAndArmConstants.ArmExtendL1Posn)));
+                .alongWith(new ArmRotateToSetpointCommand(_ArmSubSys, ElevatorAndArmConstants.ArmRotateL1Posn)));
         SequentialCommandGroup returnHomeCommandGroup = new SequentialCommandGroup(
-                    new ArmExtendToSetpointCommand((_ArmSubSys), 0.0)
-                    .alongWith(new WristRotateToSetpointCommand(_WristSubSys, 0))
-                    // .alongWith(new AlgaeRotateToSetpointCommand(_AlgaeSubSys, AlgaeConstants.AlgaeClearOfArmMinimumAngle))
-                    .andThen(new ArmRotateToSetpointCommand(_ArmSubSys, 0.0))
-                    .andThen(new ElevatorToSetpointCommand(_ElevatorSubSys, 0.0)));
+                new WristRotateToSetpointCommand(_WristSubSys, 0)
+                    .alongWith(new ArmRotateToSetpointCommand(_ArmSubSys, 0.0))
+                    .alongWith(new ElevatorToSetpointCommand(_ElevatorSubSys, 0.0)));
         SequentialCommandGroup coralPickupGroup = new SequentialCommandGroup(
             new ElevatorToSetpointCommand(_ElevatorSubSys, ElevatorAndArmConstants.ElevatorCoralPosn)
             .alongWith(new WristRotateToSetpointCommand(_WristSubSys, ElevatorAndArmConstants.WristMax))
-            .andThen(new ArmRotateToSetpointCommand(_ArmSubSys, ElevatorAndArmConstants.ArmRotateCoralPosn)));
+            .alongWith(new ArmRotateToSetpointCommand(_ArmSubSys, ElevatorAndArmConstants.ArmRotateCoralPosn)));
         _OperatorController.button(5).onTrue(l4CommandGroups);
         _OperatorController.button(3).onTrue(l3CommandGroups);
         _OperatorController.button(6).onTrue(l2CommandGroups);
-        _OperatorController.button(4).onTrue(l1CommandGroups);
+        _OperatorController.button(4).onTrue(coralPickupGroup);
         _OperatorController.button(12).onTrue(returnHomeCommandGroup);
     }
 
