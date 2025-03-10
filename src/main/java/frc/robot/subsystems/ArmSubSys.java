@@ -46,7 +46,8 @@ public class ArmSubSys extends SubsystemBase {
         cfg.closedLoop
         .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
         .pid(ElevatorAndArmConstants.ArmRotatePidP, ElevatorAndArmConstants.ArmRotatePidI, ElevatorAndArmConstants.ArmRotatePidD)
-        .velocityFF(ElevatorAndArmConstants.ArmRotatePidFF);
+        .velocityFF(ElevatorAndArmConstants.ArmRotatePidFF)
+        .iMaxAccum(0.2);
         _ArmRotateMtrCtrl1.configure(cfg, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
 
         cfg = new SparkMaxConfig();

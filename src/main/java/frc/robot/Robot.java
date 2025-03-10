@@ -42,6 +42,7 @@ public class Robot extends TimedRobot {
     public void robotPeriodic() {
         CommandScheduler.getInstance().run();
         NetworkTableInstance.getDefault().getEntry("/Match Time").setDouble(DriverStation.getMatchTime());
+        NetworkTableInstance.getDefault().getEntry("/Voltage").setDouble(_RobotContainer._PowerDistribution.getVoltage());
     }
 
     /**

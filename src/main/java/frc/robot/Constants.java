@@ -69,9 +69,9 @@ public final class Constants {
         public static final double ArmExtendPidI = 0;
         public static final double ArmExtendPidD = 0;
 
-        public static final double ArmRotatePidP = 0.04;
-        public static final double ArmRotatePidFF = 0.005;
-        public static final double ArmRotatePidI = 0;
+        public static final double ArmRotatePidP = 0.048;
+        public static final double ArmRotatePidFF = 0.000;
+        public static final double ArmRotatePidI = 0.00007;
         public static final double ArmRotatePidD = 0;
 
         public static final double ElePidP = 0.04;
@@ -89,27 +89,27 @@ public final class Constants {
         public static final double ArmMaxOutsideOfFrameInches = 17.0;
         public static final double ArmAlgaeZoneAngle = 5;//degrees
         public static final double ArmExtendMaxWhenInRobot = 1;//inches
-        public static final double ElevatorL4Posn = 4;//15;
-        public static final double ElevatorL3Posn = 2;//10;
-        public static final double ElevatorL2Posn = 2;//6;
-        public static final double ElevatorL1Posn = 2;//4;
-        public static final double ElevatorCoralPosn = 6;//10;
-        public static final double ArmRotateL4Posn = 130;
-        public static final double ArmRotateL3Posn = 45;//25;
-        public static final double ArmRotateL2Posn = 45;//20;
-        public static final double ArmRotateL1Posn = 45;//20;
+        public static final double ElevatorL4Posn = 14.5;
+        public static final double ElevatorL3Posn = 6;
+        public static final double ElevatorL2Posn = 1;
+        public static final double ElevatorL1Posn = 1;
+        public static final double ElevatorCoralPosn = 13.5;
+        public static final double ArmRotateL4Posn = 150;
+        public static final double ArmRotateL3Posn = 122;
+        public static final double ArmRotateL2Posn = 100;//20;
+        public static final double ArmRotateL1Posn = 85;//20;
         public static final double ArmRotateMin = 24;
-        public static final double ArmRotateCoralPosn = 55;//20;
+        public static final double ArmRotateCoralPosn = 42;//20;
         public static final double ArmExtendL4Posn = 10;
-        public static final double ArmExtendL3Posn = 8;
-        public static final double ArmExtendL2Posn = 3;
+        public static final double ArmExtendL3Posn = 5;
+        public static final double ArmExtendL2Posn = 5;
         public static final double ArmExtendL1Posn = 3;
         public static final double ElevatorSetpointRampRate = 4;//inches per second
         public static final double ArmRotateSetpointRampRate = 40;//degrees per second
         public static final double ArmExtendSetpointRampRate = 4;//inches per second
 
-        public static final double ElevatorMax = 15; // inches
-        public static final double ArmRotateMax = 130.0; // degrees
+        public static final double ElevatorMax = 14.5; // inches
+        public static final double ArmRotateMax = 150.0; // degrees
         public static final double ArmExtendMax = 12.0; // inches
 
         public static final double WristPidP = 1.0;

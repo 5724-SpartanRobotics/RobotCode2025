@@ -1,6 +1,8 @@
 package frc.robot;
 
 import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.wpilibj.PowerDistribution;
+import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -8,8 +10,8 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
+import frc.robot.Constants.CanIdConstants;
 import frc.robot.Constants.ElevatorAndArmConstants;
-import frc.robot.commands.ArmExtendToSetpointCommand;
 import frc.robot.commands.ArmRotateToSetpointCommand;
 import frc.robot.commands.ElevatorToSetpointCommand;
 import frc.robot.commands.TeleopSwerve;
@@ -25,6 +27,8 @@ import frc.robot.subsystems.VisionSubsystem;
 import frc.robot.subsystems.WristSubSys;
 
 public class RobotContainer {
+    public final PowerDistribution _PowerDistribution = new PowerDistribution(CanIdConstants.PDHID, ModuleType.kRev);
+    
     private DriveTrainSubsystem _DriveTrainSubsystem;
     private TeleopSwerve _TeleopSwerve;
     private LedSubsystem _LedSubsystem;
@@ -154,7 +158,7 @@ public class RobotContainer {
         //sequencial commands
         SequentialCommandGroup l4CommandGroups = new SequentialCommandGroup(
             new ElevatorToSetpointCommand((_ElevatorSubSys), ElevatorAndArmConstants.ElevatorL4Posn)
-            .alongWith(new WristRotateToSetpointCommand(_WristSubSys, ElevatorAndArmConstants.WristMax))
+            .alongWith(new WristRotateToSetpointCommand(_WristSubSys, 0))
             // .alongWith(new AlgaeRotateToSetpointCommand(_AlgaeSubSys, AlgaeConstants.AlgaeClearOfArmMinimumAngle))
             .alongWith(new ArmRotateToSetpointCommand(_ArmSubSys, ElevatorAndArmConstants.ArmRotateL4Posn)));
         SequentialCommandGroup l3CommandGroups = new SequentialCommandGroup(
@@ -206,6 +210,6 @@ public class RobotContainer {
 
     public void ElevtorToStartingHeight()
     {
-        _ElevatorSubSys.ElevatorToPosition(2);
+        _ElevatorSubSys.ElevatorToPosition(1);
     }
 }
