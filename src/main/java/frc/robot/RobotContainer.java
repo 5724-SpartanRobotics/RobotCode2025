@@ -20,6 +20,7 @@ import frc.robot.commands.autos.Autos;
 import frc.robot.subsystems.AlgaeSubsystem;
 import frc.robot.subsystems.ArmSubSys;
 import frc.robot.subsystems.ClawSubsystem;
+import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.DriveTrainSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.LedSubsystem;
@@ -37,6 +38,7 @@ public class RobotContainer {
     private ClawSubsystem _ClawSubsystem;
     private AlgaeSubsystem _AlgaeSubSys;
     private WristSubSys _WristSubSys;
+    private ClimberSubsystem _ClimberSubsystem;
     @SuppressWarnings("unused")
     private VisionSubsystem _VisionSubSys;
     private CommandJoystick _DriverController;
@@ -56,6 +58,7 @@ public class RobotContainer {
         _ClawSubsystem = new ClawSubsystem(_LedSubsystem);
         _AlgaeSubSys = new AlgaeSubsystem();
         _WristSubSys = new WristSubSys();
+        _ClimberSubsystem = new ClimberSubsystem();
         InterferenceHelper = new Interference(_ArmSubSys);
         _DriverController = new CommandJoystick(0);
         _OperatorController = new CommandJoystick(1);      

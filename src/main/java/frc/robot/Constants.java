@@ -29,6 +29,7 @@ public final class Constants {
         public static final int AlgaeRotateMtrCtrlCanId = 22;
         public static final int ClawMtrCtrlCanId = 17;
         public static final int WristMtrCtrlCanId = 23;
+        public static final int Climber = 24;
     }
     public final class DriveConstants {
         public static final double maxRobotSpeedmps = 4.5;
@@ -118,7 +119,7 @@ public final class Constants {
         public static final double WristPidD = 0;
         public static final double WristRotateMax = 180; //degrees
         public static final double WristSetpointRampRate = 80;//degrees per second
-        public static final double WristGearRatio = 5.0;
+        public static final double WristGearRatio = 25.0;
         public static final double WristMax = 180;
        }
 
@@ -136,6 +137,16 @@ public final class Constants {
         public static final double AlgaeClearOfArmMinimumAngle = 60;
         public static final double RotateMaxAccel = 3000; // RPM/s
         public static final double RotateMaxVelocity = 5000; // RPM
+    }
+    public static final class ClimberConstants {
+        public static final double GearRatio = 108.0;
+        public static final double RampRate = GearRatio / 2;
+        public static final double ClimbAngle = 90;
+
+        public static final double PidP = 0.0;
+        public static final double PidI = 0.0;
+        public static final double PidD = 0.0;
+        public static final double PidFF = 0.0;
     }
 
     public static final class NeoConstants {

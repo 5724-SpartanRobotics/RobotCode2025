@@ -7,8 +7,10 @@ package frc.robot;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.Util.Elastic;
 
 /**
  * The methods in this class are called automatically corresponding to each mode, as described in
@@ -42,7 +44,7 @@ public class Robot extends TimedRobot {
     public void robotPeriodic() {
         CommandScheduler.getInstance().run();
         NetworkTableInstance.getDefault().getEntry("/Match Time").setDouble(DriverStation.getMatchTime());
-        NetworkTableInstance.getDefault().getEntry("/Voltage").setDouble(_RobotContainer._PowerDistribution.getVoltage());
+        NetworkTableInstance.getDefault().getEntry("/Voltage").setDouble(RobotController.getBatteryVoltage());
     }
 
     /**
@@ -69,6 +71,7 @@ public class Robot extends TimedRobot {
     @Override
     public void teleopInit() {
         _RobotContainer.ElevtorToStartingHeight();
+        Elastic.selectTab("Real Teleoperated");
     }
 
     /** This function is called periodically during operator control. */

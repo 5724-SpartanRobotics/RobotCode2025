@@ -23,12 +23,12 @@ public class ClawSubsystem extends SubsystemBase {
         this._LedSubsystem = ledSubsystem;
 
         _ClawIntake = new SparkMax(CanIdConstants.ClawMtrCtrlCanId, MotorType.kBrushless);
-         _ClawIntake.configure(new SparkMaxConfig()
+        _ClawIntake.configure(new SparkMaxConfig()
             .inverted(false)
-            .smartCurrentLimit(50)
+            .smartCurrentLimit(32)
             .apply(new SoftLimitConfig().forwardSoftLimitEnabled(false).reverseSoftLimitEnabled(false))
             .apply(new LimitSwitchConfig().forwardLimitSwitchEnabled(false).reverseLimitSwitchEnabled(false))
-            .idleMode(IdleMode.kBrake), 
+            .idleMode(IdleMode.kBrake),
             ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
 
