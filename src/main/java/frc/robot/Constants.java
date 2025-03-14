@@ -173,6 +173,7 @@ public final class Constants {
         Autonomous,
         Vision,
         Wrist,
+        Climber,
         All
     }
 }

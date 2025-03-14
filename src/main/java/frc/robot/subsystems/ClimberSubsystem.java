@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
@@ -11,14 +12,18 @@ import com.revrobotics.spark.config.SoftLimitConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkFlexConfig;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.ClimberConstants;
+import frc.robot.Constants.DebugLevel;
+import frc.robot.Constants.DebugSetting;
 import frc.robot.lib.PidRamp;
 
 public class ClimberSubsystem extends SubsystemBase {
     private SparkFlex _ClimbMotor;
     private SparkClosedLoopController _ClimbPidController;
+    private RelativeEncoder _ClimbEncoder;
     private PidRamp _Ramp;
 
     public ClimberSubsystem() {
@@ -32,7 +37,20 @@ public class ClimberSubsystem extends SubsystemBase {
             ResetMode.kResetSafeParameters, PersistMode.kPersistParameters
         );
         _ClimbPidController = _ClimbMotor.getClosedLoopController();
+        _ClimbEncoder = _ClimbMotor.getEncoder();
         _Ramp = new PidRamp(_ClimbPidController, null, ClimberConstants.RampRate);
+    }
+    @Override
+    public void periodic(){
+        super.periodic();
+
+        double climbAngle = GetClimbAngleDegrees();
+        _Ramp.Periodic(ConvertClimberDegreesToMotorRotations(climbAngle));
+
+        if (DebugSetting.TraceLevel == DebugLevel.Climber || DebugSetting.TraceLevel == DebugLevel.All){
+            SmartDashboard.putNumber("ClimbAngle", climbAngle);
+            SmartDashboard.putNumber("ClimbRef", _Ramp.GetCurrentRampedSetpoint()/ClimberConstants.GearRatio * 360);
+        }
     }
 
     public void SetToClimbPosition() {
@@ -44,10 +62,15 @@ public class ClimberSubsystem extends SubsystemBase {
     }
 
     public void Climb() {
+        _Ramp.Stop();
         _ClimbMotor.set(0.5);
     }
 
     private double ConvertClimberDegreesToMotorRotations(double angle) {
         return angle / 360 * ClimberConstants.GearRatio;
+    }
+
+    public double GetClimbAngleDegrees(){
+        return _ClimbEncoder.getPosition() * 360 / ClimberConstants.GearRatio;
     }
 }
