@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import frc.robot.Constants.CanIdConstants;
+import frc.robot.Constants.ClawConstants;
 import frc.robot.Constants.ElevatorAndArmConstants;
 import frc.robot.commands.ArmRotateToSetpointCommand;
 import frc.robot.commands.ElevatorToSetpointCommand;
@@ -68,7 +69,7 @@ public class RobotContainer {
 
         _DriveTrainSubsystem.setDefaultCommand(_TeleopSwerve);
         CameraServer.startAutomaticCapture(); // Start camera server on zeroth index video device
-        CameraServer.startAutomaticCapture(); // Start camera server on first index video device (auto inc)
+        // CameraServer.startAutomaticCapture(); // Start camera server on first index video device (auto inc)
 
         _DriveTrainSubsystem.zeroGyro();
         _DriveTrainSubsystem.flipGyro();
@@ -95,6 +96,18 @@ public class RobotContainer {
     {
         _DriverController.button(7).onTrue(new InstantCommand(() -> {
             _DriveTrainSubsystem.zeroGyro();
+        }));
+        _DriverController.button(8).onTrue(new InstantCommand(() ->{
+            _ClimberSubsystem.SetToClimbPosition();
+        }));
+        _DriverController.button(10).onTrue(new InstantCommand(() ->{
+            _ClimberSubsystem.SetToHomePosition();
+        }));
+        _DriverController.button(12).whileTrue(new RunCommand(() ->{
+            _ClimberSubsystem.Climb(-0.3);
+        }));
+        _DriverController.button(12).onFalse(new InstantCommand(() ->{
+            _ClimberSubsystem.Climb(0);
         }));
         // _DriverController.button(11).whileTrue(new AprilTagLockonCommand(_DriveTrainSubsystem, _VisionSubSys));
        
@@ -147,16 +160,16 @@ public class RobotContainer {
 
         //claw run 
         _OperatorController.button(1).onTrue(new InstantCommand(() ->{
-            _ClawSubsystem.ClawRun(0.3);
+            _ClawSubsystem.ClawRun(ClawConstants.ExpelSpeed);
         }, _ClawSubsystem));
         _OperatorController.button(1).onFalse(new InstantCommand(() ->{
-            _ClawSubsystem.ClawRun(0);
+            _ClawSubsystem.ClawRun(ClawConstants.StoppedSpeed);
         }, _ClawSubsystem));
         _OperatorController.button(2).onFalse(new InstantCommand(() ->{
-            _ClawSubsystem.ClawRun(0);
+            _ClawSubsystem.ClawRun(ClawConstants.StoppedSpeed);
         }, _ClawSubsystem));
         _OperatorController.button(2).onTrue(new InstantCommand(() ->{
-            _ClawSubsystem.ClawRun(-0.3);
+            _ClawSubsystem.ClawRun(ClawConstants.IntakeSpeed);
         }, _ClawSubsystem));
         //sequencial commands
         SequentialCommandGroup l4CommandGroups = new SequentialCommandGroup(

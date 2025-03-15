@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants.ElevatorAndArmConstants;
+import frc.robot.Constants.TimeDuration;
 import frc.robot.commands.ArmRotateToSetpointCommand;
 import frc.robot.commands.ClawRunForDurationCommand;
 import frc.robot.commands.ElevatorToSetpointCommand;
@@ -36,21 +37,14 @@ public class BC2PF15 extends SequentialCommandGroup {
         WristSubSys wristSubsystem
     ) {
         addCommands(
-            new ClawRunForDurationCommand(clawSubsystem, ClawRunMode.Intake, 0.5), // Initial intake
+            new ClawRunForDurationCommand(clawSubsystem, ClawRunMode.Intake, TimeDuration.Instant), // Initial intake
             Commands.parallel( // First run to face 1
-                // I need to figure out how to run the claw intake here to
-                // prevent the coral from falling out. I don't think I can run
-                // it directly in the parallel command because I think that
-                // might make the command group never finish. A solution to
-                // this is to time how long it takes and use a
-                // ClawRunForDuration but I personally don't like that 'cause
-                // it's janky.
                 autoFactory.resetOdometry("B C 2P F1,5 1-3"), // Reset odometry & run the robot to face 1
                 new ElevatorToSetpointCommand(elevatorSubsystem, ElevatorAndArmConstants.ElevatorL4Posn), // Set the elevator to setpoint while moving
                 new ArmRotateToSetpointCommand(armSubSystem, ElevatorAndArmConstants.ArmRotateL4Posn) // Move the arm while moving
             ),
             new WaitCommand(0.5), // wait for the robot to settle
-            new ClawRunForDurationCommand(clawSubsystem, ClawRunMode.Outtake, 0.1), // place the coral on face 1 L4
+            new ClawRunForDurationCommand(clawSubsystem, ClawRunMode.Outtake, TimeDuration.Instant), // place the coral on face 1 L4
             Commands.parallel( // Run to hp for coral intake
                 autoFactory.resetOdometry("B C 2P F1,5 2-3"),
                 new ElevatorToSetpointCommand(elevatorSubsystem, ElevatorAndArmConstants.ElevatorCoralPosn), // move the elevator
@@ -64,7 +58,7 @@ public class BC2PF15 extends SequentialCommandGroup {
                 new ArmRotateToSetpointCommand(armSubSystem, ElevatorAndArmConstants.ArmRotateL4Posn)
             ),
             new WaitCommand(0.5), // wait for the robot to settle
-            new ClawRunForDurationCommand(clawSubsystem, ClawRunMode.Outtake, 0.1), // place coral on face 5 L4
+            new ClawRunForDurationCommand(clawSubsystem, ClawRunMode.Outtake, TimeDuration.Instant), // place coral on face 5 L4
             new RunCommand(() -> {})
         );
     }

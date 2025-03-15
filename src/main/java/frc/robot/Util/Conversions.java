@@ -89,4 +89,8 @@ public class Conversions {
         }
         return iArray;
     }
+
+    public static int castBoolToInt(boolean bool) {
+        return bool ? 1 : 0;
+    }
 }

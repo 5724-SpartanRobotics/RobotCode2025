@@ -32,6 +32,7 @@ public final class Constants {
         public static final int Climber = 24;
     }
     public final class DriveConstants {
+        public static final double defaultSpeedMod = 0.3;
         public static final double maxRobotSpeedmps = 4.5;
         public static final double driveGearRatio = 6.75;
         public static final double turnGearRatio = 150.0 / 7.0;
@@ -90,15 +91,15 @@ public final class Constants {
         public static final double ArmMaxOutsideOfFrameInches = 17.0;
         public static final double ArmAlgaeZoneAngle = 5;//degrees
         public static final double ArmExtendMaxWhenInRobot = 1;//inches
-        public static final double ElevatorL4Posn = 14.5;
+        public static final double ElevatorL4Posn = 15.0;
         public static final double ElevatorL3Posn = 6;
         public static final double ElevatorL2Posn = 1;
         public static final double ElevatorL1Posn = 1;
         public static final double ElevatorCoralPosn = 13.5;
-        public static final double ArmRotateL4Posn = 150;
-        public static final double ArmRotateL3Posn = 122;
-        public static final double ArmRotateL2Posn = 100;//20;
-        public static final double ArmRotateL1Posn = 85;//20;
+        public static final double ArmRotateL4Posn = 146;
+        public static final double ArmRotateL3Posn = 123;
+        public static final double ArmRotateL2Posn = 110;//20;
+        public static final double ArmRotateL1Posn = 90;//20;
         public static final double ArmRotateMin = 24;
         public static final double ArmRotateCoralPosn = 42;//20;
         public static final double ArmExtendL4Posn = 10;
@@ -109,7 +110,7 @@ public final class Constants {
         public static final double ArmRotateSetpointRampRate = 40;//degrees per second
         public static final double ArmExtendSetpointRampRate = 4;//inches per second
 
-        public static final double ElevatorMax = 14.5; // inches
+        public static final double ElevatorMax = 15.0; // inches
         public static final double ArmRotateMax = 150.0; // degrees
         public static final double ArmExtendMax = 12.0; // inches
 
@@ -126,7 +127,7 @@ public final class Constants {
     public final class AlgaeConstants {
         public static final double RotatePidP = 0.5;
         public static final double RotatePidFF = 0.000;
-        public static final double RotatePidI = 0.0000;
+        public static final double RotatePidI = 0.00001;
         public static final double RotatePidD = 0;
         public static final double GearRatio = 81;
         public static final double IncrementDegrees = 5;
@@ -138,13 +139,18 @@ public final class Constants {
         public static final double RotateMaxAccel = 3000; // RPM/s
         public static final double RotateMaxVelocity = 5000; // RPM
     }
+    public static final class ClawConstants {
+        public static final double StoppedSpeed = 0.0;
+        public static final double IntakeSpeed = -0.3;
+        public static final double ExpelSpeed = 0.1;
+    }
     public static final class ClimberConstants {
         public static final double GearRatio = 108.0;
         public static final double RampRate = GearRatio / 2;
         public static final double ClimbAngle = 90;
 
-        public static final double PidP = 0.0;
-        public static final double PidI = 0.0;
+        public static final double PidP = 0.03;
+        public static final double PidI = 0.0000001;
         public static final double PidD = 0.0;
         public static final double PidFF = 0.0;
     }
@@ -175,5 +181,11 @@ public final class Constants {
         Wrist,
         Climber,
         All
+    }
+
+    public static final class TimeDuration {
+        public static final double Instant = 0.01;
+        public static final double HalfSecond = 0.5;
+        public static final double Second = 1.0;
     }
 }

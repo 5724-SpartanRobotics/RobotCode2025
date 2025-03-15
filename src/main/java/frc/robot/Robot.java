@@ -20,6 +20,8 @@ import frc.robot.Util.Elastic;
 public class Robot extends TimedRobot {
     private RobotContainer _RobotContainer;
 
+    private boolean __IsFirstConnection = true;
+
     /**
      * This function is run when the robot is first started up and should be used for any
      * initialization code.
@@ -43,8 +45,13 @@ public class Robot extends TimedRobot {
     @Override
     public void robotPeriodic() {
         CommandScheduler.getInstance().run();
+
         NetworkTableInstance.getDefault().getEntry("/Match Time").setDouble(DriverStation.getMatchTime());
         NetworkTableInstance.getDefault().getEntry("/Voltage").setDouble(RobotController.getBatteryVoltage());
+        if (DriverStation.isDSAttached() && __IsFirstConnection) {
+            Elastic.selectTab("Autonomous");
+            __IsFirstConnection = false;
+        }
     }
 
     /**

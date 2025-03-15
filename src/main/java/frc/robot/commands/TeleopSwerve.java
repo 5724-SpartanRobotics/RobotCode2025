@@ -77,7 +77,9 @@ public class TeleopSwerve extends Command {
 
             zAxis = -controller.getTwist();
 
-            double speedMod = controller.button(1).getAsBoolean() ? 0.3 : 1.0;
+            double speedMod = DriveConstants.defaultSpeedMod;
+            if (controller.button(1).getAsBoolean()) speedMod = 1.0;
+            else if (controller.button(2).getAsBoolean()) speedMod = 0.65;
 
         // Power Array Auto Align Code
         // Conditional is a check for having a combination of buttons pressed

@@ -79,7 +79,7 @@ public class ArmSubSys extends SubsystemBase {
         _ArmRotateMtr1Encoder = _ArmRotateMtrCtrl1.getEncoder();
         // _ArmExtendMtrPidController = _ArmExtendMtrCtrl.getClosedLoopController();
         // _ArmExtenMtrEncoder = _ArmExtendMtrCtrl.getEncoder();
-        _ArmRotatePidRamp = new PidRamp(_ArmRotateMtr1PidController, null, ConvertArmRotateAngleToNeoRotations(ElevatorAndArmConstants.ArmRotateSetpointRampRate));
+        _ArmRotatePidRamp = new PidRamp(_ArmRotateMtr1PidController, ConvertArmRotateAngleToNeoRotations(ElevatorAndArmConstants.ArmRotateSetpointRampRate));
         // _ArmExtendPidRamp = new PidRamp(null, null, ConvertArmExtendInchesToRotations(ElevatorAndArmConstants.ArmExtendSetpointRampRate));
 
         _ArmRotateMtr1Encoder.setPosition(ConvertArmRotateAngleToNeoRotations(24.0));

@@ -32,13 +32,13 @@ public class ClimberSubsystem extends SubsystemBase {
             .inverted(false)
             .apply(new SoftLimitConfig().forwardSoftLimitEnabled(false).reverseSoftLimitEnabled(false))
             .apply(new LimitSwitchConfig().forwardLimitSwitchEnabled(false).reverseLimitSwitchEnabled(false))
-            .apply(new ClosedLoopConfig().pidf(ClimberConstants.PidP, ClimberConstants.PidI, ClimberConstants.PidD, ClimberConstants.PidFF))
+            .apply(new ClosedLoopConfig().pidf(ClimberConstants.PidP, ClimberConstants.PidI, ClimberConstants.PidD, ClimberConstants.PidFF).iMaxAccum(0.1))
             .idleMode(IdleMode.kBrake),
             ResetMode.kResetSafeParameters, PersistMode.kPersistParameters
         );
         _ClimbPidController = _ClimbMotor.getClosedLoopController();
         _ClimbEncoder = _ClimbMotor.getEncoder();
-        _Ramp = new PidRamp(_ClimbPidController, null, ClimberConstants.RampRate);
+        _Ramp = new PidRamp(_ClimbPidController, ClimberConstants.RampRate);
     }
     @Override
     public void periodic(){
@@ -61,9 +61,9 @@ public class ClimberSubsystem extends SubsystemBase {
         _Ramp.setReference(0);
     }
 
-    public void Climb() {
+    public void Climb(double speed) {
         _Ramp.Stop();
-        _ClimbMotor.set(0.5);
+        _ClimbMotor.set(speed);
     }
 
     private double ConvertClimberDegreesToMotorRotations(double angle) {

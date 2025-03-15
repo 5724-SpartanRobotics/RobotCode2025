@@ -41,7 +41,7 @@ public class WristSubSys extends SubsystemBase{
         _WristMtrCtrl.configure(cfg, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
         _WristMtrPidController = _WristMtrCtrl.getClosedLoopController();
         _WristMtrEncoder = _WristMtrCtrl.getEncoder();
-        _WristPidRamp = new PidRamp(_WristMtrPidController, null, ConvertWristDegreesToMotorRotations(ElevatorAndArmConstants.WristSetpointRampRate));
+        _WristPidRamp = new PidRamp(_WristMtrPidController, ConvertWristDegreesToMotorRotations(ElevatorAndArmConstants.WristSetpointRampRate));
 
     }
 

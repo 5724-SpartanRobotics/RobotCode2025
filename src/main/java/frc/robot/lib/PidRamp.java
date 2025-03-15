@@ -16,15 +16,27 @@ public class PidRamp {
     private boolean _StopIsActive;
     private double _Setpoint;
     private double _RampedSetpoint;
+
     /**
      * Creates a new PID ramp using the given units/second rate
-     * @param pidController - The PID controller (canNOT be null)
+     * @param pidController - The PID controller (<i>cannot</i> be null)
      * @param pidController2 - The second PID controller (can be null)
      * @param rampRate - The ramp rate. The rate is in motor rotations per second per second.
      */
     public PidRamp(SparkClosedLoopController pidController, SparkClosedLoopController pidController2, double rampRate) {
         _Pid = pidController;
         _Pid2 = pidController2;
+        _Ramp = new SlewRateLimiter(rampRate);
+    }
+
+    /**
+     * Creates a new PID ramp using the given units/second rate
+     * @param pidController - The PID controller (<i>cannot</i> be null)
+     * @param rampRate - The ramp rate. The rate is in motor rotations per second per second.
+     */
+    public PidRamp(SparkClosedLoopController pidController, double rampRate) {
+        _Pid = pidController;
+        _Pid2 = null;
         _Ramp = new SlewRateLimiter(rampRate);
     }
 
