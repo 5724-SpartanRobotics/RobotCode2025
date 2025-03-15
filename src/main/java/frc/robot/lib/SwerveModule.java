@@ -97,18 +97,22 @@ public class SwerveModule {
     }
 
     public void reportAbsolutePosition() {
-        if (DebugSetting.TraceLevel == DebugLevel.Swerve || DebugSetting.TraceLevel == DebugLevel.All)
-          SmartDashboard.putNumber(Name + " AbsEncPosn", canCoder.getAbsolutePosition().refresh().getValueAsDouble());
+        SmartDashboard.putNumber(Name + " AbsEncPosn", canCoder.getAbsolutePosition().refresh().getValueAsDouble());
     }
 
     public void reportMotorEncoderPosition() {
-        if (DebugSetting.TraceLevel == DebugLevel.Swerve || DebugSetting.TraceLevel == DebugLevel.All)
-            SmartDashboard.putNumber(Name + " TurnMotorPosEnc", turn.getEncoder().getPosition()); // rotations
+        SmartDashboard.putNumber(Name + " TurnMotorPosEnc", turn.getEncoder().getPosition()); // rotations
+    }
+
+    public void reportMotorCurrent() {
+        SmartDashboard.putNumber(Name + "_DriveCurrent", drive.getOutputCurrent());
+        SmartDashboard.putNumber(Name + "_TurnCurrent", turn.getOutputCurrent());
     }
 
     public void reportAll() {
         reportAbsolutePosition();
         reportMotorEncoderPosition();
+        reportMotorCurrent();
     }
 
     public void setDesiredState(SwerveModuleState desiredState){
@@ -154,6 +158,5 @@ public class SwerveModule {
         double absoluteEncoderAngle = (canCoder.getAbsolutePosition().refresh().getValueAsDouble() - Offset) * Constants.TwoPI * 1.0 /* encoder not reversed */;
         turn.getEncoder().setPosition(absoluteEncoderAngle / (Constants.TwoPI / DriveConstants.turnGearRatio));
     }
-    
 }
  

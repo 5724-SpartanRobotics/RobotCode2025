@@ -1,10 +1,13 @@
 package frc.robot;
 
 import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.net.WebServer;
+import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -68,8 +71,10 @@ public class RobotContainer {
         _Autos = new Autos(_DriveTrainSubsystem, _ElevatorSubSys, _ArmSubSys, _ClawSubsystem, _WristSubSys);
 
         _DriveTrainSubsystem.setDefaultCommand(_TeleopSwerve);
-        CameraServer.startAutomaticCapture(); // Start camera server on zeroth index video device
-        // CameraServer.startAutomaticCapture(); // Start camera server on first index video device (auto inc)
+        // CameraServer.startAutomaticCapture(); // L4 Camera // Start camera server on zeroth index video device
+        CameraServer.startAutomaticCapture(); // Algae Camera // Start camera server on first index video device (auto inc)
+        CameraServer.startAutomaticCapture(); // Barrel Camera // Start camera server on second index video device (auto inc)
+        WebServer.start(5800, Filesystem.getDeployDirectory().getPath()); // Expose the deploy/ dir for Elastic layout
 
         _DriveTrainSubsystem.zeroGyro();
         _DriveTrainSubsystem.flipGyro();
@@ -107,6 +112,12 @@ public class RobotContainer {
             _ClimberSubsystem.Climb(-0.3);
         }));
         _DriverController.button(12).onFalse(new InstantCommand(() ->{
+            _ClimberSubsystem.Climb(0);
+        }));
+        _DriverController.button(11).whileTrue(new RunCommand(() ->{
+            _ClimberSubsystem.Climb(-1.0);
+        }));
+        _DriverController.button(11).onFalse(new InstantCommand(() ->{
             _ClimberSubsystem.Climb(0);
         }));
         // _DriverController.button(11).whileTrue(new AprilTagLockonCommand(_DriveTrainSubsystem, _VisionSubSys));
@@ -167,9 +178,11 @@ public class RobotContainer {
         }, _ClawSubsystem));
         _OperatorController.button(2).onFalse(new InstantCommand(() ->{
             _ClawSubsystem.ClawRun(ClawConstants.StoppedSpeed);
+            _LedSubsystem.reset();
         }, _ClawSubsystem));
         _OperatorController.button(2).onTrue(new InstantCommand(() ->{
             _ClawSubsystem.ClawRun(ClawConstants.IntakeSpeed);
+            _LedSubsystem.setColor(Color.kGoldenrod);
         }, _ClawSubsystem));
         //sequencial commands
         SequentialCommandGroup l4CommandGroups = new SequentialCommandGroup(

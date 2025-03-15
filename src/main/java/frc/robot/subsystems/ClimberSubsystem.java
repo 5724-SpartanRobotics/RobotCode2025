@@ -40,6 +40,7 @@ public class ClimberSubsystem extends SubsystemBase {
         _ClimbEncoder = _ClimbMotor.getEncoder();
         _Ramp = new PidRamp(_ClimbPidController, ClimberConstants.RampRate);
     }
+    
     @Override
     public void periodic(){
         super.periodic();
@@ -50,6 +51,7 @@ public class ClimberSubsystem extends SubsystemBase {
         if (DebugSetting.TraceLevel == DebugLevel.Climber || DebugSetting.TraceLevel == DebugLevel.All){
             SmartDashboard.putNumber("ClimbAngle", climbAngle);
             SmartDashboard.putNumber("ClimbRef", _Ramp.GetCurrentRampedSetpoint()/ClimberConstants.GearRatio * 360);
+            SmartDashboard.putNumber("ClimbCurrent", _ClimbMotor.getOutputCurrent());
         }
     }
 

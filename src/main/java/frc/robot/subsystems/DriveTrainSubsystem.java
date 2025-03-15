@@ -104,7 +104,7 @@ public class DriveTrainSubsystem extends SubsystemBase {
         }
 
         _SwerveDrivePoseEstimator.update(currentHdg, positions);
-        NetworkTableInstance.getDefault().getEntry("/Gyro").setDouble(_gyroscope.getYaw().getValueAsDouble());
+        NetworkTableInstance.getDefault().getEntry("/Gyro").setDouble(360 - (Math.abs(_gyroscope.getYaw().getValueAsDouble()) % 360.0));
     }
 
     public Rotation2d getGyroHeading() {
