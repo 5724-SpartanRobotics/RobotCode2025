@@ -16,29 +16,23 @@ import frc.robot.Constants.CanIdConstants;
 import frc.robot.Constants.DebugLevel;
 import frc.robot.Constants.DebugSetting;
 import frc.robot.Constants.ElevatorAndArmConstants;
+import frc.robot.lib.PidEnabledSubsystemInterface;
 import frc.robot.lib.PidRamp;
 
-public class ArmSubSys extends SubsystemBase {
+public class ArmSubsystem extends SubsystemBase implements PidEnabledSubsystemInterface {
     private SparkMax _ArmRotateMtrCtrl1;
     private SparkMax _ArmRotateMtrCtrl2;
-    // private SparkMax _ArmExtendMtrCtrl;
 
     private SparkClosedLoopController _ArmRotateMtr1PidController;
     private RelativeEncoder _ArmRotateMtr1Encoder;
-    // private SparkClosedLoopController _ArmExtendMtrPidController;
-    // private RelativeEncoder _ArmExtenMtrEncoder;
 
     private PidRamp _ArmRotatePidRamp;
-    // private PidRamp _ArmExtendPidRamp;
-
     private double _ArmRotateSetpoint;
-    // private double _ArmExtendSetpoint;
 
-    public ArmSubSys()
+    public ArmSubsystem()
     {
         _ArmRotateMtrCtrl1 = new SparkMax(CanIdConstants.ArmRotateMtrCtrl1CanId, MotorType.kBrushless);
         _ArmRotateMtrCtrl2 = new SparkMax(CanIdConstants.ArmRotateMtrCtrl2CanId, MotorType.kBrushless);
-        // _ArmExtendMtrCtrl = new SparkMax(CanIdConstants.ArmExtendMtrCtrlCanId, MotorType.kBrushless);
 
         SparkMaxConfig cfg = new SparkMaxConfig();
         cfg.inverted(true)
@@ -65,55 +59,31 @@ public class ArmSubSys extends SubsystemBase {
         .velocityFF(ElevatorAndArmConstants.ArmRotatePidFF);
         _ArmRotateMtrCtrl1.configure(cfg, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
 
-
-        cfg = new SparkMaxConfig();
-        cfg.inverted(true)
-        .idleMode(IdleMode.kBrake);
-        cfg.closedLoop
-        .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-        .pid(ElevatorAndArmConstants.ArmExtendPidP, ElevatorAndArmConstants.ArmExtendPidI, ElevatorAndArmConstants.ArmExtendPidD)
-        .velocityFF(ElevatorAndArmConstants.ArmExtendPidFF);
-        // _ArmExtendMtrCtrl.configure(cfg, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
-
         _ArmRotateMtr1PidController = _ArmRotateMtrCtrl1.getClosedLoopController();
         _ArmRotateMtr1Encoder = _ArmRotateMtrCtrl1.getEncoder();
-        // _ArmExtendMtrPidController = _ArmExtendMtrCtrl.getClosedLoopController();
-        // _ArmExtenMtrEncoder = _ArmExtendMtrCtrl.getEncoder();
         _ArmRotatePidRamp = new PidRamp(_ArmRotateMtr1PidController, ConvertArmRotateAngleToNeoRotations(ElevatorAndArmConstants.ArmRotateSetpointRampRate));
-        // _ArmExtendPidRamp = new PidRamp(null, null, ConvertArmExtendInchesToRotations(ElevatorAndArmConstants.ArmExtendSetpointRampRate));
 
         _ArmRotateMtr1Encoder.setPosition(ConvertArmRotateAngleToNeoRotations(24.0));
     }
 
     @Override
-    public void periodic(){
+    public void periodic() {
         super.periodic();
-        // double armExtendPosition = GetArmExtendPosnInches();
         double armRotatePosition = GetArmRotateAngleDegrees();
-  //      double outsideFrame = GetArmOutsideFrameInches();
-
-        //Keep the arm within the frame paremeter
-  //      if (outsideFrame > 17){
-  //          _ArmRotatePidRamp.setReference(ConvertArmRotateAngleToNeoRotations(armRotatePosition));
-            // ArmExtendToPosition(armExtendPosition - 1);
-  //      }
 
         _ArmRotatePidRamp.Periodic(ConvertArmRotateAngleToNeoRotations(armRotatePosition));
-        // _ArmExtendPidRamp.Periodic(ConvertArmExtendInchesToRotations(armExtendPosition));
 
-        if (DebugSetting.TraceLevel == DebugLevel.ArmExtend || DebugSetting.TraceLevel == DebugLevel.All){
-            // SmartDashboard.putNumber("ArmExtPos", armExtendPosition);
-            // SmartDashboard.putNumber("ArmExtRef", _ArmExtendSetpoint);
-            // SmartDashboard.putNumber("ArmExtendRameOutRef", _ArmExtendPidRamp.GetCurrentRampedSetpoint());
-        }
         if (DebugSetting.TraceLevel == DebugLevel.ArmRotate || DebugSetting.TraceLevel == DebugLevel.All){
             SmartDashboard.putNumber("ArmRotPos", armRotatePosition);
             SmartDashboard.putNumber("ArmRotRef", _ArmRotateSetpoint);
             SmartDashboard.putNumber("ArmRotRefRampped", _ArmRotatePidRamp.GetCurrentRampedSetpoint() * 360 / ElevatorAndArmConstants.ArmRotateGearRatio);
             SmartDashboard.putNumber("ArmRotCurrentM1", _ArmRotateMtrCtrl1.getOutputCurrent());
             SmartDashboard.putNumber("ArmRotCurrentM2", _ArmRotateMtrCtrl2.getOutputCurrent());
-  //          SmartDashboard.putNumber("ArmOutsideFrame", outsideFrame);
         }
+    }
+
+    public void resetReferences() {
+        ArmRotateToPosition(0);
     }
 
     public double GetArmRotateAngleDegrees()
@@ -121,18 +91,11 @@ public class ArmSubSys extends SubsystemBase {
         return _ArmRotateMtr1Encoder.getPosition() / ElevatorAndArmConstants.ArmRotateGearRatio * 360.0;
     }
 
-    public double GetArmExtendPosnInches()
-    {
-        // return _ArmExtenMtrEncoder.getPosition() / ElevatorAndArmConstants.ArmExtendGearRatio * Math.PI * ElevatorAndArmConstants.ArmExtendSpoolDiameter;
-        return 0.0;
-    }
-
     public double GetArmOutsideFrameInches()
     {
-        double armCurrentLength = ElevatorAndArmConstants.ArmLengthRetractedInches + GetArmExtendPosnInches();
         double armRotation = 90 - GetArmRotateAngleDegrees();
         double armAngleToHorizontal = Math.abs(armRotation);
-        return (Math.cos(Math.toRadians(armAngleToHorizontal))*armCurrentLength) - ElevatorAndArmConstants.ArmPivotPointToFrameEdgeInches;
+        return Math.cos(Math.toRadians(armAngleToHorizontal)) - ElevatorAndArmConstants.ArmPivotPointToFrameEdgeInches;
     }
 
     private double ConvertArmRotateAngleToNeoRotations(double angle)
@@ -177,46 +140,4 @@ public class ArmSubSys extends SubsystemBase {
         double setpoint = ConvertArmRotateAngleToNeoRotations(_ArmRotateSetpoint);
         _ArmRotatePidRamp.setReference(setpoint);
     }
-
-    public void IncrementArmExtend()
-    {
-        // _ArmExtendSetpoint += 1;
-        // if (_ArmExtendSetpoint > ElevatorAndArmConstants.ArmExtendMax)
-        //     _ArmExtendSetpoint = ElevatorAndArmConstants.ArmExtendMax;
-        // //convert from inches to motor rotations
-        // _ArmExtendPidRamp.setReference(ConvertArmExtendInchesToRotations(_ArmExtendSetpoint));
-    }
-
-    public void DecrementArmExtend()
-    {
-        // _ArmExtendSetpoint -= 1;
-        // if (_ArmExtendSetpoint < 0)
-        //     _ArmExtendSetpoint = 0;
-        // //convert from inches to motor rotations
-        // _ArmExtendPidRamp.setReference(ConvertArmExtendInchesToRotations(_ArmExtendSetpoint));
-    }
-    public void ArmExtendStop()
-    {
-        // _ArmExtendPidRamp.Stop();
-    }
-
-    public void ArmExtendToPosition(double angle)
-    {
-        // _ArmExtendSetpoint = angle;
-        // if (_ArmExtendSetpoint > ElevatorAndArmConstants.ArmExtendMax)
-        //     _ArmExtendSetpoint = ElevatorAndArmConstants.ArmExtendMax;
-        // if (_ArmExtendSetpoint < 0)
-        //     _ArmExtendSetpoint = 0;
-        // //convert to motor rotations
-        // _ArmExtendPidRamp.setReference(ConvertArmExtendInchesToRotations(_ArmExtendSetpoint));
-    }
-
-    /**
-     * @param dist Inches
-     * @return Rotations
-     */
-    // private double ConvertArmExtendInchesToRotations(double dist)
-    // {
-    //     return dist / (Math.PI * ElevatorAndArmConstants.ArmExtendSpoolDiameter) * ElevatorAndArmConstants.ArmExtendGearRatio;
-    // }
 }

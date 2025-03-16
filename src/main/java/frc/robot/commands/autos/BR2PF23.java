@@ -6,13 +6,13 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants.ElevatorAndArmConstants;
-import frc.robot.commands.ArmRotateToSetpointCommand;
-import frc.robot.commands.ElevatorToSetpointCommand;
-import frc.robot.subsystems.ArmSubSys;
+import frc.robot.commands.SetpointCommands.ArmRotateToSetpointCommand;
+import frc.robot.commands.SetpointCommands.ElevatorToSetpointCommand;
+import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.ClawSubsystem;
 import frc.robot.subsystems.DriveTrainSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
-import frc.robot.subsystems.WristSubSys;
+import frc.robot.subsystems.WristSubsystem;
 
 /**
  * Auto: <b>B R 2P F2,3</b>
@@ -28,9 +28,9 @@ public class BR2PF23 extends SequentialCommandGroup {
         AutoFactory autoFactory,
         DriveTrainSubsystem driveTrainSubsystem,
         ElevatorSubsystem elevatorSubsystem,
-        ArmSubSys armSubSystem,
+        ArmSubsystem armSubSystem,
         ClawSubsystem clawSubsystem,
-        WristSubSys wristSubsystem
+        WristSubsystem wristSubsystem
     ) {
         addCommands(
             Commands.sequence(

@@ -77,7 +77,7 @@ public class Robot extends TimedRobot {
     /** This function is called once when teleop is enabled. */
     @Override
     public void teleopInit() {
-        _RobotContainer.ElevtorToStartingHeight();
+        _RobotContainer.ElevatorToStartingHeight();
         Elastic.selectTab("Real Teleoperated");
     }
 
@@ -88,6 +88,7 @@ public class Robot extends TimedRobot {
     /** This function is called once when the robot is disabled. */
     @Override
     public void disabledInit() {
+        _RobotContainer.ResetPidReferences();
         _RobotContainer.StopPidRamps();
     }
 

@@ -27,9 +27,9 @@ public class LedSubsystem extends SubsystemBase {
     private final AddressableLED _led;
     private final AddressableLEDBuffer _ledBuffer;
     private final Timer _timer = new Timer();
-    private double _lastTime = 0;
     private boolean _useDuration = false;
     private double _duration = 0;
+    private boolean _lock = false;
 
     public LedSubsystem() {
         this._led = new AddressableLED(LedConstants.port);
@@ -48,37 +48,16 @@ public class LedSubsystem extends SubsystemBase {
     public void periodic() {
         super.periodic();
 
-        if (_useDuration && _timer.get() > _lastTime + _duration) {
+        if (_useDuration && _timer.get() >= _duration) {
             _useDuration = false;
             _duration = 0.0;
-            setColor(kDefaultInactiveColor);
+            reset();
         }
+
+        if (!_lock) reset();
     }
 
-    @SuppressWarnings("unused")
-    private LedSubsystem setColor__UNSAFE(Color color) {
-        LEDPattern lp = LEDPattern.solid(color);
-        lp.applyTo(_ledBuffer);
-        _led.setData(_ledBuffer);
-        return this;
-    }
-
-    @SuppressWarnings("unused")
-    private LedSubsystem _SETCOLOR_UNSAFE_(Color color) {
-        for (int i = 0; i < _ledBuffer.getLength(); i++) {
-            switch (i % 4) {
-                case 0: _ledBuffer.setRGB(i, percentTo255(color.red), percentTo255(color.green), percentTo255(color.blue)); break;
-                case 1: _ledBuffer.setRGB(i, percentTo255(color.green), percentTo255(color.blue), percentTo255(color.red)); break;
-                case 2: _ledBuffer.setRGB(i, percentTo255(color.blue), percentTo255(color.red), percentTo255(color.green)); break;
-                case 3: _ledBuffer.setRGB(i, 0, 0, 0); break;
-                default: break;
-            }
-        }
-        _led.setData(_ledBuffer);
-        return this;
-    }
-
-    public LedSubsystem setColor(Color color) {
+    private void SetColor(Color color) {
         for (int i = 0; i < _ledBuffer.getLength(); i++) {
             switch (i % 4) {
                 // This says "setRGB", but we're just using it as a hack to set the bytes in a specific order.
@@ -92,25 +71,24 @@ public class LedSubsystem extends SubsystemBase {
             }
         }
         _led.setData(_ledBuffer);
+    }
+
+    public LedSubsystem setColor(Color color) {
+        _lock = false;
+        SetColor(color);
         return this;
     }
 
-    public LedSubsystem setGreen() {
-        for (int i = 0; i < _ledBuffer.getLength(); i++) {
-            switch (i % 4) {
-                case 0: _ledBuffer.setRGB(i, 0, 255, 0); break;
-                case 1: _ledBuffer.setRGB(i, 255, 0, 0); break;
-                case 2: _ledBuffer.setRGB(i, 0, 0, 255); break;
-                case 3: _ledBuffer.setRGB(i, 00, 00, 0); break;
-                default: break;
-            }
-        }
-        _led.setData(_ledBuffer);
+    public LedSubsystem setColor(Color color, boolean lock) {
+        _lock = true;
+        SetColor(color);
         return this;
     }
 
     public LedSubsystem reset() {
-        setColor(kDefaultInactiveColor);
+        _lock = false;
+        SetColor(kDefaultInactiveColor);
+        _timer.restart();
         return this;
     }
 
@@ -127,8 +105,8 @@ public class LedSubsystem extends SubsystemBase {
      * @return
      */
     public LedSubsystem setColorForDuration(Color color, double duration) {
-        _lastTime = _timer.get();
-        setColor(color);
+        _timer.restart();
+        setColor(color, true);
         _useDuration = true;
         _duration = Math.max(duration, 0);
         return this;

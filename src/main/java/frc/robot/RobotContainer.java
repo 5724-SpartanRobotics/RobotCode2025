@@ -11,25 +11,21 @@ import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import frc.robot.Constants.CanIdConstants;
 import frc.robot.Constants.ClawConstants;
-import frc.robot.Constants.ElevatorAndArmConstants;
-import frc.robot.commands.ArmRotateToSetpointCommand;
-import frc.robot.commands.ElevatorToSetpointCommand;
+import frc.robot.commands.PresetCommands;
 import frc.robot.commands.TeleopSwerve;
-import frc.robot.commands.WristRotateToSetpointCommand;
 import frc.robot.commands.autos.Autos;
 import frc.robot.subsystems.AlgaeSubsystem;
-import frc.robot.subsystems.ArmSubSys;
+import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.ClawSubsystem;
 import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.DriveTrainSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.LedSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
-import frc.robot.subsystems.WristSubSys;
+import frc.robot.subsystems.WristSubsystem;
 
 public class RobotContainer {
     public final PowerDistribution _PowerDistribution = new PowerDistribution(CanIdConstants.PDHID, ModuleType.kRev);
@@ -37,38 +33,36 @@ public class RobotContainer {
     private DriveTrainSubsystem _DriveTrainSubsystem;
     private TeleopSwerve _TeleopSwerve;
     private LedSubsystem _LedSubsystem;
-    private ArmSubSys _ArmSubSys;
-    private ElevatorSubsystem _ElevatorSubSys;
+    private ArmSubsystem _ArmSubsystem;
+    private ElevatorSubsystem _ElevatorSubsystem;
     private ClawSubsystem _ClawSubsystem;
-    private AlgaeSubsystem _AlgaeSubSys;
-    private WristSubSys _WristSubSys;
+    private AlgaeSubsystem _AlgaeSubsystem;
+    private WristSubsystem _WristSubsystem;
     private ClimberSubsystem _ClimberSubsystem;
     @SuppressWarnings("unused")
-    private VisionSubsystem _VisionSubSys;
+    private VisionSubsystem _VisionSubsystem;
     private CommandJoystick _DriverController;
     private CommandJoystick _OperatorController;
     private Autos _Autos;
 
-    public static Interference InterferenceHelper;
     public final SendableChooser<Command> m_autos = new SendableChooser<Command>();
 
 
     public RobotContainer(){
         _DriveTrainSubsystem = new DriveTrainSubsystem();
         _LedSubsystem = new LedSubsystem();
-        _VisionSubSys = new VisionSubsystem(_DriveTrainSubsystem);
-        _ArmSubSys = new ArmSubSys();
-        _ElevatorSubSys = new ElevatorSubsystem();
+        _VisionSubsystem = new VisionSubsystem(_DriveTrainSubsystem);
+        _ArmSubsystem = new ArmSubsystem();
+        _ElevatorSubsystem = new ElevatorSubsystem();
         _ClawSubsystem = new ClawSubsystem(_LedSubsystem);
-        _AlgaeSubSys = new AlgaeSubsystem();
-        _WristSubSys = new WristSubSys();
+        _AlgaeSubsystem = new AlgaeSubsystem();
+        _WristSubsystem = new WristSubsystem();
         _ClimberSubsystem = new ClimberSubsystem();
-        InterferenceHelper = new Interference(_ArmSubSys);
         _DriverController = new CommandJoystick(0);
         _OperatorController = new CommandJoystick(1);      
 
         _TeleopSwerve = new TeleopSwerve(_DriveTrainSubsystem, _DriverController);
-        _Autos = new Autos(_DriveTrainSubsystem, _ElevatorSubSys, _ArmSubSys, _ClawSubsystem, _WristSubSys);
+        _Autos = new Autos(_DriveTrainSubsystem, _ElevatorSubsystem, _ArmSubsystem, _ClawSubsystem, _WristSubsystem);
 
         _DriveTrainSubsystem.setDefaultCommand(_TeleopSwerve);
         // CameraServer.startAutomaticCapture(); // L4 Camera // Start camera server on zeroth index video device
@@ -81,9 +75,6 @@ public class RobotContainer {
        
 
         configureBindings();
-        // autoChooser.addRoutine("Blueleaveleft", null);
-        // autoChooser.addCmd("Basic 2s Leave", );
-        // RobotModeTriggers.autonomous().whileTrue(autoChooser.selectedCommandScheduler());
         configureAutos();
     }
 
@@ -124,50 +115,50 @@ public class RobotContainer {
        
         //algae controls
         _OperatorController.button(8).whileTrue(new RunCommand(() ->{
-            _AlgaeSubSys.AlgaeRotateAtSpeed(0.3);
-        }, _AlgaeSubSys));
+            _AlgaeSubsystem.AlgaeRotateAtSpeed(0.3);
+        }, _AlgaeSubsystem));
         _OperatorController.button(8).onFalse(new InstantCommand(() -> {
-            _AlgaeSubSys.AlgaeRotateAtSpeed(0);
-        }, _AlgaeSubSys));
+            _AlgaeSubsystem.AlgaeRotateAtSpeed(0);
+        }, _AlgaeSubsystem));
         _OperatorController.button(10).whileTrue(new RunCommand(() ->{
-            _AlgaeSubSys.AlgaeRotateAtSpeed(-0.3);
-        }, _AlgaeSubSys));
+            _AlgaeSubsystem.AlgaeRotateAtSpeed(-0.3);
+        }, _AlgaeSubsystem));
         _OperatorController.button(10).onFalse(new InstantCommand(() -> {
-            _AlgaeSubSys.AlgaeRotateAtSpeed(0);
-        }, _AlgaeSubSys));
+            _AlgaeSubsystem.AlgaeRotateAtSpeed(0);
+        }, _AlgaeSubsystem));
         _OperatorController.button(7).onTrue(new InstantCommand(() -> {
-            _AlgaeSubSys.RotateToOut();
-        }, _AlgaeSubSys));
+            _AlgaeSubsystem.RotateToOut();
+        }, _AlgaeSubsystem));
         _OperatorController.button(11).onTrue(new InstantCommand(() ->{
-            _AlgaeSubSys.RotateToIn();
-        }, _AlgaeSubSys));
+            _AlgaeSubsystem.RotateToIn();
+        }, _AlgaeSubsystem));
         _OperatorController.button(9).onTrue(new InstantCommand(() ->{
-            _AlgaeSubSys.RotateToHoldAlgaePosn();
-        }, _AlgaeSubSys));
+            _AlgaeSubsystem.RotateToHoldAlgaePosn();
+        }, _AlgaeSubsystem));
 
         //elevator increment up and down
         _OperatorController.povUp().onTrue(new InstantCommand(() ->{
-            _ElevatorSubSys.IncrementElevatorUp();
-        }, _ElevatorSubSys));
+            _ElevatorSubsystem.IncrementElevatorUp();
+        }, _ElevatorSubsystem));
         _OperatorController.povDown().onTrue(new InstantCommand(() ->{
-            _ElevatorSubSys.DecrementElevatorUp();
-        }, _ElevatorSubSys));
+            _ElevatorSubsystem.DecrementElevatorUp();
+        }, _ElevatorSubsystem));
 
         //arm rotate - main Y axis
         _OperatorController.axisLessThan(1, -0.3).whileTrue(new RunCommand(() ->{
-            _ArmSubSys.ArmRotateToPositionMoreThanCurrent();
-        }, _ArmSubSys));
+            _ArmSubsystem.ArmRotateToPositionMoreThanCurrent();
+        }, _ArmSubsystem));
         _OperatorController.axisGreaterThan(1, 0.3).whileTrue(new RunCommand(() ->{
-            _ArmSubSys.ArmRotateToPositionLessThanCurrent();
-        }, _ArmSubSys));
+            _ArmSubsystem.ArmRotateToPositionLessThanCurrent();
+        }, _ArmSubsystem));
 
         //wrist rotate
         _OperatorController.povRight().onTrue(new InstantCommand(() ->{
-            _WristSubSys.WristToPosition(180);
-        }, _WristSubSys));
+            _WristSubsystem.WristToPosition(180);
+        }, _WristSubsystem));
         _OperatorController.povLeft().onTrue(new InstantCommand(() ->{
-            _WristSubSys.WristToPosition(0);
-        }, _WristSubSys));
+            _WristSubsystem.WristToPosition(0);
+        }, _WristSubsystem));
 
         //claw run 
         _OperatorController.button(1).onTrue(new InstantCommand(() ->{
@@ -182,42 +173,16 @@ public class RobotContainer {
         }, _ClawSubsystem));
         _OperatorController.button(2).onTrue(new InstantCommand(() ->{
             _ClawSubsystem.ClawRun(ClawConstants.IntakeSpeed);
-            _LedSubsystem.setColor(Color.kGoldenrod);
+            _LedSubsystem.setColor(Color.kGoldenrod, true);
         }, _ClawSubsystem));
-        //sequencial commands
-        SequentialCommandGroup l4CommandGroups = new SequentialCommandGroup(
-            new ElevatorToSetpointCommand((_ElevatorSubSys), ElevatorAndArmConstants.ElevatorL4Posn)
-            .alongWith(new WristRotateToSetpointCommand(_WristSubSys, 0))
-            // .alongWith(new AlgaeRotateToSetpointCommand(_AlgaeSubSys, AlgaeConstants.AlgaeClearOfArmMinimumAngle))
-            .alongWith(new ArmRotateToSetpointCommand(_ArmSubSys, ElevatorAndArmConstants.ArmRotateL4Posn)));
-        SequentialCommandGroup l3CommandGroups = new SequentialCommandGroup(
-                new ElevatorToSetpointCommand((_ElevatorSubSys), ElevatorAndArmConstants.ElevatorL3Posn)
-                .alongWith(new WristRotateToSetpointCommand(_WristSubSys, 0))
-                // .alongWith(new AlgaeRotateToSetpointCommand(_AlgaeSubSys, AlgaeConstants.AlgaeClearOfArmMinimumAngle))
-                .alongWith(new ArmRotateToSetpointCommand(_ArmSubSys, ElevatorAndArmConstants.ArmRotateL3Posn)));
-        SequentialCommandGroup l2CommandGroups = new SequentialCommandGroup(
-                new ElevatorToSetpointCommand((_ElevatorSubSys), ElevatorAndArmConstants.ElevatorL2Posn)
-                .alongWith(new WristRotateToSetpointCommand(_WristSubSys, 0))
-                // .alongWith(new AlgaeRotateToSetpointCommand(_AlgaeSubSys, AlgaeConstants.AlgaeClearOfArmMinimumAngle))
-                .alongWith(new ArmRotateToSetpointCommand(_ArmSubSys, ElevatorAndArmConstants.ArmRotateL2Posn)));
-        SequentialCommandGroup l1CommandGroups = new SequentialCommandGroup(
-                new ElevatorToSetpointCommand((_ElevatorSubSys), ElevatorAndArmConstants.ElevatorL1Posn)
-                .alongWith(new WristRotateToSetpointCommand(_WristSubSys, 0))
-                // .alongWith(new AlgaeRotateToSetpointCommand(_AlgaeSubSys, AlgaeConstants.AlgaeClearOfArmMinimumAngle))
-                .alongWith(new ArmRotateToSetpointCommand(_ArmSubSys, ElevatorAndArmConstants.ArmRotateL1Posn)));
-        SequentialCommandGroup returnHomeCommandGroup = new SequentialCommandGroup(
-                new WristRotateToSetpointCommand(_WristSubSys, 0)
-                    .alongWith(new ArmRotateToSetpointCommand(_ArmSubSys, 0.0))
-                    .alongWith(new ElevatorToSetpointCommand(_ElevatorSubSys, 0.0)));
-        SequentialCommandGroup coralPickupGroup = new SequentialCommandGroup(
-            new ElevatorToSetpointCommand(_ElevatorSubSys, ElevatorAndArmConstants.ElevatorCoralPosn)
-            .alongWith(new WristRotateToSetpointCommand(_WristSubSys, ElevatorAndArmConstants.WristMax))
-            .alongWith(new ArmRotateToSetpointCommand(_ArmSubSys, ElevatorAndArmConstants.ArmRotateCoralPosn)));
-        _OperatorController.button(5).onTrue(l4CommandGroups);
-        _OperatorController.button(3).onTrue(l3CommandGroups);
-        _OperatorController.button(6).onTrue(l2CommandGroups);
-        _OperatorController.button(4).onTrue(coralPickupGroup);
-        _OperatorController.button(12).onTrue(returnHomeCommandGroup);
+
+        //sequential commands
+        PresetCommands presetCommands = new PresetCommands(_ElevatorSubsystem, _WristSubsystem, _ArmSubsystem);
+        _OperatorController.button(5).onTrue(presetCommands.L4);
+        _OperatorController.button(3).onTrue(presetCommands.L3);
+        _OperatorController.button(6).onTrue(presetCommands.L2);
+        _OperatorController.button(4).onTrue(presetCommands.CoralPickup);
+        _OperatorController.button(12).onTrue(presetCommands.ReturnHome);
     }
 
     public void robotFinishedBooting() {
@@ -231,14 +196,27 @@ public class RobotContainer {
      */
     public void StopPidRamps()
     {
-        _AlgaeSubSys.AlgaeStop();
-        _ArmSubSys.ArmExtendStop();
-        _ArmSubSys.ArmRotateStop();
-        _ElevatorSubSys.ElevatorStop();
+        _AlgaeSubsystem.AlgaeStop();
+        _ArmSubsystem.ArmRotateStop();
+        _ElevatorSubsystem.ElevatorStop();
+        _WristSubsystem.WristStop();
+        _ClimberSubsystem.ClimbStop();
     }
 
-    public void ElevtorToStartingHeight()
+    public void ElevatorToStartingHeight()
     {
-        _ElevatorSubSys.ElevatorToPosition(1);
+        _ElevatorSubsystem.ElevatorToPosition(1);
+    }
+
+    /**
+     * By setting all PID references to 0 on disable, it <i>should</i> mean that they will not shoot
+     * back to where they were when the robot was disabled.
+     */
+    public void ResetPidReferences() {
+        _AlgaeSubsystem.resetReferences();
+        _ArmSubsystem.resetReferences();
+        _ElevatorSubsystem.resetReferences();
+        _WristSubsystem.resetReferences();
+        _ClimberSubsystem.resetReferences();
     }
 }

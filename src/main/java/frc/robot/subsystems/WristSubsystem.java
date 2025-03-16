@@ -16,16 +16,17 @@ import frc.robot.Constants.CanIdConstants;
 import frc.robot.Constants.DebugLevel;
 import frc.robot.Constants.DebugSetting;
 import frc.robot.Constants.ElevatorAndArmConstants;
+import frc.robot.lib.PidEnabledSubsystemInterface;
 import frc.robot.lib.PidRamp;
 
-public class WristSubSys extends SubsystemBase{
+public class WristSubsystem extends SubsystemBase implements PidEnabledSubsystemInterface {
     private SparkMax _WristMtrCtrl;
     private SparkClosedLoopController _WristMtrPidController;
     private RelativeEncoder _WristMtrEncoder;
     private PidRamp _WristPidRamp;
     private double _WristSetpoint;
 
-    public WristSubSys()
+    public WristSubsystem()
     {
         _WristMtrCtrl = new SparkMax(CanIdConstants.WristMtrCtrlCanId, MotorType.kBrushless);
 
@@ -46,7 +47,7 @@ public class WristSubSys extends SubsystemBase{
     }
 
     @Override
-    public void periodic(){
+    public void periodic() {
         super.periodic();
         double wristPosition = GetWristDegrees();
         _WristPidRamp.Periodic(ConvertWristDegreesToMotorRotations(wristPosition));
@@ -55,17 +56,21 @@ public class WristSubSys extends SubsystemBase{
             SmartDashboard.putNumber("WristRef", _WristSetpoint);
             SmartDashboard.putNumber("WristRameOutRef", _WristPidRamp.GetCurrentRampedSetpoint());
         }
-   }
+    }
+
+    public void resetReferences() {
+        WristToPosition(0);
+    }
 
     private double ConvertWristDegreesToMotorRotations(double angle){
         return angle / 360 * ElevatorAndArmConstants.WristGearRatio;
     }
-    public double GetWristDegrees()
-    {
+
+    public double GetWristDegrees() {
         return _WristMtrEncoder.getPosition() / ElevatorAndArmConstants.WristGearRatio * 360;
     }
-    public void IncrementWrist()
-    {
+
+    public void IncrementWrist() {
         _WristSetpoint += 1;
         if (_WristSetpoint > ElevatorAndArmConstants.WristMax)
             _WristSetpoint = ElevatorAndArmConstants.WristMax;

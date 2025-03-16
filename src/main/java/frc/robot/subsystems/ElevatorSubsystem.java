@@ -19,9 +19,10 @@ import frc.robot.Constants.CanIdConstants;
 import frc.robot.Constants.DebugLevel;
 import frc.robot.Constants.DebugSetting;
 import frc.robot.Constants.ElevatorAndArmConstants;
+import frc.robot.lib.PidEnabledSubsystemInterface;
 import frc.robot.lib.PidRamp;
 
-public class ElevatorSubsystem extends SubsystemBase{
+public class ElevatorSubsystem extends SubsystemBase implements PidEnabledSubsystemInterface {
     private SparkMax _ElevatorMtrCtrl1;
     private SparkMax _ElevatorMtrCtrl2;
     private SparkClosedLoopController _ElevatorMtr1PidController;
@@ -67,7 +68,7 @@ public class ElevatorSubsystem extends SubsystemBase{
     }
 
     @Override
-    public void periodic(){
+    public void periodic() {
         super.periodic();
 
         double elevatorPosition = GetElevatorHeightInches();
@@ -84,14 +85,17 @@ public class ElevatorSubsystem extends SubsystemBase{
         if (GetElevatorLikelySufferedChainJump())
             _ElevatorMtr1Encoder.setPosition(0);
     }
-    public double GetElevatorHeightInches(Boolean motor2)
-    {
+
+    public void resetReferences() {
+        ElevatorToPosition(0);
+    }
+
+    public double GetElevatorHeightInches(Boolean motor2) {
         return (motor2 == null || !motor2.booleanValue()) ? _ElevatorMtr1Encoder.getPosition() / ElevatorAndArmConstants.ElevatorGearRatio * Math.PI * ElevatorAndArmConstants.ElevatorChainSproketDiameter :
             _ElevatorMtr2Encoder.getPosition() / ElevatorAndArmConstants.ElevatorGearRatio * Math.PI * ElevatorAndArmConstants.ElevatorChainSproketDiameter;
     }
 
-    public double GetElevatorHeightInches()
-    {
+    public double GetElevatorHeightInches() {
         return _ElevatorMtr1Encoder.getPosition() / ElevatorAndArmConstants.ElevatorGearRatio * Math.PI * ElevatorAndArmConstants.ElevatorChainSproketDiameter;
     }
 

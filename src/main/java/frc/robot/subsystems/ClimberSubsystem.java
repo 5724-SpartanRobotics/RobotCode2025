@@ -18,9 +18,10 @@ import frc.robot.Constants;
 import frc.robot.Constants.ClimberConstants;
 import frc.robot.Constants.DebugLevel;
 import frc.robot.Constants.DebugSetting;
+import frc.robot.lib.PidEnabledSubsystemInterface;
 import frc.robot.lib.PidRamp;
 
-public class ClimberSubsystem extends SubsystemBase {
+public class ClimberSubsystem extends SubsystemBase implements PidEnabledSubsystemInterface {
     private SparkFlex _ClimbMotor;
     private SparkClosedLoopController _ClimbPidController;
     private RelativeEncoder _ClimbEncoder;
@@ -42,7 +43,7 @@ public class ClimberSubsystem extends SubsystemBase {
     }
     
     @Override
-    public void periodic(){
+    public void periodic() {
         super.periodic();
 
         double climbAngle = GetClimbAngleDegrees();
@@ -55,6 +56,9 @@ public class ClimberSubsystem extends SubsystemBase {
         }
     }
 
+    // We will not reset the references on this because it might do some odd things with climbing.
+    public void resetReferences() { }
+
     public void SetToClimbPosition() {
         _Ramp.setReference(ConvertClimberDegreesToMotorRotations(ClimberConstants.ClimbAngle));
     }
@@ -66,6 +70,10 @@ public class ClimberSubsystem extends SubsystemBase {
     public void Climb(double speed) {
         _Ramp.Stop();
         _ClimbMotor.set(speed);
+    }
+
+    public void ClimbStop() {
+        _Ramp.Stop();
     }
 
     private double ConvertClimberDegreesToMotorRotations(double angle) {

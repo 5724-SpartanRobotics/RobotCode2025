@@ -1,11 +1,11 @@
 package frc.robot.commands.autos;
 
 import choreo.auto.AutoFactory;
-import frc.robot.subsystems.ArmSubSys;
+import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.ClawSubsystem;
 import frc.robot.subsystems.DriveTrainSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
-import frc.robot.subsystems.WristSubSys;
+import frc.robot.subsystems.WristSubsystem;
 
 public final class Autos {
     private final AutoFactory _AutoFactory;
@@ -18,9 +18,9 @@ public final class Autos {
     public Autos(
         DriveTrainSubsystem driveTrainSubsystem,
         ElevatorSubsystem elevatorSubsystem,
-        ArmSubSys armSubsystem,
+        ArmSubsystem armSubsystem,
         ClawSubsystem clawSubsystem,
-        WristSubSys wristSubsystem
+        WristSubsystem wristSubsystem
     ) {
         _AutoFactory = new AutoFactory(
             driveTrainSubsystem::getPose, // A function that returns the current robot pose

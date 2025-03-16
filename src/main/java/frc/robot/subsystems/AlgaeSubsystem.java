@@ -17,9 +17,10 @@ import frc.robot.Constants.CanIdConstants;
 import frc.robot.Constants.DebugLevel;
 import frc.robot.Constants.DebugSetting;
 import frc.robot.Constants.NeoConstants;
+import frc.robot.lib.PidEnabledSubsystemInterface;
 import frc.robot.lib.PidRamp;
 
-public class AlgaeSubsystem extends SubsystemBase{
+public class AlgaeSubsystem extends SubsystemBase implements PidEnabledSubsystemInterface {
     private SparkMax _AlgaeRotateMtrCtrl;
     private SparkClosedLoopController _AlgaeRotateMtrPidController;
     private RelativeEncoder _AlgaeRotateMtrEncoder;
@@ -43,8 +44,9 @@ public class AlgaeSubsystem extends SubsystemBase{
         _AlgaeRotateMtrEncoder = _AlgaeRotateMtrCtrl.getEncoder();
         _PidRamp = new PidRamp(_AlgaeRotateMtrPidController, (AlgaeConstants.AlgaeSetpointRampRate * NeoConstants.CountsPerRevolution * AlgaeConstants.GearRatio / 360.0));
     }
+
     @Override
-    public void periodic(){
+    public void periodic() {
         super.periodic();
         double algaeRotatePosn = GetAlgaeArmAngleDegrees();
         double motorPosn = algaeRotatePosn * NeoConstants.CountsPerRevolution * AlgaeConstants.GearRatio / 360;
@@ -58,6 +60,10 @@ public class AlgaeSubsystem extends SubsystemBase{
             SmartDashboard.putBoolean("AlgaeStopActive", _PidRamp.GetStopIsActive());
             SmartDashboard.putNumber("AlgaeCurrentAmps", _AlgaeRotateMtrCtrl.getOutputCurrent());
         }
+    }
+
+    public void resetReferences() {
+        RotateToIn();
     }
 
     public void RotateToOut()
