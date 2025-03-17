@@ -9,15 +9,20 @@ import com.revrobotics.spark.config.SoftLimitConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CanIdConstants;
+import frc.robot.Constants.ClawConstants;
 import frc.robot.Constants.DebugLevel;
 import frc.robot.Constants.DebugSetting;
 
 public class ClawSubsystem extends SubsystemBase {
     private final LedSubsystem _LedSubsystem;
     private final SparkMax _ClawIntake;
+    private final Timer _Timer = new Timer();
+    private boolean _ClawRunForDuration = false;
+    private double _ClawRunDuration = 0.0;
 
     public ClawSubsystem(LedSubsystem ledSubsystem) {
         this._LedSubsystem = ledSubsystem;
@@ -30,6 +35,8 @@ public class ClawSubsystem extends SubsystemBase {
             .apply(new LimitSwitchConfig().forwardLimitSwitchEnabled(false).reverseLimitSwitchEnabled(false))
             .idleMode(IdleMode.kBrake),
             ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+
+        _Timer.start();
     }
 
     @Override
@@ -41,6 +48,11 @@ public class ClawSubsystem extends SubsystemBase {
         } else {
             _LedSubsystem.reset();
         }
+
+        if (_ClawRunForDuration && _Timer.hasElapsed(_ClawRunDuration)) {
+            ClawRun(ClawConstants.StoppedSpeed);
+            _ClawRunForDuration = false;
+        } 
     }
 
     public boolean ClawIsUsingLotsOfCurrent() {
@@ -52,5 +64,12 @@ public class ClawSubsystem extends SubsystemBase {
         if (DebugSetting.TraceLevel == DebugLevel.Claw || DebugSetting.TraceLevel == DebugLevel.All)
             SmartDashboard.putNumber("ClawSpeedRef", speed);
         _ClawIntake.set(speed);
+    }
+
+    public void ClawRunForDuration(double seconds, double speed) {
+        _Timer.stop(); _Timer.reset(); _Timer.start();
+        _ClawRunForDuration = true;
+        _ClawRunDuration = seconds;
+        ClawRun(speed);
     }
 }

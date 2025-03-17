@@ -17,6 +17,7 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CanIdConstants;
 import frc.robot.Constants.DebugLevel;
@@ -65,7 +66,7 @@ public class DriveTrainSubsystem extends SubsystemBase {
         );
 
         field = new Field2d();
-        robotPose = new Pose2d(new Translation2d(4.0, 5.0), new Rotation2d());
+        robotPose = new Pose2d();
 
         SwerveModulePosition[] swerveInitialPositions = {
             _LF.getPosition(), _RF.getPosition(), _LB.getPosition(), _RB.getPosition()
@@ -136,6 +137,10 @@ public class DriveTrainSubsystem extends SubsystemBase {
     public DriveTrainSubsystem brake() {
         for (SwerveModule m : _SwerveModules) m.setDesiredState(new SwerveModuleState(0, m.getState().angle));
         return this;
+    }
+
+    public InstantCommand brakeCmd() {
+        return new InstantCommand(() -> {this.brake();});
     }
 
 

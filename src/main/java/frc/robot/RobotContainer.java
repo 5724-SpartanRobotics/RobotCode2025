@@ -1,17 +1,18 @@
 package frc.robot;
 
+import choreo.auto.AutoChooser;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.net.WebServer;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
+import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import frc.robot.Constants.CanIdConstants;
 import frc.robot.Constants.ClawConstants;
 import frc.robot.commands.PresetCommands;
@@ -45,7 +46,8 @@ public class RobotContainer {
     private CommandJoystick _OperatorController;
     private Autos _Autos;
 
-    public final SendableChooser<Command> m_autos = new SendableChooser<Command>();
+    // public final SendableChooser<Command> m_autos = new SendableChooser<Command>();
+    public final AutoChooser m_autos = new AutoChooser();
 
 
     public RobotContainer(){
@@ -62,7 +64,8 @@ public class RobotContainer {
         _OperatorController = new CommandJoystick(1);      
 
         _TeleopSwerve = new TeleopSwerve(_DriveTrainSubsystem, _DriverController);
-        _Autos = new Autos(_DriveTrainSubsystem, _ElevatorSubsystem, _ArmSubsystem, _ClawSubsystem, _WristSubsystem);
+        PresetCommands presetCommands = new PresetCommands(_ElevatorSubsystem, _WristSubsystem, _ArmSubsystem);
+        _Autos = new Autos(_DriveTrainSubsystem, _ElevatorSubsystem, _ArmSubsystem, _ClawSubsystem, _WristSubsystem, presetCommands);
 
         _DriveTrainSubsystem.setDefaultCommand(_TeleopSwerve);
         // CameraServer.startAutomaticCapture(); // L4 Camera // Start camera server on zeroth index video device
@@ -74,22 +77,26 @@ public class RobotContainer {
         _DriveTrainSubsystem.flipGyro();
        
 
-        configureBindings();
+        configureBindings(presetCommands);
         configureAutos();
     }
 
-    private void configureAutos() {
-        m_autos.setDefaultOption("!!! NO AUTO !!!", new Command() {});
-        m_autos.addOption("B C 2P F1,5", _Autos.Blue_Center_2Piece_Faces15);
-        m_autos.addOption("B L 2P F6,5", _Autos.Blue_Left_2Piece_Faces65);
-        m_autos.addOption("B R 2P F2,3", _Autos.Blue_Right_2Piece_Faces23);
-        m_autos.addOption("Basic 2s Leave", _Autos.Leave);
-
-        SmartDashboard.putData("Auto choices", m_autos);
+    private Command _NoAuto() {
+        return new Command() {};
     }
 
-    private void configureBindings()
-    {
+    private void configureAutos() {
+        m_autos.addCmd("!!! NO AUTO !!!", this::_NoAuto);
+        m_autos.addCmd("B C 2P F1,5", _Autos::_Blue_Center_2Piece_Face15);
+        m_autos.addCmd("B L 2P F6,5", _Autos::_Blue_Left_2Piece_Faces65);
+        m_autos.addCmd("B R 2P F2,3", _Autos::_Blue_Right_2Piece_Faces23);
+        m_autos.addCmd("Basic 2s Leave", _Autos::_Leave);
+
+        SmartDashboard.putData("Auto choices", m_autos);
+        RobotModeTriggers.autonomous().whileTrue(m_autos.selectedCommandScheduler());
+    }
+
+    private void configureBindings(PresetCommands presetCommands) {
         _DriverController.button(7).onTrue(new InstantCommand(() -> {
             _DriveTrainSubsystem.zeroGyro();
         }));
@@ -177,7 +184,6 @@ public class RobotContainer {
         }, _ClawSubsystem));
 
         //sequential commands
-        PresetCommands presetCommands = new PresetCommands(_ElevatorSubsystem, _WristSubsystem, _ArmSubsystem);
         _OperatorController.button(5).onTrue(presetCommands.L4);
         _OperatorController.button(3).onTrue(presetCommands.L3);
         _OperatorController.button(6).onTrue(presetCommands.L2);

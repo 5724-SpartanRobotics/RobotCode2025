@@ -1,6 +1,8 @@
 package frc.robot.commands.autos;
 
 import choreo.auto.AutoFactory;
+import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.commands.PresetCommands;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.ClawSubsystem;
 import frc.robot.subsystems.DriveTrainSubsystem;
@@ -20,7 +22,8 @@ public final class Autos {
         ElevatorSubsystem elevatorSubsystem,
         ArmSubsystem armSubsystem,
         ClawSubsystem clawSubsystem,
-        WristSubsystem wristSubsystem
+        WristSubsystem wristSubsystem,
+        PresetCommands presetCommands
     ) {
         _AutoFactory = new AutoFactory(
             driveTrainSubsystem::getPose, // A function that returns the current robot pose
@@ -28,11 +31,27 @@ public final class Autos {
             driveTrainSubsystem::followTrajectory, // The drive subsystem trajectory follower 
             true, // If alliance flipping should be enabled 
             driveTrainSubsystem
-        );  
+        );
 
         Leave = new Leave(driveTrainSubsystem);
-        Blue_Center_2Piece_Faces15 = new BC2PF15(_AutoFactory, driveTrainSubsystem, elevatorSubsystem, armSubsystem, clawSubsystem, wristSubsystem);
+        Blue_Center_2Piece_Faces15 = new BC2PF15(_AutoFactory, driveTrainSubsystem, elevatorSubsystem, armSubsystem, clawSubsystem, wristSubsystem, presetCommands);
         Blue_Left_2Piece_Faces65 = new BL2PF65(_AutoFactory, driveTrainSubsystem, elevatorSubsystem, armSubsystem, clawSubsystem, wristSubsystem);
         Blue_Right_2Piece_Faces23 = new BR2PF23(_AutoFactory, driveTrainSubsystem, elevatorSubsystem, armSubsystem, clawSubsystem, wristSubsystem);
+    }
+
+    public Command _Blue_Center_2Piece_Face15() {
+        return Blue_Center_2Piece_Faces15;
+    }
+
+    public Command _Blue_Left_2Piece_Faces65() {
+        return Blue_Left_2Piece_Faces65;
+    }
+
+    public Command _Blue_Right_2Piece_Faces23() {
+        return Blue_Right_2Piece_Faces23;
+    }
+
+    public Command _Leave() {
+        return Leave;
     }
 }

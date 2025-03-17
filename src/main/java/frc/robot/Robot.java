@@ -5,7 +5,6 @@
 package frc.robot;
 
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -27,8 +26,8 @@ public class Robot extends TimedRobot {
      * initialization code.
      */
     public Robot() {
-        DataLogManager.start();
-        DriverStation.startDataLog(DataLogManager.getLog());
+        // DataLogManager.start();
+        // DriverStation.startDataLog(DataLogManager.getLog());
 
         _RobotContainer = new RobotContainer();
         _RobotContainer.robotFinishedBooting();
@@ -67,8 +66,6 @@ public class Robot extends TimedRobot {
     @Override
     public void autonomousInit() {
         System.out.println("=== !!! Autonomous Started !!! ===");
-        _RobotContainer.m_autos.getSelected().schedule();
-        CommandScheduler.getInstance().run();
     }
 
     /** This function is called periodically during autonomous. */

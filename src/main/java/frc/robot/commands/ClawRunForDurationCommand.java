@@ -15,16 +15,17 @@ public class ClawRunForDurationCommand extends Command {
         _ClawSubsystem = clawSubsystem;
         _ClawRunMode = intakeMode;
         _elapse = seconds;
+        _time.reset();
         _time.start();
     }
 
     private double ClawRunModeToDouble(ClawRunMode clawRunMode) {
-        switch (clawRunMode) {
-            case Intake: return ClawConstants.IntakeSpeed;
-            case Outtake: return ClawConstants.ExpelSpeed;
-            case Stopped: return ClawConstants.StoppedSpeed;
-            default: return ClawConstants.StoppedSpeed;
-        }
+        return switch (clawRunMode) {
+            case Intake -> ClawConstants.IntakeSpeed;
+            case Outtake -> ClawConstants.ExpelSpeed;
+            case Stopped -> ClawConstants.StoppedSpeed;
+            default -> ClawConstants.StoppedSpeed;
+        };
     }
 
     @Override
@@ -39,7 +40,8 @@ public class ClawRunForDurationCommand extends Command {
 
     @Override
     public void end(boolean interrupted) {
-        _ClawSubsystem.ClawRun(ClawConstants.StoppedSpeed);
+        System.out.println("!~~ Claw finished running command");
+        _ClawSubsystem.ClawRun(ClawRunModeToDouble(ClawRunMode.Stopped));
     }
 
     public static enum ClawRunMode {
