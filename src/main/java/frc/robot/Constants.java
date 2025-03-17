@@ -34,6 +34,7 @@ public final class Constants {
     public final class DriveConstants {
         public static final double defaultSpeedMod = 0.3;
         public static final double maxRobotSpeedmps = 4.5;
+        public static final double maxRobotAutoSpeedmps = 1.0;
         public static final double driveGearRatio = 6.75;
         public static final double turnGearRatio = 150.0 / 7.0;
         public static final double wheelDiameter = Units.inchesToMeters(4.125);//guessing there is about 1/8" added for the tread. The wheel diameter is 4"

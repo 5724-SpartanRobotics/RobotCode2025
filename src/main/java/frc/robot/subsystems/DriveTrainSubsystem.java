@@ -176,7 +176,7 @@ public class DriveTrainSubsystem extends SubsystemBase {
             )
         );
     
-        SwerveDriveKinematics.desaturateWheelSpeeds(states, DriveConstants.maxRobotSpeedmps);
+        SwerveDriveKinematics.desaturateWheelSpeeds(states, DriveConstants.maxRobotAutoSpeedmps);
     
         _LF.setDesiredState(states[0]);
         _RF.setDesiredState(states[1]);
