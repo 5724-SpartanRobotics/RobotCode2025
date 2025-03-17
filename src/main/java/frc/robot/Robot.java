@@ -5,6 +5,7 @@
 package frc.robot;
 
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -26,8 +27,10 @@ public class Robot extends TimedRobot {
      * initialization code.
      */
     public Robot() {
-        // DataLogManager.start();
-        // DriverStation.startDataLog(DataLogManager.getLog());
+        if (!isDebug()) {
+            DataLogManager.start();
+            DriverStation.startDataLog(DataLogManager.getLog());
+        }
 
         _RobotContainer = new RobotContainer();
         _RobotContainer.robotFinishedBooting();
@@ -114,5 +117,12 @@ public class Robot extends TimedRobot {
     public static edu.wpi.first.wpilibj.util.Color allianceToColor() {
       return DriverStation.getAlliance().get() == DriverStation.Alliance.Blue ?
         edu.wpi.first.wpilibj.util.Color.kBlue : edu.wpi.first.wpilibj.util.Color.kRed;
+    }
+
+    public static boolean isDebug() {
+        // Code from ChatGPT. It sees if a debugger is attached by looking
+        // at the arguements passed to the JVM when it was started.
+        return java.lang.management.ManagementFactory.getRuntimeMXBean()
+            .getInputArguments().toString().contains("-agentlib:jdwp");
     }
 }
