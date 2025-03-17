@@ -66,6 +66,7 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void autonomousInit() {
+        System.out.println("=== !!! Autonomous Started !!! ===");
         _RobotContainer.m_autos.getSelected().schedule();
         CommandScheduler.getInstance().run();
     }

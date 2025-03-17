@@ -4,8 +4,8 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController;
+import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
@@ -20,7 +20,7 @@ import frc.robot.lib.PidEnabledSubsystemInterface;
 import frc.robot.lib.PidRamp;
 
 public class WristSubsystem extends SubsystemBase implements PidEnabledSubsystemInterface {
-    private SparkMax _WristMtrCtrl;
+    private SparkFlex _WristMtrCtrl;
     private SparkClosedLoopController _WristMtrPidController;
     private RelativeEncoder _WristMtrEncoder;
     private PidRamp _WristPidRamp;
@@ -28,7 +28,7 @@ public class WristSubsystem extends SubsystemBase implements PidEnabledSubsystem
 
     public WristSubsystem()
     {
-        _WristMtrCtrl = new SparkMax(CanIdConstants.WristMtrCtrlCanId, MotorType.kBrushless);
+        _WristMtrCtrl = new SparkFlex(CanIdConstants.WristMtrCtrlCanId, MotorType.kBrushless);
 
         SparkMaxConfig cfg = new SparkMaxConfig();
         cfg.inverted(true)
