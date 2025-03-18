@@ -38,6 +38,7 @@ public class DriveTrainSubsystem extends SubsystemBase {
     private final SwerveModule[] _SwerveModules;
     private final Pigeon2 _gyroscope;
     private final SwerveDrivePoseEstimator _SwerveDrivePoseEstimator;
+
     private final PIDController xController = new PIDController(10.0, 0.0, 0.0);
     private final PIDController yController = new PIDController(10.0, 0.0, 0.0);
     private final PIDController headingController = new PIDController(7.5, 0.0, 0.0);
@@ -90,7 +91,7 @@ public class DriveTrainSubsystem extends SubsystemBase {
         robotPose = _SwerveDriveOdometry.update(currentHdg, positions);
         field.setRobotPose(robotPose);
 
-        if (DebugSetting.TraceLevel == DebugLevel.Swerve || DebugSetting.TraceLevel == DebugLevel.All) {
+        if (DebugSetting.TraceLevel == DebugLevel.Swerve || DebugSetting.TraceLevel == DebugLevel.Autonomous || DebugSetting.TraceLevel == DebugLevel.All) {
             SmartDashboard.putNumber("RobotPoseX", robotPose.getX());
             SmartDashboard.putNumber("RobotPoseY", robotPose.getY());
             _LF.reportAll();
@@ -197,11 +198,21 @@ public class DriveTrainSubsystem extends SubsystemBase {
         // Get the current pose of the robot
         Pose2d pose = robotPose;
 
+        double xC = xController.calculate(pose.getX(), sample.x);
+        double yC = yController.calculate(pose.getY(), sample.y);
+        double tC = headingController.calculate(pose.getRotation().getRadians(), sample.heading);
+
+        if (DebugSetting.TraceLevel == DebugLevel.Autonomous || DebugSetting.TraceLevel == DebugLevel.All) {
+            SmartDashboard.putNumber("traj pid x", xC);
+            SmartDashboard.putNumber("traj pid y", yC);
+            SmartDashboard.putNumber("traj pid z", tC);
+        }
+
         // Generate the next speeds for the robot
         ChassisSpeeds speeds = new ChassisSpeeds(
-            sample.vx + xController.calculate(pose.getX(), sample.x),
-            sample.vy + yController.calculate(pose.getY(), sample.y),
-            sample.omega + headingController.calculate(pose.getRotation().getRadians(), sample.heading)
+            sample.vx + xC,
+            sample.vy + yC,
+            sample.omega + tC
         );
 
         // Apply the generated speeds

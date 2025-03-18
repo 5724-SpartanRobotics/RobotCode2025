@@ -10,7 +10,7 @@ public class Conversions {
      * @param counts The counts to be converted to radians
      * @return The radians for the specified counts.
      */
-    public static double falconToRadians(double counts){
+    public static double vortexToRadians(double counts){
         return counts * (Constants.TwoPI / (DriveConstants.turnGearRatio * 1.0));
     }
 
@@ -19,7 +19,7 @@ public class Conversions {
      * @param counts Falcon sensor counts
      * @return Wheel angle in degrees
      */
-    public static double falconToDegrees(double counts){
+    public static double vortexToDegrees(double counts){
         return counts * (360.0 / (DriveConstants.turnGearRatio * 1.0));
     }
 
@@ -28,10 +28,6 @@ public class Conversions {
      * @param radians the radians to convert to Falcon motor counts
      * @return Falcon Counts - 1.0 = 1 rotation of the motor
      */
-    public static double radiansToFalcon(double radians){
-        return radians / (Constants.TwoPI / (DriveConstants.turnGearRatio * 1.0));
-    }
-
     public static double radiansToVortex(double radians){
         return radians / (Constants.TwoPI / (DriveConstants.turnGearRatio * 1.0));
     }
@@ -59,17 +55,16 @@ public class Conversions {
      * @param velocitycounts
      * @return
      */
-    public static double falconToMPS(double velocitycounts)
+    public static double vortexToMPS(double velocitycounts)
     {
         double wheelRPM = falconToRPM(velocitycounts);
         double wheelMPS = (wheelRPM * DriveConstants.wheelCircumfrence)/60;
         return wheelMPS;
     }
 
-    public static double falconToMeters(double positionCounts)
+    public static double vortexToMeters(double positionCounts)
     {
-        double distanceMeters = positionCounts / 1.0 / DriveConstants.driveGearRatio * DriveConstants.wheelCircumfrence;
-        return distanceMeters;
+        return positionCounts / DriveConstants.driveGearRatio * DriveConstants.wheelCircumfrence;
     }
 
     ///

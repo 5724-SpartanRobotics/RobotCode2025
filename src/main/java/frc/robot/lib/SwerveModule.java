@@ -86,13 +86,13 @@ public class SwerveModule {
 
     public SwerveModuleState getState() {
         double velocity = drive.get();
-        Rotation2d angle = Rotation2d.fromDegrees(Conversions.falconToDegrees(-turn.getEncoder().getPosition()));
+        Rotation2d angle = Rotation2d.fromDegrees(Conversions.vortexToDegrees(-turn.getEncoder().getPosition()));
         return new SwerveModuleState(velocity, angle);
     }
 
     public SwerveModulePosition getPosition() {
-        double position = Conversions.falconToMeters(drive.getEncoder().getPosition());
-        Rotation2d angle = Rotation2d.fromDegrees(Conversions.falconToDegrees(-turn.getEncoder().getPosition()));
+        double position = Conversions.vortexToMeters(drive.getEncoder().getPosition());
+        Rotation2d angle = Rotation2d.fromDegrees(Conversions.vortexToDegrees(-turn.getEncoder().getPosition()));
         return new SwerveModulePosition(position, angle);
     }
 
@@ -128,7 +128,7 @@ public class SwerveModule {
         if (DebugSetting.TraceLevel == DebugLevel.Swerve || DebugSetting.TraceLevel == DebugLevel.All){
             SmartDashboard.putNumber(Name + " TurnRef", Units.radiansToDegrees(angle));
         }
-        turn_pid.setReference(-Conversions.radiansToFalcon(angle), ControlType.kPosition);
+        turn_pid.setReference(-Conversions.radiansToVortex(angle), ControlType.kPosition);
         driveAngle = angle;
     }
 

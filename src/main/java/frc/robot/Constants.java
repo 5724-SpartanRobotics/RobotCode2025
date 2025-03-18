@@ -34,10 +34,10 @@ public final class Constants {
     public final class DriveConstants {
         public static final double defaultSpeedMod = 0.3;
         public static final double maxRobotSpeedmps = 4.5;
-        public static final double maxRobotAutoSpeedmps = 1.0;
+        public static final double maxRobotAutoSpeedmps = 2.0;
         public static final double driveGearRatio = 6.75;
         public static final double turnGearRatio = 150.0 / 7.0;
-        public static final double wheelDiameter = Units.inchesToMeters(4.125);//guessing there is about 1/8" added for the tread. The wheel diameter is 4"
+        public static final double wheelDiameter = Units.inchesToMeters(4);
         public static final double wheelCircumfrence = wheelDiameter * Math.PI;//meters
     
         // Maximum angular velocity (in radians per second)
@@ -45,18 +45,18 @@ public final class Constants {
         public static final double maxLinearSpeed = 15.5F / 3.281F;
     
         // Wheelbase and track width (in meters)
-        public static final double wheelBase = 0.6; // Distance between front and back wheels
-        public static final double trackWidth = 0.6; // Distance between left and right wheels
+        public static final double wheelBase = 0.52705; // Distance between front and back wheels
+        public static final double trackWidth = 0.5842; // Distance between left and right wheels
     
         // Swerve module offsets (in radians) - adjust these based on calibration
         public static final double LFOff = 0.0;
         public static final double RFOff = 0.0;
         public static final double LBOff = 0.0;
         public static final double RBOff = 0.0; 
-        public static Translation2d LFLocation = new Translation2d(wheelBase/2, trackWidth/2);
-        public static Translation2d RFLocation = new Translation2d(wheelBase/2, -trackWidth/2);
-        public static Translation2d LBLocation = new Translation2d(-wheelBase/2, trackWidth/2);
-        public static Translation2d RBLocation = new Translation2d(-wheelBase/2, -trackWidth/2);
+        public static final Translation2d LFLocation = new Translation2d(wheelBase/2, trackWidth/2);
+        public static final Translation2d RFLocation = new Translation2d(wheelBase/2, -trackWidth/2);
+        public static final Translation2d LBLocation = new Translation2d(-wheelBase/2, trackWidth/2);
+        public static final Translation2d RBLocation = new Translation2d(-wheelBase/2, -trackWidth/2);
         public static final int kNominalVoltage = 12;
         public static final int kDriveCurrentLimit = 60;
         public static final int kSteerCurrentLimit = 25;
@@ -167,7 +167,7 @@ public final class Constants {
 
     public static final class DebugSetting{
         //set this to get more values to smart dashboard. Leave it off for competition.
-        public static final DebugLevel TraceLevel = DebugLevel.Off;
+        public static final DebugLevel TraceLevel = DebugLevel.Autonomous;
     }
     public static enum DebugLevel{
         Off,

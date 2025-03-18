@@ -8,7 +8,6 @@ import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
@@ -81,16 +80,12 @@ public class RobotContainer {
         configureAutos();
     }
 
-    private Command _NoAuto() {
-        return new Command() {};
-    }
-
     private void configureAutos() {
-        m_autos.addCmd("!!! NO AUTO !!!", this::_NoAuto);
         m_autos.addCmd("B C 2P F1,5", _Autos::_Blue_Center_2Piece_Face15);
         m_autos.addCmd("B L 2P F6,5", _Autos::_Blue_Left_2Piece_Faces65);
         m_autos.addCmd("B R 2P F2,3", _Autos::_Blue_Right_2Piece_Faces23);
         m_autos.addCmd("Basic 2s Leave", _Autos::_Leave);
+        m_autos.addCmd("10 ft", _Autos::_10ft);
 
         SmartDashboard.putData("Auto choices", m_autos);
         RobotModeTriggers.autonomous().whileTrue(m_autos.selectedCommandScheduler());
