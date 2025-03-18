@@ -20,7 +20,6 @@ import frc.robot.commands.autos.Autos;
 import frc.robot.subsystems.AlgaeSubsystem;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.ClawSubsystem;
-import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.DriveTrainSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.LedSubsystem;
@@ -38,7 +37,7 @@ public class RobotContainer {
     private ClawSubsystem _ClawSubsystem;
     private AlgaeSubsystem _AlgaeSubsystem;
     private WristSubsystem _WristSubsystem;
-    private ClimberSubsystem _ClimberSubsystem;
+    // private ClimberSubsystem _ClimberSubsystem;
     @SuppressWarnings("unused")
     private VisionSubsystem _VisionSubsystem;
     private CommandJoystick _DriverController;
@@ -58,7 +57,7 @@ public class RobotContainer {
         _ClawSubsystem = new ClawSubsystem(_LedSubsystem);
         _AlgaeSubsystem = new AlgaeSubsystem();
         _WristSubsystem = new WristSubsystem();
-        _ClimberSubsystem = new ClimberSubsystem();
+        // _ClimberSubsystem = new ClimberSubsystem();
         _DriverController = new CommandJoystick(0);
         _OperatorController = new CommandJoystick(1);      
 
@@ -95,24 +94,24 @@ public class RobotContainer {
         _DriverController.button(7).onTrue(new InstantCommand(() -> {
             _DriveTrainSubsystem.zeroGyro();
         }));
-        _DriverController.button(8).onTrue(new InstantCommand(() ->{
-            _ClimberSubsystem.SetToClimbPosition();
-        }));
-        _DriverController.button(10).onTrue(new InstantCommand(() ->{
-            _ClimberSubsystem.SetToHomePosition();
-        }));
-        _DriverController.button(12).whileTrue(new RunCommand(() ->{
-            _ClimberSubsystem.Climb(-0.3);
-        }));
-        _DriverController.button(12).onFalse(new InstantCommand(() ->{
-            _ClimberSubsystem.Climb(0);
-        }));
-        _DriverController.button(11).whileTrue(new RunCommand(() ->{
-            _ClimberSubsystem.Climb(-1.0);
-        }));
-        _DriverController.button(11).onFalse(new InstantCommand(() ->{
-            _ClimberSubsystem.Climb(0);
-        }));
+        // _DriverController.button(8).onTrue(new InstantCommand(() ->{
+        //     _ClimberSubsystem.SetToClimbPosition();
+        // }));
+        // _DriverController.button(10).onTrue(new InstantCommand(() ->{
+        //     _ClimberSubsystem.SetToHomePosition();
+        // }));
+        // _DriverController.button(12).whileTrue(new RunCommand(() ->{
+        //     _ClimberSubsystem.Climb(-0.3);
+        // }));
+        // _DriverController.button(12).onFalse(new InstantCommand(() ->{
+        //     _ClimberSubsystem.Climb(0);
+        // }));
+        // _DriverController.button(11).whileTrue(new RunCommand(() ->{
+        //     _ClimberSubsystem.Climb(-1.0);
+        // }));
+        // _DriverController.button(11).onFalse(new InstantCommand(() ->{
+        //     _ClimberSubsystem.Climb(0);
+        // }));
         // _DriverController.button(11).whileTrue(new AprilTagLockonCommand(_DriveTrainSubsystem, _VisionSubSys));
        
         //algae controls
@@ -201,7 +200,7 @@ public class RobotContainer {
         _ArmSubsystem.ArmRotateStop();
         _ElevatorSubsystem.ElevatorStop();
         _WristSubsystem.WristStop();
-        _ClimberSubsystem.ClimbStop();
+        // _ClimberSubsystem.ClimbStop();
     }
 
     public void ElevatorToStartingHeight()
@@ -218,6 +217,6 @@ public class RobotContainer {
         _ArmSubsystem.resetReferences();
         _ElevatorSubsystem.resetReferences();
         _WristSubsystem.resetReferences();
-        _ClimberSubsystem.resetReferences();
+        // _ClimberSubsystem.resetReferences();
     }
 }
