@@ -91,7 +91,7 @@ public class SwerveModule {
     }
 
     public SwerveModulePosition getPosition() {
-        double position = Conversions.vortexToMeters(drive.getEncoder().getPosition());
+        double position = Conversions.vortexToMeters(drive.getEncoder().getPosition()) * isInverted;
         Rotation2d angle = Rotation2d.fromDegrees(Conversions.vortexToDegrees(-turn.getEncoder().getPosition()));
         return new SwerveModulePosition(position, angle);
     }
@@ -101,6 +101,8 @@ public class SwerveModule {
     }
 
     public void reportMotorEncoderPosition() {
+        double position = Conversions.vortexToMeters(drive.getEncoder().getPosition()) * isInverted;
+        SmartDashboard.putNumber(Name + "DriveEncoderMeters", position);
         SmartDashboard.putNumber(Name + " TurnMotorPosEnc", turn.getEncoder().getPosition()); // rotations
     }
 
