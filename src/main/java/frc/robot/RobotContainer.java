@@ -85,6 +85,7 @@ public class RobotContainer {
         m_autos.addCmd("B R 2P F2,3", _Autos::_Blue_Right_2Piece_Faces23);
         m_autos.addCmd("Basic 2s Leave", _Autos::_Leave);
         m_autos.addCmd("10 ft", _Autos::_10ft);
+        m_autos.addCmd("claw run", _Autos::_ClawRun);
 
         SmartDashboard.putData("Auto choices", m_autos);
         RobotModeTriggers.autonomous().whileTrue(m_autos.selectedCommandScheduler());
@@ -93,6 +94,9 @@ public class RobotContainer {
     private void configureBindings(PresetCommands presetCommands) {
         _DriverController.button(7).onTrue(new InstantCommand(() -> {
             _DriveTrainSubsystem.zeroGyro();
+        }));
+        _DriverController.button(8).onTrue(new InstantCommand(() -> {
+            _DriveTrainSubsystem.poseZero();
         }));
         // _DriverController.button(8).onTrue(new InstantCommand(() ->{
         //     _ClimberSubsystem.SetToClimbPosition();
@@ -187,6 +191,7 @@ public class RobotContainer {
 
     public void robotFinishedBooting() {
         _LedSubsystem.setColorForDuration(LedSubsystem.kDefaultNotificationColor, 2);
+        _DriveTrainSubsystem.zeroGyro();
     }
 
     /**

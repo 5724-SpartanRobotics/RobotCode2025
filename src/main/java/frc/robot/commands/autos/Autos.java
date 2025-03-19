@@ -3,7 +3,11 @@ package frc.robot.commands.autos;
 import choreo.auto.AutoFactory;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import frc.robot.Constants.ElevatorAndArmConstants;
+import frc.robot.commands.ClawRunForDurationCommand;
 import frc.robot.commands.PresetCommands;
+import frc.robot.commands.SetpointCommands;
+import frc.robot.commands.ClawRunForDurationCommand.ClawRunMode;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.ClawSubsystem;
 import frc.robot.subsystems.DriveTrainSubsystem;
@@ -18,6 +22,7 @@ public final class Autos {
     public final BL2PF65 Blue_Left_2Piece_Faces65;
     public final BR2PF23 Blue_Right_2Piece_Faces23;
     public final SequentialCommandGroup TenFt;
+    public final SequentialCommandGroup ClawRun;
 
     public Autos(
         DriveTrainSubsystem driveTrainSubsystem,
@@ -31,7 +36,7 @@ public final class Autos {
             driveTrainSubsystem::getPose, // A function that returns the current robot pose
             driveTrainSubsystem::resetOdometry, // A function that resets the current robot pose to the provided Pose2d
             driveTrainSubsystem::followTrajectory, // The drive subsystem trajectory follower 
-            true, // If alliance flipping should be enabled 
+            true, // If alliance flipping should be enabled +
             driveTrainSubsystem
         );
 
@@ -42,6 +47,14 @@ public final class Autos {
         TenFt = new SequentialCommandGroup(
             _AutoFactory.resetOdometry("10ft"),
             _AutoFactory.trajectoryCmd("10ft")
+        );
+        ClawRun =  new SequentialCommandGroup(
+            new SetpointCommands.ElevatorToSetpointCommand(elevatorSubsystem, ElevatorAndArmConstants.ElevatorCoralPosn),
+            new SequentialCommandGroup(
+                new SetpointCommands.WristRotateToSetpointCommand(wristSubsystem, ElevatorAndArmConstants.WristMax)
+                    .alongWith(new SetpointCommands.ArmRotateToSetpointCommand(armSubsystem, ElevatorAndArmConstants.ArmRotateCoralPosn))
+            ),
+            new ClawRunForDurationCommand(clawSubsystem, ClawRunMode.Intake, 5.0)
         );
     }
 
@@ -63,5 +76,9 @@ public final class Autos {
 
     public Command _10ft() {
         return TenFt;
+    }
+
+    public Command _ClawRun() {
+        return ClawRun;
     }
 }

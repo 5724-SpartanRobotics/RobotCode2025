@@ -106,7 +106,11 @@ public class DriveTrainSubsystem extends SubsystemBase {
         }
 
         _SwerveDrivePoseEstimator.update(currentHdg, positions);
-        NetworkTableInstance.getDefault().getEntry("/Gyro").setDouble(360 - (Math.abs(_gyroscope.getYaw().getValueAsDouble()) % 360.0));
+        NetworkTableInstance.getDefault().getEntry("/Gyro").setDouble(Math.abs(_gyroscope.getYaw().getValueAsDouble()) % 360.0);
+        SmartDashboard.putData(field);
+        SmartDashboard.putData("Auto Pid x", xController);
+        SmartDashboard.putData("Auto Pid y", yController);
+        SmartDashboard.putData("Auto Pid z", headingController);
     }
 
     public Rotation2d getGyroHeading() {
@@ -160,7 +164,12 @@ public class DriveTrainSubsystem extends SubsystemBase {
     }
 
     public void flipGyro() {
-        _gyroscope.setYaw(Math.PI);
+        _gyroscope.setYaw(180);
+    }
+
+    public void poseZero() {
+        robotPose = new Pose2d(0.0, 0.0, new Rotation2d(0.0));
+        _SwerveDriveOdometry.resetPose(robotPose);
     }
 
     public TeleopSwerve.JoystickAxes setJoystickAxes(TeleopSwerve.JoystickAxes axes) {

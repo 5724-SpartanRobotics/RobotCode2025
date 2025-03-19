@@ -34,7 +34,6 @@ public class Robot extends TimedRobot {
 
         _RobotContainer = new RobotContainer();
         _RobotContainer.robotFinishedBooting();
-        
     }
 
     /**

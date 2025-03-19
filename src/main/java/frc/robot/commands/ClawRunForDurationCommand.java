@@ -15,8 +15,6 @@ public class ClawRunForDurationCommand extends Command {
         _ClawSubsystem = clawSubsystem;
         _ClawRunMode = intakeMode;
         _elapse = seconds;
-        _time.reset();
-        _time.start();
     }
 
     private double ClawRunModeToDouble(ClawRunMode clawRunMode) {
@@ -30,6 +28,8 @@ public class ClawRunForDurationCommand extends Command {
 
     @Override
     public void execute() {
+        _time.reset();
+        _time.start();
         _ClawSubsystem.ClawRun(ClawRunModeToDouble(_ClawRunMode));
     }
 
@@ -40,6 +40,7 @@ public class ClawRunForDurationCommand extends Command {
 
     @Override
     public void end(boolean interrupted) {
+        _time.stop();
         System.out.println("!~~ Claw finished running command");
         _ClawSubsystem.ClawRun(ClawRunModeToDouble(ClawRunMode.Stopped));
     }
