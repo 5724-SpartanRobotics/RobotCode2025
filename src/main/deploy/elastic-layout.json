@@ -11,7 +11,7 @@
             "title": "Gyro",
             "x": 0.0,
             "y": 0.0,
-            "width": 256.0,
+            "width": 384.0,
             "height": 256.0,
             "type": "Radial Gauge",
             "properties": {
@@ -32,7 +32,7 @@
             "title": "Voltage",
             "x": 0.0,
             "y": 256.0,
-            "width": 256.0,
+            "width": 384.0,
             "height": 128.0,
             "type": "Voltage View",
             "properties": {
@@ -48,22 +48,27 @@
           },
           {
             "title": "Barrel Cam",
-            "x": 896.0,
+            "x": 384.0,
             "y": 0.0,
-            "width": 640.0,
+            "width": 1152.0,
             "height": 512.0,
             "type": "Camera Stream",
             "properties": {
-              "topic": "/CameraPublisher/USB Camera 1",
+              "topic": "/CameraPublisher/Barrel Camera",
               "period": 0.06,
-              "rotation_turns": 0
+              "rotation_turns": 0,
+              "fps": 20,
+              "resolution": [
+                320.0,
+                240.0
+              ]
             }
           },
           {
             "title": "Match Time",
             "x": 0.0,
             "y": 384.0,
-            "width": 256.0,
+            "width": 384.0,
             "height": 128.0,
             "type": "Match Time",
             "properties": {
@@ -73,19 +78,6 @@
               "time_display_mode": "Minutes and Seconds",
               "red_start_time": 15,
               "yellow_start_time": 30
-            }
-          },
-          {
-            "title": "Algae Cam",
-            "x": 256.0,
-            "y": 0.0,
-            "width": 640.0,
-            "height": 512.0,
-            "type": "Camera Stream",
-            "properties": {
-              "topic": "/CameraPublisher/USB Camera 0",
-              "period": 0.06,
-              "rotation_turns": 0
             }
           }
         ]
@@ -100,7 +92,7 @@
             "title": "Auto choices",
             "x": 0.0,
             "y": 128.0,
-            "width": 512.0,
+            "width": 640.0,
             "height": 128.0,
             "type": "ComboBox Chooser",
             "properties": {
@@ -113,7 +105,7 @@
             "title": "FMSInfo",
             "x": 0.0,
             "y": 0.0,
-            "width": 512.0,
+            "width": 640.0,
             "height": 128.0,
             "type": "FMSInfo",
             "properties": {
@@ -125,7 +117,7 @@
             "title": "Voltage",
             "x": 256.0,
             "y": 256.0,
-            "width": 256.0,
+            "width": 384.0,
             "height": 128.0,
             "type": "Voltage View",
             "properties": {
@@ -161,29 +153,17 @@
             }
           },
           {
-            "title": "USB Camera 0",
-            "x": 512.0,
+            "title": "Barrel Camera",
+            "x": 640.0,
             "y": 0.0,
-            "width": 512.0,
+            "width": 896.0,
             "height": 512.0,
             "type": "Camera Stream",
             "properties": {
-              "topic": "/CameraPublisher/USB Camera 0",
+              "topic": "/CameraPublisher/Barrel Camera",
               "period": 0.06,
-              "rotation_turns": 0
-            }
-          },
-          {
-            "title": "USB Camera 1",
-            "x": 1024.0,
-            "y": 0.0,
-            "width": 512.0,
-            "height": 512.0,
-            "type": "Camera Stream",
-            "properties": {
-              "topic": "/CameraPublisher/USB Camera 1",
-              "period": 0.06,
-              "rotation_turns": 0
+              "rotation_turns": 0,
+              "fps": 15
             }
           }
         ]

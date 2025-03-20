@@ -1,18 +1,14 @@
 package frc.robot;
 
 import choreo.auto.AutoChooser;
-import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.net.WebServer;
 import edu.wpi.first.wpilibj.Filesystem;
-import edu.wpi.first.wpilibj.PowerDistribution;
-import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
-import frc.robot.Constants.CanIdConstants;
 import frc.robot.Constants.ClawConstants;
 import frc.robot.commands.PresetCommands;
 import frc.robot.commands.TeleopSwerve;
@@ -27,8 +23,6 @@ import frc.robot.subsystems.VisionSubsystem;
 import frc.robot.subsystems.WristSubsystem;
 
 public class RobotContainer {
-    public final PowerDistribution _PowerDistribution = new PowerDistribution(CanIdConstants.PDHID, ModuleType.kRev);
-    
     private DriveTrainSubsystem _DriveTrainSubsystem;
     private TeleopSwerve _TeleopSwerve;
     private LedSubsystem _LedSubsystem;
@@ -67,8 +61,8 @@ public class RobotContainer {
 
         _DriveTrainSubsystem.setDefaultCommand(_TeleopSwerve);
         // CameraServer.startAutomaticCapture(); // L4 Camera // Start camera server on zeroth index video device
-        CameraServer.startAutomaticCapture(); // Algae Camera // Start camera server on first index video device (auto inc)
-        CameraServer.startAutomaticCapture(); // Barrel Camera // Start camera server on second index video device (auto inc)
+        // CameraServer.startAutomaticCapture(); // Algae Camera // Start camera server on first index video device (auto inc)
+        // CameraServer.startAutomaticCapture(); // Barrel Camera // Start camera server on second index video device (auto inc)
         WebServer.start(5800, Filesystem.getDeployDirectory().getPath()); // Expose the deploy/ dir for Elastic layout
 
         _DriveTrainSubsystem.zeroGyro();
