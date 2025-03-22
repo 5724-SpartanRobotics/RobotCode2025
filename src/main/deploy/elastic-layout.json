@@ -48,9 +48,9 @@
           },
           {
             "title": "Barrel Cam",
-            "x": 384.0,
+            "x": 896.0,
             "y": 0.0,
-            "width": 1152.0,
+            "width": 640.0,
             "height": 512.0,
             "type": "Camera Stream",
             "properties": {
@@ -79,6 +79,20 @@
               "red_start_time": 15,
               "yellow_start_time": 30
             }
+          },
+          {
+            "title": "Algae Camera",
+            "x": 384.0,
+            "y": 0.0,
+            "width": 512.0,
+            "height": 512.0,
+            "type": "Camera Stream",
+            "properties": {
+              "topic": "/CameraPublisher/Algae Camera",
+              "period": 0.06,
+              "rotation_turns": 0,
+              "fps": 20
+            }
           }
         ]
       }
@@ -92,7 +106,7 @@
             "title": "Auto choices",
             "x": 0.0,
             "y": 128.0,
-            "width": 640.0,
+            "width": 512.0,
             "height": 128.0,
             "type": "ComboBox Chooser",
             "properties": {
@@ -105,7 +119,7 @@
             "title": "FMSInfo",
             "x": 0.0,
             "y": 0.0,
-            "width": 640.0,
+            "width": 512.0,
             "height": 128.0,
             "type": "FMSInfo",
             "properties": {
@@ -117,7 +131,7 @@
             "title": "Voltage",
             "x": 256.0,
             "y": 256.0,
-            "width": 384.0,
+            "width": 256.0,
             "height": 128.0,
             "type": "Voltage View",
             "properties": {
@@ -154,13 +168,27 @@
           },
           {
             "title": "Barrel Camera",
-            "x": 640.0,
+            "x": 1024.0,
             "y": 0.0,
-            "width": 896.0,
+            "width": 512.0,
             "height": 512.0,
             "type": "Camera Stream",
             "properties": {
               "topic": "/CameraPublisher/Barrel Camera",
+              "period": 0.06,
+              "rotation_turns": 0,
+              "fps": 15
+            }
+          },
+          {
+            "title": "Algae Camera",
+            "x": 512.0,
+            "y": 0.0,
+            "width": 512.0,
+            "height": 512.0,
+            "type": "Camera Stream",
+            "properties": {
+              "topic": "/CameraPublisher/Algae Camera",
               "period": 0.06,
               "rotation_turns": 0,
               "fps": 15
