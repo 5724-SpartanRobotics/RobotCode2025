@@ -24,6 +24,7 @@ public final class Autos {
     public final BR2PF23 Blue_Right_2Piece_Faces23;
     public final SequentialCommandGroup TenFt;
     public final SequentialCommandGroup ClawRun;
+    public final OnePieceCenter OnePieceCenter;
 
     public Autos(
         DriveTrainSubsystem driveTrainSubsystem,
@@ -43,6 +44,7 @@ public final class Autos {
 
         Leave = new Leave(driveTrainSubsystem);
         LeaveWithWrist = new LeaveWithWrist(driveTrainSubsystem, wristSubsystem);
+        OnePieceCenter = new OnePieceCenter(driveTrainSubsystem, elevatorSubsystem, armSubsystem, wristSubsystem, clawSubsystem);
         Blue_Center_2Piece_Faces15 = new BC2PF15(_AutoFactory, driveTrainSubsystem, elevatorSubsystem, armSubsystem, clawSubsystem, wristSubsystem, presetCommands);
         Blue_Left_2Piece_Faces65 = new BL2PF65(_AutoFactory, driveTrainSubsystem, elevatorSubsystem, armSubsystem, clawSubsystem, wristSubsystem);
         Blue_Right_2Piece_Faces23 = new BR2PF23(_AutoFactory, driveTrainSubsystem, elevatorSubsystem, armSubsystem, clawSubsystem, wristSubsystem);
@@ -58,6 +60,10 @@ public final class Autos {
             ),
             new ClawRunForDurationCommand(clawSubsystem, ClawRunMode.Intake, 5.0)
         );
+    }
+
+    public Command _OnePieceCenter() {
+        return OnePieceCenter;
     }
 
     public Command _Blue_Center_2Piece_Face15() {
@@ -76,7 +82,7 @@ public final class Autos {
         return Leave;
     }
 
-    public Command LeaveWithWrist() {
+    public Command _LeaveWithWrist() {
         return LeaveWithWrist;
     }
 

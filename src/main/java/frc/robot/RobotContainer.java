@@ -74,12 +74,14 @@ public class RobotContainer {
     }
 
     private void configureAutos() {
-        m_autos.addCmd("B C 2P F1,5", _Autos::_Blue_Center_2Piece_Face15);
-        m_autos.addCmd("B L 2P F6,5", _Autos::_Blue_Left_2Piece_Faces65);
-        m_autos.addCmd("B R 2P F2,3", _Autos::_Blue_Right_2Piece_Faces23);
+        // m_autos.addCmd("B C 2P F1,5", _Autos::_Blue_Center_2Piece_Face15);
+        // m_autos.addCmd("B L 2P F6,5", _Autos::_Blue_Left_2Piece_Faces65);
+        // m_autos.addCmd("B R 2P F2,3", _Autos::_Blue_Right_2Piece_Faces23);
         m_autos.addCmd("Basic 2s Leave", _Autos::_Leave);
-        m_autos.addCmd("10 ft", _Autos::_10ft);
-        m_autos.addCmd("claw run", _Autos::_ClawRun);
+        m_autos.addCmd("Leave w/ Preload", _Autos::_LeaveWithWrist);
+        m_autos.addCmd("1Pc from Center", _Autos::_OnePieceCenter);
+        // m_autos.addCmd("10 ft", _Autos::_10ft);
+        // m_autos.addCmd("claw run", _Autos::_ClawRun);
 
         SmartDashboard.putData("Auto choices", m_autos);
         RobotModeTriggers.autonomous().whileTrue(m_autos.selectedCommandScheduler());
