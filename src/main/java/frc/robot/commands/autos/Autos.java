@@ -18,6 +18,7 @@ public final class Autos {
     private final AutoFactory _AutoFactory;
 
     public final Leave Leave;
+    public final LeaveWithWrist LeaveWithWrist;
     public final BC2PF15 Blue_Center_2Piece_Faces15;
     public final BL2PF65 Blue_Left_2Piece_Faces65;
     public final BR2PF23 Blue_Right_2Piece_Faces23;
@@ -41,6 +42,7 @@ public final class Autos {
         );
 
         Leave = new Leave(driveTrainSubsystem);
+        LeaveWithWrist = new LeaveWithWrist(driveTrainSubsystem, wristSubsystem);
         Blue_Center_2Piece_Faces15 = new BC2PF15(_AutoFactory, driveTrainSubsystem, elevatorSubsystem, armSubsystem, clawSubsystem, wristSubsystem, presetCommands);
         Blue_Left_2Piece_Faces65 = new BL2PF65(_AutoFactory, driveTrainSubsystem, elevatorSubsystem, armSubsystem, clawSubsystem, wristSubsystem);
         Blue_Right_2Piece_Faces23 = new BR2PF23(_AutoFactory, driveTrainSubsystem, elevatorSubsystem, armSubsystem, clawSubsystem, wristSubsystem);
@@ -72,6 +74,10 @@ public final class Autos {
 
     public Command _Leave() {
         return Leave;
+    }
+
+    public Command LeaveWithWrist() {
+        return LeaveWithWrist;
     }
 
     public Command _10ft() {

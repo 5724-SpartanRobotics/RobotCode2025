@@ -123,6 +123,7 @@ public final class Constants {
         public static final double WristSetpointRampRate = 80;//degrees per second
         public static final double WristGearRatio = 25.0;
         public static final double WristMax = 180;
+        public static final double WristRotateHalf = WristMax / 2;
        }
 
     public final class AlgaeConstants {
