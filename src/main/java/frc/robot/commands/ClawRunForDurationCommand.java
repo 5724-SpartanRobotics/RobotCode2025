@@ -21,6 +21,7 @@ public class ClawRunForDurationCommand extends Command {
         return switch (clawRunMode) {
             case Intake -> ClawConstants.IntakeSpeed;
             case Outtake -> ClawConstants.ExpelSpeed;
+            case OuttakeDlbSpeed -> ClawConstants.ExpelSpeed * 2;
             case Stopped -> ClawConstants.StoppedSpeed;
             default -> ClawConstants.StoppedSpeed;
         };
@@ -48,6 +49,7 @@ public class ClawRunForDurationCommand extends Command {
     public static enum ClawRunMode {
         Intake,
         Outtake,
+        OuttakeDlbSpeed,
         Stopped
     }
 }

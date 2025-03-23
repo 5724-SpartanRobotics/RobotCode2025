@@ -54,14 +54,21 @@ public class OnePieceCenter extends Command {
             ),
             new SequentialCommandGroup(
               new WaitCommand(0)
-              .alongWith(new SetpointCommands.ElevatorToSetpointCommand(_ElevatorSubsystem, ElevatorAndArmConstants.ElevatorL2Posn))
-              .alongWith(new SetpointCommands.WristRotateToSetpointCommand(_WristSubsystem, 0))
-              .alongWith(new SetpointCommands.ArmRotateToSetpointCommand(_ArmSubsystem, ElevatorAndArmConstants.ArmRotateL2Posn))
+              .alongWith(new SetpointCommands.ElevatorToSetpointCommand(_ElevatorSubsystem, ElevatorAndArmConstants.ElevatorL1Posn))
+              .alongWith(new SetpointCommands.WristRotateToSetpointCommand(_WristSubsystem, 80))
+              .alongWith(new SetpointCommands.ArmRotateToSetpointCommand(_ArmSubsystem, 65.0))
             ).withDeadline(new WaitCommand(2.5))
           ),
-          (new ClawRunForDurationCommand(_ClawSubsystem, ClawRunMode.Outtake, 1.5)).withDeadline(new WaitCommand(1.5))
+          (new ClawRunForDurationCommand(_ClawSubsystem, ClawRunMode.OuttakeDlbSpeed, 1.5)).withDeadline(new WaitCommand(1.5)),
+          new WaitCommand(0.5),
+          Commands.sequence(
+            new ParallelDeadlineGroup(new WaitCommand(1.0), new InstantCommand(() -> {
+              _DriveTrainSubsystem.drive(new Translation2d(-0.15, 0.15).times(DriveConstants.maxRobotSpeedmps), 0);
+            }, _DriveTrainSubsystem)),
+            _DriveTrainSubsystem.brakeCmd()
+          ),
+          new InstantCommand(() -> {_DriveTrainSubsystem.flipGyro();}, _DriveTrainSubsystem)
         ).schedule();
-
     }
     @Override
   public void end(boolean interrupted) {
