@@ -25,6 +25,7 @@ import com.pathplanner.lib.util.DriveFeedforwards;
 import com.pathplanner.lib.util.swerve.SwerveSetpoint;
 import com.pathplanner.lib.util.swerve.SwerveSetpointGenerator;
 
+import choreo.auto.AutoFactory;
 import choreo.trajectory.SwerveSample;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
@@ -86,6 +87,8 @@ public class DriveTrainSubsystem extends SubsystemBase {
         Constants.Drive.SwerveModuleOffsets.RB
     );
 
+    public final AutoFactory AutoFactory;
+
     public DriveTrainSubsystem(String configFilename) {
         this(new File(Filesystem.getDeployDirectory(), configFilename));
     }
@@ -105,6 +108,14 @@ public class DriveTrainSubsystem extends SubsystemBase {
         _SwerveDrive.setModuleEncoderAutoSynchronize(false, Constants.Drive.YAGSL.ModuleEncoderAutoSynchronizeDeadband);
         zTrajController.enableContinuousInput(-Math.PI, Math.PI);
 
+        this.AutoFactory = new AutoFactory(
+            this::getPose,
+            this::resetOdometry,
+            this::followTrajectory,
+            true,
+            this
+        );
+
         if (_VisionDriveTest) {
             initPhotonVision();
             _SwerveDrive.stopOdometryThread();
@@ -117,6 +128,13 @@ public class DriveTrainSubsystem extends SubsystemBase {
         _SwerveDrive = new SwerveDrive(
             driveCfg, ctrlCfg, Constants.Drive.MaxRobotVelocity.in(Units.MetersPerSecond),
             new Pose2d(new Translation2d(Meter.of(2), Meter.of(0)), Rotation2d.kZero)
+        );
+        this.AutoFactory = new AutoFactory(
+            this::getPose,
+            this::resetOdometry,
+            this::followTrajectory,
+            true,
+            this
         );
     }
 

@@ -8,7 +8,6 @@ import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.Constants.DebugLevel;
 import frc.robot.lib.Elastic;
@@ -20,7 +19,6 @@ import frc.robot.lib.Elastic;
  */
 public class Robot extends TimedRobot {
     private static Robot _This;
-    private Command _AutoCommand;
     private boolean _IsFirstDsConnection = true;
     
     private final RobotContainer _RobotContainer;
@@ -37,7 +35,6 @@ public class Robot extends TimedRobot {
         }
 
         _This = this;
-
         _RobotContainer = new RobotContainer();
         _DisabledTimer = new Timer();
 
@@ -77,8 +74,6 @@ public class Robot extends TimedRobot {
     @Override
     public void autonomousInit() {
         _RobotContainer.setMotorBrake(true);
-        _AutoCommand = _RobotContainer.getAutonomousCommand();
-        if (_AutoCommand != null) _AutoCommand.schedule();
     }
 
     /** This function is called periodically during autonomous. */
@@ -88,8 +83,7 @@ public class Robot extends TimedRobot {
     /** This function is called once when teleop is enabled. */
     @Override
     public void teleopInit() {
-        if (_AutoCommand != null) _AutoCommand.cancel();
-        else CommandScheduler.getInstance().cancelAll();
+        CommandScheduler.getInstance().cancelAll();
         Elastic.selectTab("Real Teleoperated");
     }
 
@@ -135,5 +129,9 @@ public class Robot extends TimedRobot {
 
     public static boolean isBlueAlliance() {
         return DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == DriverStation.Alliance.Blue;
+    }
+
+    public static boolean isRedAlliance() {
+        return DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == DriverStation.Alliance.Red;
     }
 }

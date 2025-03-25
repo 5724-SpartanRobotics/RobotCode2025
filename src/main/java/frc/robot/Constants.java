@@ -13,7 +13,7 @@ public final class Constants {
     public final class Robot {
         public static final edu.wpi.first.units.measure.Mass Mass = Units.Pounds.of(110.7);
         public static final edu.wpi.first.units.measure.MomentOfInertia MomentOfInteria = Units.KilogramSquareMeters.of(16.5);
-        public static final double WheelLockTime = Units.Seconds.of(3.0).in(Units.Seconds);
+        public static final double WheelLockTime = Units.Seconds.of(10.0).in(Units.Seconds);
     }
 
     public final class Drive implements WithMaxCurrentLimit {

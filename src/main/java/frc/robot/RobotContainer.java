@@ -1,5 +1,6 @@
 package frc.robot;
 
+import choreo.auto.AutoChooser;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -10,16 +11,19 @@ import edu.wpi.first.units.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
+import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import frc.robot.lib.XyPair;
 import frc.robot.subsystems.DriveTrainSubsystem;
 
 public class RobotContainer extends SubsystemBase {
     public final CommandJoystick _DriverController = new CommandJoystick(0);
-    public final CommandJoystick OperatorController = new CommandJoystick(1);
+    public final CommandJoystick _OperatorController = new CommandJoystick(1);
+    public final AutoChooser _AutoChooser;
 
     private final DriveTrainSubsystem _DriveTrainSubsystem;
 
@@ -34,9 +38,11 @@ public class RobotContainer extends SubsystemBase {
     public RobotContainer() {
         super();
         _DriveTrainSubsystem = new DriveTrainSubsystem("swerve/vortex");
+        _AutoChooser = new AutoChooser();
         
         configureDriveCommands();
         configureBindings();
+        configureAutos();
     }
 
     @Override
@@ -127,8 +133,11 @@ public class RobotContainer extends SubsystemBase {
         }
     }
 
-    public Command getAutonomousCommand() {
-        return _DriveTrainSubsystem.getAutonomousCommand("New Auto");
+    public void configureAutos() {
+        // Add autos here.
+
+        SmartDashboard.putData(_AutoChooser);
+        RobotModeTriggers.autonomous().whileTrue(_AutoChooser.selectedCommandScheduler());
     }
 
     public void setMotorBrake(boolean brake) {
