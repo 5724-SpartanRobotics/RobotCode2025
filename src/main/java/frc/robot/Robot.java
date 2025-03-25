@@ -31,7 +31,7 @@ public class Robot extends TimedRobot {
         * initialization code.
         */
     public Robot() {
-        if (!Main.isDebug()) {
+        if (!Main.isDebug() && isReal()) {
             DataLogManager.start();
             DriverStation.startDataLog(DataLogManager.getLog());
         }
@@ -41,7 +41,7 @@ public class Robot extends TimedRobot {
         _RobotContainer = new RobotContainer();
         _DisabledTimer = new Timer();
 
-        if (isSimulation() || DebugLevel.is(DebugLevel.Autonomous)) { DriverStation.silenceJoystickConnectionWarning(true); }
+        if (isSimulation() || DebugLevel.isOrAll(DebugLevel.Autonomous)) { DriverStation.silenceJoystickConnectionWarning(true); }
     }
 
     public static Robot getInstance() {
@@ -134,6 +134,6 @@ public class Robot extends TimedRobot {
     public void simulationPeriodic() {}
 
     public static boolean isBlueAlliance() {
-        return DriverStation.getAlliance().get().equals(DriverStation.Alliance.Blue);
+        return DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == DriverStation.Alliance.Blue;
     }
 }

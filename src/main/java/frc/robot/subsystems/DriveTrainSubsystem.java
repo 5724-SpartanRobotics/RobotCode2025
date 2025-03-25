@@ -25,6 +25,8 @@ import com.pathplanner.lib.util.DriveFeedforwards;
 import com.pathplanner.lib.util.swerve.SwerveSetpoint;
 import com.pathplanner.lib.util.swerve.SwerveSetpointGenerator;
 
+import choreo.trajectory.SwerveSample;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -64,6 +66,10 @@ public class DriveTrainSubsystem extends SubsystemBase {
     private final boolean _VisionDriveTest = false;
     private VisionSubsystem _Vision;
 
+    private final PIDController xTrajController = new PIDController(10.0, 0, 0);
+    private final PIDController yTrajController = new PIDController(10.0, 0, 0);
+    private final PIDController zTrajController = new PIDController(7.5, 0, 0);
+
     private static final RobotConfig config = new RobotConfig(
         Constants.Robot.Mass, Constants.Robot.MomentOfInteria,
         new ModuleConfig(
@@ -90,13 +96,14 @@ public class DriveTrainSubsystem extends SubsystemBase {
             new Pose2d(new Translation2d(Meter.of(1), Meter.of(4)), Rotation2d.kZero) :
             new Pose2d(new Translation2d(Meter.of(16), Meter.of(4)), Rotation2d.k180deg) ;
 
-        SwerveDriveTelemetry.verbosity = DebugLevel.is(DebugLevel.Swerve) ? TelemetryVerbosity.HIGH : TelemetryVerbosity.NONE;
+        SwerveDriveTelemetry.verbosity = DebugLevel.isOrAll(DebugLevel.Swerve) ? TelemetryVerbosity.HIGH : TelemetryVerbosity.NONE;
         try { _SwerveDrive = new SwerveParser(directory).createSwerveDrive(Constants.Drive.MaxRobotVelocity.in(Units.MetersPerSecond), startingPose); }
         catch (IOException e) { throw new RuntimeException(e); }
         _SwerveDrive.setHeadingCorrection(false);
         _SwerveDrive.setCosineCompensator(!SwerveDriveTelemetry.isSimulation);
         _SwerveDrive.setAngularVelocityCompensation(true, true, Constants.Drive.YAGSL.AngularVelocityCompensationCoefficient);
         _SwerveDrive.setModuleEncoderAutoSynchronize(false, Constants.Drive.YAGSL.ModuleEncoderAutoSynchronizeDeadband);
+        zTrajController.enableContinuousInput(-Math.PI, Math.PI);
 
         if (_VisionDriveTest) {
             initPhotonVision();
@@ -362,6 +369,16 @@ public class DriveTrainSubsystem extends SubsystemBase {
 
     public SwerveDrive getSwerveDrive() {
         return _SwerveDrive;
+    }
+
+    public void followTrajectory(SwerveSample sample) {
+        Pose2d pose = getPose();
+        ChassisSpeeds speeds = new ChassisSpeeds(
+            sample.vx + xTrajController.calculate(pose.getX(), sample.x),
+            sample.vy + yTrajController.calculate(pose.getY(), sample.y),
+            sample.omega + zTrajController.calculate(pose.getRotation().getRadians(), sample.heading)
+        );
+        drive(speeds);
     }
 
     public static SwerveInputStream driveAngularVelocity(

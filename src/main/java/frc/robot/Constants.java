@@ -8,7 +8,7 @@ import edu.wpi.first.units.Units;
 public final class Constants {
     public static final double TwoPI = Math.PI * 2;
     public static final double HalfPI = Math.PI / 2;
-    public static final DebugLevel DebugTraceLevel = DebugLevel.Off;
+    public static final DebugLevel DebugTraceLevel = DebugLevel.All;
 
     public final class Robot {
         public static final edu.wpi.first.units.measure.Mass Mass = Units.Pounds.of(110.7);
