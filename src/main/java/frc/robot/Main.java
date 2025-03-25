@@ -22,4 +22,9 @@ public final class Main {
   public static void main(String... args) {
     RobotBase.startRobot(Robot::new);
   }
+
+  public static boolean isDebug() {
+    return java.lang.management.ManagementFactory.getRuntimeMXBean()
+      .getInputArguments().toString().contains("-agentlib:jdwp");
+  }
 }
