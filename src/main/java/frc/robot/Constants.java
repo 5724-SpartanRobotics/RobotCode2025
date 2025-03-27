@@ -108,6 +108,35 @@ public final class Constants {
             public static final int DriveToDistance = 12;
             public static final int ZeroSwerveModules = 10;
         }
+
+        public static final class OperatorMap {
+            private static final double AxisThreshold = 0.3;
+
+            public static final int AlgaeManualIncrement = 8;
+            public static final int AlgaeManualDecrement = 10;
+            public static final int AlgaeSetpointOut = 7;
+            public static final int AlgaeSetpointIn = 11;
+            public static final int AlgaeSetpointHold = 9;
+
+            public static final String ElevatorIncrement = "POV Up";
+            public static final String ElevatorDecrement = "POV Down";
+
+            public static final int ArmRotateAxis = 1;
+            public static final double ArmRotateIncrementThreshold = -AxisThreshold;
+            public static final double ArmRotateDecrementThreshold = AxisThreshold;
+
+            public static final String WristOut = "POV Right";
+            public static final String WristIn = "POV Left";
+
+            public static final int ClawExpel = 1;
+            public static final int ClawIntake = 2;
+
+            public static final int PresetHome = 12;
+            public static final int PresetIntake = 4;
+            public static final int PresetL4 = 5;
+            public static final int PresetL3 = 3;
+            public static final int PresetL2 = 6;
+        }
     }
 
     public static final class Motor {
@@ -128,6 +157,11 @@ public final class Constants {
             public static final Angle Extend = Units.Degrees.of(105.0);
             public static final Angle Retract = Units.Degrees.of(0.0);
             public static final Angle Hold = Units.Degrees.of(30.0);
+        }
+        public static final class Speeds {
+            public static final double Stopped = 0.0;
+            public static final double Increment = 0.3;
+            public static final double Decrement = -0.3;
         }
         public static final Angle RotateMax = Units.Degrees.of(100.0);
         public static final Angle RotateMin = Units.Degrees.of(0.0);

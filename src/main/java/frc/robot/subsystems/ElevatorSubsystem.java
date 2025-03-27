@@ -18,6 +18,7 @@ import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.DebugLevel;
@@ -196,5 +197,15 @@ public class ElevatorSubsystem extends SubsystemBase implements PidfEnabledSubsy
                 return Math.abs(subsystem.getHeight().minus(setpoint.getDistance()).in(Units.Inches)) <= Constants.Elevator.ExtendAccuracyThreshold.in(Units.Inches);
             }
         };
+    }
+
+    public Command incrementPositionCmd() {
+        ElevatorSubsystem subsystem = this;
+        return new InstantCommand(() -> subsystem.incrementPosition(), subsystem);
+    }
+
+    public Command decrementPositionCmd() {
+        ElevatorSubsystem subsystem = this;
+        return new InstantCommand(() -> subsystem.decrementPosition(), subsystem);
     }
 }

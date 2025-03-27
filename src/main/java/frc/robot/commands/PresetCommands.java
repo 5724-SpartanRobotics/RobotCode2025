@@ -32,7 +32,15 @@ public final class PresetCommands {
         _Initialized = true;
     }
 
-    public Command Home() {
+    private static void checkInitialization() {
+        if (!_Initialized) throw new IllegalStateException("Preset commands have not been initialized!");
+        if (_ElevatorSubsystem == null) throw new IllegalArgumentException("Elevator subsystem cannnot be null!");
+        if (_ArmSubsystem == null) throw new IllegalArgumentException("Arm subsystem cannnot be null!");
+        if (_WristSubsystem == null) throw new IllegalArgumentException("Wrist subsystem cannnot be null!");
+    }
+
+    public static Command Home() {
+        checkInitialization();
         return Commands.parallel(
             _WristSubsystem.toSetpoint(WristSubsystem.RotatePosition.In),
             _ArmSubsystem.toSetpoint(ArmSubsystem.RotatePosition.Home),
@@ -40,7 +48,8 @@ public final class PresetCommands {
         );
     }
 
-    public Command Intake() {
+    public static Command Intake() {
+        checkInitialization();
         return Commands.parallel(
             _ElevatorSubsystem.toSetpoint(ElevatorSubsystem.Position.Home),
             _WristSubsystem.toSetpoint(WristSubsystem.RotatePosition.Out),
@@ -48,7 +57,8 @@ public final class PresetCommands {
         );
     }
 
-    public Command L1() {
+    public static Command L1() {
+        checkInitialization();
         return Commands.parallel(
             _ElevatorSubsystem.toSetpoint(ElevatorSubsystem.Position.L1),
             _WristSubsystem.toSetpoint(WristSubsystem.RotatePosition.In),
@@ -56,7 +66,8 @@ public final class PresetCommands {
         );
     }
 
-    public Command L2() {
+    public static Command L2() {
+        checkInitialization();
         return Commands.parallel(
             _ElevatorSubsystem.toSetpoint(ElevatorSubsystem.Position.L2),
             _WristSubsystem.toSetpoint(WristSubsystem.RotatePosition.In),
@@ -64,7 +75,8 @@ public final class PresetCommands {
         );
     }
 
-    public Command L3() {
+    public static Command L3() {
+        checkInitialization();
         return Commands.parallel(
             _ElevatorSubsystem.toSetpoint(ElevatorSubsystem.Position.L3),
             _WristSubsystem.toSetpoint(WristSubsystem.RotatePosition.In),
@@ -72,7 +84,8 @@ public final class PresetCommands {
         );
     }
 
-    public Command L4() {
+    public static Command L4() {
+        checkInitialization();
         return Commands.parallel(
             _ElevatorSubsystem.toSetpoint(ElevatorSubsystem.Position.L4),
             _WristSubsystem.toSetpoint(WristSubsystem.RotatePosition.In),

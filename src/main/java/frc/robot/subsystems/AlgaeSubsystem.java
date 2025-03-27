@@ -16,6 +16,8 @@ import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.DebugLevel;
@@ -151,5 +153,15 @@ public class AlgaeSubsystem extends SubsystemBase implements PidfEnabledSubsyste
                 return Math.abs(subsystem.getAngle().minus(setpoint.getPosition()).in(Units.Degrees)) <= Constants.Algae.RotateAccuracyThreshold.in(Units.Degrees);
             }
         };
+    }
+
+    public Command rotateAtSpeedCmd(double speed) {
+        AlgaeSubsystem subsystem = this;
+        return new RunCommand(() -> subsystem.rotateAtSpeed(speed), subsystem);
+    }
+
+    public Command zeroSpeedCmd() {
+        AlgaeSubsystem subsystem = this;
+        return new InstantCommand(() -> subsystem.rotateAtSpeed(Constants.Algae.Speeds.Stopped), subsystem);
     }
 }

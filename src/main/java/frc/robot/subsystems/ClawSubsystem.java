@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants;
@@ -115,6 +116,11 @@ public class ClawSubsystem extends SubsystemBase {
                 }
             }
         ).withDeadline(new WaitCommand(duration.in(Units.Seconds)));
+    }
+
+    public Command runCmd(IntakeMode intakeMode) {
+        ClawSubsystem subsystem = this;
+        return new InstantCommand(() -> subsystem.run(intakeMode), subsystem);
     }
 
     public static enum IntakeMode {

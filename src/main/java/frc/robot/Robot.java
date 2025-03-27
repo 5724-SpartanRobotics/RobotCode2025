@@ -39,8 +39,8 @@ public class Robot extends TimedRobot {
         _RobotContainer = new RobotContainer();
         _DisabledTimer = new Timer();
 
+        _RobotContainer.robotFinishedBooting();
         if (isSimulation() || DebugLevel.isOrAll(DebugLevel.Autonomous)) { DriverStation.silenceJoystickConnectionWarning(true); }
-
         SmartDashboard.putString("Debug Mode", Constants.DebugTraceLevel.toString());
     }
 
@@ -87,7 +87,6 @@ public class Robot extends TimedRobot {
     @Override
     public void teleopInit() {
         CommandScheduler.getInstance().cancelAll();
-        Elastic.selectTab("Real Teleoperated");
     }
 
     /** This function is called periodically during operator control. */

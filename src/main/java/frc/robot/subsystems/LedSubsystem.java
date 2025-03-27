@@ -1,12 +1,18 @@
 package frc.robot.subsystems;
 
+import edu.wpi.first.units.Units;
+import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLED.ColorOrder;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.LEDPattern;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.util.Color;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants;
 
 public class LedSubsystem extends SubsystemBase {
@@ -110,5 +116,32 @@ public class LedSubsystem extends SubsystemBase {
         _useDuration = true;
         _duration = Math.max(duration, 0);
         return this;
+    }
+
+
+    public Command setColorForDurationCmd(Color color, Time duration) {
+        LedSubsystem subsystem = this;
+        return Commands.sequence(
+            Commands.sequence(new Command() {
+                private double _LastTime = Timer.getFPGATimestamp();
+
+                @Override
+                public void execute() {
+                    _LastTime = Timer.getFPGATimestamp();
+                    subsystem.setColor(color);
+                }
+
+                @Override
+                public boolean isFinished() {
+                    return Timer.getFPGATimestamp() >= _LastTime + duration.in(Units.Seconds);
+                }
+
+                @Override
+                public void end(boolean interrupted) {
+                    subsystem.reset();
+                }
+            }).withDeadline(new WaitCommand(duration.in(Units.Seconds))),
+            new InstantCommand(() -> subsystem.reset(), subsystem)
+        );
     }
 }
