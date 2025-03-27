@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.Constants.DebugLevel;
 import frc.robot.lib.Elastic;
@@ -39,6 +40,8 @@ public class Robot extends TimedRobot {
         _DisabledTimer = new Timer();
 
         if (isSimulation() || DebugLevel.isOrAll(DebugLevel.Autonomous)) { DriverStation.silenceJoystickConnectionWarning(true); }
+
+        SmartDashboard.putString("Debug Mode", Constants.DebugTraceLevel.toString());
     }
 
     public static Robot getInstance() {

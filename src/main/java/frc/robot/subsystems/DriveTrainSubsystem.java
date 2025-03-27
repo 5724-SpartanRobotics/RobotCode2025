@@ -417,7 +417,7 @@ public class DriveTrainSubsystem extends SubsystemBase {
         SwerveDrive swerveDrive, Supplier<XyPair> translationSupplier, Supplier<XyPair> rotationSupplier
     ) {
         return driveAngularVelocity(swerveDrive, translationSupplier, rotationSupplier).copy()
-            .withControllerHeadingAxis(() -> rotationSupplier.get().getX(), () -> rotationSupplier.get().getY())
+            .withControllerHeadingAxis(rotationSupplier.get()::getX, rotationSupplier.get()::getY)
             .headingWhile(true);
     }
 
