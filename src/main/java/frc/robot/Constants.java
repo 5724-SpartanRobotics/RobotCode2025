@@ -8,6 +8,7 @@ import edu.wpi.first.units.LinearVelocityUnit;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Distance;
 import frc.robot.lib.PIDFfController;
 
@@ -63,12 +64,12 @@ public final class Constants {
         public static final edu.wpi.first.units.measure.LinearVelocity MaxRobotVelocity = Units.FeetPerSecond.of(14.5);
         public static final edu.wpi.first.units.measure.LinearAcceleration MaxRobotAcceletaion = Units.MetersPerSecondPerSecond.of(4.0);
         public static final int NumberOfMotors = 8;
-        public static final edu.wpi.first.units.measure.Current MaxCurrentLimit = Units.Amps.of(80);
+        public static final Current MaxCurrentLimit = Units.Amps.of(80);
 
         public static final double DefaultDriveScale = Units.Percent.of(30).in(Units.Value);
 
         public static final class Wheel {
-            public static final edu.wpi.first.units.measure.Distance Radius = Units.Inches.of(2);
+            public static final Distance Radius = Units.Inches.of(2);
             public static final double COF = 1.2;
 
             public static final double Base = Units.Inches.of(20.75).in(Units.Meters);
@@ -156,8 +157,8 @@ public final class Constants {
     }
 
     public static final class Claw {
-        public static final edu.wpi.first.units.measure.Current CurrentLimit = Units.Amps.of(32.0);
-        public static final edu.wpi.first.units.measure.Current HighCurrent = Units.Amps.of(15.0);
+        public static final Current CurrentLimit = Units.Amps.of(32.0);
+        public static final Current HighCurrent = Units.Amps.of(15.0);
 
         public static final class Speeds {
             public static final double Stopped = 0.0;
@@ -169,12 +170,17 @@ public final class Constants {
         public static final PIDFfController PIDFf = new PIDFfController(0.0, 0.0, 0.0, 0.0);
 
         public static final double GearRatio = Units.Rotations.of(45.0).in(Units.Rotations);
-        public static final edu.wpi.first.units.measure.Distance ChainSprocketDiameter = Units.Inches.of(4.0);
+        public static final Distance ChainSprocketDiameter = Units.Inches.of(4.0);
 
-        public static final edu.wpi.first.units.measure.Current StallCurrent = Units.Amps.of(70.0);
+        public static final Current StallCurrent = Units.Amps.of(70.0);
 
         public static final class Positions {
-
+            public static final Distance Home = Units.Inches.of(0.0);
+            public static final Distance L1 = Units.Inches.of(1.0);
+            public static final Distance L2 = Units.Inches.of(1.0);
+            public static final Distance L3 = Units.Inches.of(6.0);
+            public static final Distance L4 = Units.Inches.of(15.0);
+            public static final Distance Intake = Units.Inches.of(42.0);
         }
         public static final Distance ExtendMax = Units.Inches.of(14.5);
         public static final Distance ExtendMin = Units.Inches.of(0.0);
@@ -185,6 +191,24 @@ public final class Constants {
     public static final class LED {
         public static final int Port = 0;
         public static final int StripLength = 200;
+    }
+
+    public static final class Wrist {
+        public static final Measure<AngularVelocityUnit> RampRate = Units.DegreesPerSecond.of(80.0);
+
+        public static final PIDFfController PIDFf = new PIDFfController(1.0, 2.25E-4, 0.0, 5.0E-3);
+        public static final double IntegralMaxAccumulation = 0.2;
+
+        public static final double GearRatio = Units.Rotations.of(25.0).in(Units.Rotations);
+
+        public static final class Positions {
+            public static final Angle In = RotateMin;
+            public static final Angle Out = RotateMax;
+        }
+        public static final Angle RotateMax = Units.Degrees.of(180.0);
+        public static final Angle RotateMin = Units.Degrees.of(0.0);
+        public static final Angle Increment = Units.Degrees.of(1.0);
+        public static final Angle Decrement = Increment;
     }
 
     public static enum DebugLevel {
