@@ -44,7 +44,7 @@ public class AlgaeSubsystem extends SubsystemBase implements PidfEnabledSubsyste
         );
         _PidController = _Motor.getClosedLoopController();
         _Encoder = _Motor.getEncoder();
-        _Ramp = new PidRamp(_PidController, Constants.Algae.RampRate.times(Constants.Algae.GearRatio).times(Constants.Motor.NeoV1.CountsPerRevolution));
+        _Ramp = PidRamp.fromAngular(_PidController, Constants.Algae.RampRate.times(Constants.Algae.GearRatio).times(Constants.Motor.NeoV1.CountsPerRevolution));
     }
 
     @Override
@@ -62,6 +62,7 @@ public class AlgaeSubsystem extends SubsystemBase implements PidfEnabledSubsyste
         }
     }
 
+    @Override
     public void resetReferences() {
         this.rotateTo(RotatePosition.In);
     }
@@ -110,11 +111,12 @@ public class AlgaeSubsystem extends SubsystemBase implements PidfEnabledSubsyste
     }
 
     /**
-     * @param angle the rotate setpoint (in degrees)
+     * @param value the rotate setpoint (in degrees)
      * @return setpoint
      */
-    private static double calculateSetpoint(double angle) {
-        return angle * Constants.Motor.NeoV1.CountsPerRevolution * Constants.Algae.GearRatio / 360.0;
+    @Override
+    public double calculateSetpoint(double value) {
+        return value * Constants.Motor.NeoV1.CountsPerRevolution * Constants.Algae.GearRatio / 360.0;
     }
 
     public static enum RotatePosition {

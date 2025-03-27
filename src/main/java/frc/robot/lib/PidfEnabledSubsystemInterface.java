@@ -1,5 +1,7 @@
 package frc.robot.lib;
 
 public interface PidfEnabledSubsystemInterface {
-    public void resetReferences();
+    default void resetReferences() {}
+
+    double calculateSetpoint(double value);
 }

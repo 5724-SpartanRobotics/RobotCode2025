@@ -7,6 +7,7 @@ import com.revrobotics.spark.SparkClosedLoopController;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.units.AngularVelocityUnit;
+import edu.wpi.first.units.LinearVelocityUnit;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Units;
 
@@ -20,16 +21,26 @@ public class PidRamp {
     private double _RampedSetpoint;
     private double _CurrentPositionFeedback;
 
-    public PidRamp(SparkClosedLoopController pidController, Measure<AngularVelocityUnit> rampRate) {
-        _Pid0 = pidController;
-        _Pid1 = Optional.empty();
-        _Ramp = new SlewRateLimiter(rampRate.in(Units.RotationsPerSecond));
+    private PidRamp(SparkClosedLoopController p0, Optional<SparkClosedLoopController> p1, double rampRate) {
+        _Pid0 = p0;
+        _Pid1 = p1;
+        _Ramp = new SlewRateLimiter(rampRate);
     }
 
-    public PidRamp(SparkClosedLoopController pidController0, SparkClosedLoopController pidController1, Measure<AngularVelocityUnit> rampRate) {
-        _Pid0 = pidController0;
-        _Pid1 = Optional.of(pidController1);
-        _Ramp = new SlewRateLimiter(rampRate.in(Units.RotationsPerSecond));
+    public static PidRamp fromAngular(SparkClosedLoopController pidController, Measure<AngularVelocityUnit> rampRate) {
+        return new PidRamp(pidController, Optional.empty(), rampRate.in(Units.RotationsPerSecond));
+    }
+
+    public static PidRamp fromAngular(SparkClosedLoopController pidController0, SparkClosedLoopController pidController1, Measure<AngularVelocityUnit> rampRate) {
+        return new PidRamp(pidController0, Optional.of(pidController1), rampRate.in(Units.RotationsPerSecond));
+    }
+
+    public static PidRamp fromLinear(SparkClosedLoopController pidController, Measure<LinearVelocityUnit> rampRate) {
+        return new PidRamp(pidController, Optional.empty(), rampRate.in(Units.InchesPerSecond));
+    }
+
+    public static PidRamp fromLinear(SparkClosedLoopController pidController0, SparkClosedLoopController pidController1, Measure<LinearVelocityUnit> rampRate) {
+        return new PidRamp(pidController0, Optional.of(pidController1), rampRate.in(Units.InchesPerSecond));
     }
 
     public void update() {

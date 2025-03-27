@@ -4,9 +4,11 @@ import com.pathplanner.lib.config.PIDConstants;
 
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.units.AngularVelocityUnit;
+import edu.wpi.first.units.LinearVelocityUnit;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.Distance;
 import frc.robot.lib.PIDFfController;
 
 public final class Constants {
@@ -151,6 +153,38 @@ public final class Constants {
         public static final Angle RotateMin = Units.Degrees.of(24.0);
         public static final Angle Increment = Units.Degrees.of(10.0);
         public static final Angle Decrement = Units.Degrees.of(15.0);
+    }
+
+    public static final class Claw {
+        public static final edu.wpi.first.units.measure.Current CurrentLimit = Units.Amps.of(32.0);
+        public static final edu.wpi.first.units.measure.Current HighCurrent = Units.Amps.of(15.0);
+
+        public static final class Speeds {
+            public static final double Stopped = 0.0;
+        }
+    }
+
+    public static final class Elevator {
+        public static final Measure<LinearVelocityUnit> RampRate = Units.InchesPerSecond.of(4.0);
+        public static final PIDFfController PIDFf = new PIDFfController(0.0, 0.0, 0.0, 0.0);
+
+        public static final double GearRatio = Units.Rotations.of(45.0).in(Units.Rotations);
+        public static final edu.wpi.first.units.measure.Distance ChainSprocketDiameter = Units.Inches.of(4.0);
+
+        public static final edu.wpi.first.units.measure.Current StallCurrent = Units.Amps.of(70.0);
+
+        public static final class Positions {
+
+        }
+        public static final Distance ExtendMax = Units.Inches.of(14.5);
+        public static final Distance ExtendMin = Units.Inches.of(0.0);
+        public static final Distance Increment = Units.Inches.of(1.0);
+        public static final Distance Decrement = Increment;
+    }
+
+    public static final class LED {
+        public static final int Port = 0;
+        public static final int StripLength = 200;
     }
 
     public static enum DebugLevel {

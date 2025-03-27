@@ -52,7 +52,7 @@ public class ArmSubsystem extends SubsystemBase implements PidfEnabledSubsystemI
 
         _PidController = _Motor0.getClosedLoopController();
         _Encoder = _Motor0.getEncoder();
-        _Ramp = new PidRamp(_PidController, Constants.Arm.RampRate.times(Constants.Arm.GearRatio).times(Constants.Motor.NeoV1.CountsPerRevolution));
+        _Ramp = PidRamp.fromAngular(_PidController, Constants.Arm.RampRate.times(Constants.Arm.GearRatio).times(Constants.Motor.NeoV1.CountsPerRevolution));
 
         _Encoder.setPosition(Conversions.angle2rotations(Units.Degrees.of(24.0), Constants.Arm.GearRatio));
     }
@@ -66,11 +66,12 @@ public class ArmSubsystem extends SubsystemBase implements PidfEnabledSubsystemI
             SmartDashboard.putNumber("Arm/Position", armRotatePosition.in(Units.Degrees));
             SmartDashboard.putNumber("Arm/Reference", _RotateSetpoint);
             SmartDashboard.putNumber("Arm/RampReference", Units.Rotations.of(_Ramp.getCurrentRampedSetpoint()).div(Constants.Arm.GearRatio).in(Units.Degrees));
-            SmartDashboard.putNumber("Arm/Current_M1", _Motor0.getOutputCurrent());
-            SmartDashboard.putNumber("Arm/Current_M2", _Motor1.getOutputCurrent());
+            SmartDashboard.putNumber("Arm/Amps_M1", _Motor0.getOutputCurrent());
+            SmartDashboard.putNumber("Arm/Amps_M2", _Motor1.getOutputCurrent());
         }
     }
 
+    @Override
     public void resetReferences() {
         this.rotateTo(RotatePosition.Home);
     }
@@ -110,11 +111,12 @@ public class ArmSubsystem extends SubsystemBase implements PidfEnabledSubsystemI
     }
 
     /**
-     * @param angle the rotate setpoint (in degrees)
+     * @param value the rotate setpoint (in degrees)
      * @return setpoint
      */
-    private static double calculateSetpoint(double angle) {
-        return angle / 360.0 * Constants.Arm.GearRatio;
+    @Override
+    public double calculateSetpoint(double value) {
+        return value / 360.0 * Constants.Arm.GearRatio;
     }
 
     private static enum RotatePosition {
