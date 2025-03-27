@@ -16,7 +16,10 @@ import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants;
 import frc.robot.Constants.DebugLevel;
 
@@ -65,6 +68,10 @@ public class ClawSubsystem extends SubsystemBase {
         }
     }
 
+    public void run(IntakeMode intakeMode) {
+        run(intakeMode.getSpeed());
+    }
+
     public void run(double speed) {
         if (DebugLevel.isOrAll(DebugLevel.Claw)) {
             SmartDashboard.putNumber("Claw/Reference", speed);
@@ -82,5 +89,43 @@ public class ClawSubsystem extends SubsystemBase {
 
     public boolean isHighCurrentOutput() {
         return _Motor.getOutputCurrent() >= Constants.Claw.HighCurrent.in(Units.Amps);
+    }
+
+
+    public Command runForDurationCommand(Time duration, IntakeMode intakeMode) {
+        ClawSubsystem subsystem = this;
+        return Commands.sequence(
+            new Command() {
+                private double _LastTime = Timer.getFPGATimestamp();
+
+                @Override
+                public void execute() {
+                    _LastTime = Timer.getFPGATimestamp();
+                    subsystem.run(intakeMode);
+                }
+
+                @Override
+                public boolean isFinished() {
+                    return Timer.getFPGATimestamp() >= _LastTime + duration.in(Units.Seconds);
+                }
+
+                @Override
+                public void end(boolean interrupted) {
+                    subsystem.run(IntakeMode.Stop);
+                }
+            }
+        ).withDeadline(new WaitCommand(duration.in(Units.Seconds)));
+    }
+
+    public static enum IntakeMode {
+        Intake(Constants.Claw.Speeds.Intake),
+        Expel(Constants.Claw.Speeds.Expel),
+        Stop(Constants.Claw.Speeds.Stopped);
+
+        private double percent;
+        IntakeMode(double runSpeed) {
+            this.percent = MathUtil.clamp(runSpeed, -1.0, 1.0);
+        }
+        public double getSpeed() { return percent; }
     }
 }

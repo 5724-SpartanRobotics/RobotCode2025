@@ -10,6 +10,7 @@ import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Distance;
+import edu.wpi.first.units.measure.Time;
 import frc.robot.lib.PIDFfController;
 
 public final class Constants {
@@ -132,6 +133,7 @@ public final class Constants {
         public static final Angle RotateMin = Units.Degrees.of(0.0);
         public static final Angle Increment = Units.Degrees.of(5.0);
         public static final Angle Decrement = Increment;
+        public static final Angle RotateAccuracyThreshold = Units.Degrees.of(5.0);
     }
 
     public static final class Arm {
@@ -154,6 +156,7 @@ public final class Constants {
         public static final Angle RotateMin = Units.Degrees.of(24.0);
         public static final Angle Increment = Units.Degrees.of(10.0);
         public static final Angle Decrement = Units.Degrees.of(15.0);
+        public static final Angle RotateAccuracyThreshold = Units.Degrees.of(10.0);
     }
 
     public static final class Claw {
@@ -162,6 +165,8 @@ public final class Constants {
 
         public static final class Speeds {
             public static final double Stopped = 0.0;
+            public static final double Intake = 0.6;
+            public static final double Expel = 0.3;
         }
     }
 
@@ -173,6 +178,7 @@ public final class Constants {
         public static final Distance ChainSprocketDiameter = Units.Inches.of(4.0);
 
         public static final Current StallCurrent = Units.Amps.of(70.0);
+        public static final Time StallTimeout = Units.Seconds.of(3.0);
 
         public static final class Positions {
             public static final Distance Home = Units.Inches.of(0.0);
@@ -186,6 +192,7 @@ public final class Constants {
         public static final Distance ExtendMin = Units.Inches.of(0.0);
         public static final Distance Increment = Units.Inches.of(1.0);
         public static final Distance Decrement = Increment;
+        public static final Distance ExtendAccuracyThreshold = Units.Inches.of(1.0);
     }
 
     public static final class LED {
@@ -209,6 +216,7 @@ public final class Constants {
         public static final Angle RotateMin = Units.Degrees.of(0.0);
         public static final Angle Increment = Units.Degrees.of(1.0);
         public static final Angle Decrement = Increment;
+        public static final Angle RotateAccuracyThreshold = Units.Degrees.of(10.0);
     }
 
     public static enum DebugLevel {

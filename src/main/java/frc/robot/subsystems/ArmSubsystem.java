@@ -14,6 +14,7 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.DebugLevel;
@@ -119,7 +120,7 @@ public class ArmSubsystem extends SubsystemBase implements PidfEnabledSubsystemI
         return value / 360.0 * Constants.Arm.GearRatio;
     }
 
-    private static enum RotatePosition {
+    public static enum RotatePosition {
         Home(Constants.Arm.Positions.Home),
         L1(Constants.Arm.Positions.L1),
         L2(Constants.Arm.Positions.L2),
@@ -132,5 +133,26 @@ public class ArmSubsystem extends SubsystemBase implements PidfEnabledSubsystemI
             this.pos = rotatePosition;
         }
         public Angle getPosition() { return pos; }
+    }
+
+
+    public Command toSetpoint(RotatePosition setpoint) {
+        ArmSubsystem subsystem = this;
+        return new Command() {
+            @Override
+            public void execute() {
+                subsystem.toSetpoint(setpoint);
+            }
+
+            @Override
+            public void end(boolean interrupted) {
+                if (interrupted) subsystem.stop();
+            }
+
+            @Override
+            public boolean isFinished() {
+                return Math.abs(subsystem.getAngle().minus(setpoint.getPosition()).in(Units.Degrees)) <= Constants.Arm.RotateAccuracyThreshold.in(Units.Degrees);
+            }
+        };
     }
 }

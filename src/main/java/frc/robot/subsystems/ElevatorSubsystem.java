@@ -1,7 +1,6 @@
 package frc.robot.subsystems;
 
-import java.time.Duration;
-import java.time.Instant;
+import java.util.Optional;
 
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkBase.PersistMode;
@@ -16,7 +15,9 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Distance;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.DebugLevel;
@@ -34,7 +35,7 @@ public class ElevatorSubsystem extends SubsystemBase implements PidfEnabledSubsy
     private final PidRamp _Ramp;
 
     private double _Setpoint;
-    private Instant _LastStall = Instant.MIN;
+    private Optional<Double> _LastStallTime = Optional.empty();
     private double _PositionLastStall;
 
     public ElevatorSubsystem() {
@@ -143,10 +144,13 @@ public class ElevatorSubsystem extends SubsystemBase implements PidfEnabledSubsy
             position > Units.Inches.of(0.75).in(Units.Inches);
         _PositionLastStall = position;
 
-        if (_LastStall == Instant.MIN && stallLikely) _LastStall = Instant.now();
-        else if (!stallLikely) _LastStall = Instant.MIN;
+        if (_LastStallTime.isEmpty() && stallLikely) _LastStallTime = Optional.of(Timer.getFPGATimestamp());
+        else if (!stallLikely) _LastStallTime = Optional.empty();
 
-        return _LastStall != Instant.MIN && Duration.between(_LastStall, Instant.now()).compareTo(Duration.ofSeconds(3L)) > 0;
+        return _LastStallTime
+            .map(t -> Timer.getFPGATimestamp() - t)
+            .map(elapsed -> elapsed > Constants.Elevator.StallTimeout.in(Units.Seconds))
+            .orElse(false);
     }
 
     /**
@@ -159,12 +163,38 @@ public class ElevatorSubsystem extends SubsystemBase implements PidfEnabledSubsy
     }
 
     public static enum Position {
-        Home(Units.Inches.of(0.0));
+        Home(Constants.Elevator.Positions.Home),
+        Intake(Constants.Elevator.Positions.Intake),
+        L1(Constants.Elevator.Positions.L1),
+        L2(Constants.Elevator.Positions.L2),
+        L3(Constants.Elevator.Positions.L3),
+        L4(Constants.Elevator.Positions.L4);
 
         private Distance dist;
         Position(Distance distance) {
             this.dist = distance;
         }
         public Distance getDistance() { return dist; }
+    }
+
+
+    public Command toSetpoint(Position setpoint) {
+        ElevatorSubsystem subsystem = this;
+        return new Command() {
+            @Override
+            public void execute() {
+                subsystem.toSetpoint(setpoint);
+            }
+
+            @Override
+            public void end(boolean interrupted) {
+                if (interrupted) subsystem.stop();
+            }
+
+            @Override
+            public boolean isFinished() {
+                return Math.abs(subsystem.getHeight().minus(setpoint.getDistance()).in(Units.Inches)) <= Constants.Elevator.ExtendAccuracyThreshold.in(Units.Inches);
+            }
+        };
     }
 }
