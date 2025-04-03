@@ -157,6 +157,26 @@ public class ArmSubsystem extends SubsystemBase implements PidfEnabledSubsystemI
         };
     }
 
+    public Command toSetpoint(Angle setpoint) {
+        ArmSubsystem subsystem = this;
+        return new Command() {
+            @Override
+            public void execute() {
+                subsystem.toSetpoint(setpoint);
+            }
+
+            @Override
+            public void end(boolean interrupted) {
+                if (interrupted) subsystem.stop();
+            }
+
+            @Override
+            public boolean isFinished() {
+                return Math.abs(subsystem.getAngle().minus(setpoint).in(Units.Degrees)) <= Constants.Arm.RotateAccuracyThreshold.in(Units.Degrees);
+            }
+        };
+    }
+
     public Command incrementPositionCmd() {
         ArmSubsystem subsystem = this;
         return new InstantCommand(() -> subsystem.incrementPosition(), subsystem);

@@ -126,7 +126,8 @@ public class ClawSubsystem extends SubsystemBase {
     public static enum IntakeMode {
         Intake(Constants.Claw.Speeds.Intake),
         Expel(Constants.Claw.Speeds.Expel),
-        Stop(Constants.Claw.Speeds.Stopped);
+        Stop(Constants.Claw.Speeds.Stopped),
+        ExpelDoubleSpeed(Constants.Claw.Speeds.Expel * 2);
 
         private double percent;
         IntakeMode(double runSpeed) {

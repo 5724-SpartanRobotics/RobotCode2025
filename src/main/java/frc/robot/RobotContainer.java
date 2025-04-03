@@ -1,6 +1,5 @@
 package frc.robot;
 
-import choreo.auto.AutoChooser;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -20,6 +19,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
+import frc.robot.commands.Autos;
 import frc.robot.commands.PresetCommands;
 import frc.robot.lib.Elastic;
 import frc.robot.lib.XyPair;
@@ -34,7 +34,6 @@ import frc.robot.subsystems.WristSubsystem;
 public class RobotContainer extends SubsystemBase {
     public final CommandJoystick _DriverController = new CommandJoystick(0);
     public final CommandJoystick _OperatorController = new CommandJoystick(1);
-    public final AutoChooser _AutoChooser;
 
     private final DriveTrainSubsystem _DriveTrainSubsystem;
     private final LedSubsystem _LedSubsystem;
@@ -64,8 +63,6 @@ public class RobotContainer extends SubsystemBase {
 
         PresetCommands.initialize(_ElevatorSubsystem, _ArmSubsystem, _WristSubsystem);
         WebServer.start(5800, Filesystem.getDeployDirectory().getPath());
-        
-        _AutoChooser = new AutoChooser();
         
         configureDriveCommands();
         configureBindings();
@@ -209,9 +206,12 @@ public class RobotContainer extends SubsystemBase {
 
     private void configureAutos() {
         // Add autos here.
+        Autos autos = new Autos(_DriveTrainSubsystem, _ElevatorSubsystem, _ArmSubsystem, _ClawSubsystem, _WristSubsystem);
 
-        SmartDashboard.putData(_AutoChooser);
-        RobotModeTriggers.autonomous().whileTrue(_AutoChooser.selectedCommandScheduler());
+        Autos.Chooser.addCmd("1Pc from Center", autos::OnePieceCenter);
+
+        SmartDashboard.putData(Autos.Chooser);
+        RobotModeTriggers.autonomous().whileTrue(Autos.Chooser.selectedCommandScheduler());
     }
 
     private void configureActions() {

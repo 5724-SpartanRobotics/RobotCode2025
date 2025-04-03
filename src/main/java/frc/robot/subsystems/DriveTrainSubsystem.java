@@ -33,6 +33,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.units.LinearVelocityUnit;
@@ -44,6 +45,7 @@ import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
@@ -55,6 +57,7 @@ import swervelib.SwerveController;
 import swervelib.SwerveDrive;
 import swervelib.SwerveDriveTest;
 import swervelib.SwerveInputStream;
+import swervelib.SwerveModule;
 import swervelib.math.SwerveMath;
 import swervelib.parser.SwerveControllerConfiguration;
 import swervelib.parser.SwerveDriveConfiguration;
@@ -287,6 +290,10 @@ public class DriveTrainSubsystem extends SubsystemBase {
         _SwerveDrive.drive(translation, rotation, fieldRelative, false);
     }
 
+    public Command driveCmd(Translation2d translation, double rotation, boolean fieldRelative) {
+        return run(() -> {drive(translation, rotation, fieldRelative);});
+    }
+
     public void drive(ChassisSpeeds velocity) {
         _SwerveDrive.drive(velocity);
     }
@@ -317,6 +324,17 @@ public class DriveTrainSubsystem extends SubsystemBase {
 
     public void zeroGyro() {
         _SwerveDrive.zeroGyro();
+    }
+
+    /**
+     * <b>EXPERIMENTAL
+     */
+    public void flipGyro() {
+        _SwerveDrive.getGyro().setInverted(true);
+    }
+
+    public Command flipGyroCmd() {
+        return run(() -> flipGyro());
     }
 
     private boolean isRedAlliance() {
@@ -375,6 +393,20 @@ public class DriveTrainSubsystem extends SubsystemBase {
 
     public void lock() {
         _SwerveDrive.lockPose();
+    }
+
+    public DriveTrainSubsystem brake() {
+        for (SwerveModule m : _SwerveDrive.getModules()) {
+            m.setDesiredState(
+                new SwerveModuleState(0, m.getState().angle),
+                false, true
+            );
+        }
+        return this;
+    }
+
+    public InstantCommand brakeCmd() {
+        return new InstantCommand(() -> {this.brake();});
     }
 
     public Rotation2d getPitch() {

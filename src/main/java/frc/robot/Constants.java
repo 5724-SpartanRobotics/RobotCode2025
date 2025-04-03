@@ -245,6 +245,7 @@ public final class Constants {
         public static final class Positions {
             public static final Angle In = RotateMin;
             public static final Angle Out = RotateMax;
+            public static final Angle Half = Units.Degrees.of(90);
         }
         public static final Angle RotateMax = Units.Degrees.of(180.0);
         public static final Angle RotateMin = Units.Degrees.of(0.0);

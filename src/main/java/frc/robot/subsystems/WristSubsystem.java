@@ -110,7 +110,8 @@ public class WristSubsystem extends SubsystemBase implements PidfEnabledSubsyste
 
     public static enum RotatePosition {
         In(Constants.Wrist.Positions.In),
-        Out(Constants.Wrist.Positions.Out);
+        Out(Constants.Wrist.Positions.Out),
+        Half(Constants.Wrist.Positions.Half);
 
         private Angle pos;
         RotatePosition(Angle rotatePosition) {
@@ -136,6 +137,26 @@ public class WristSubsystem extends SubsystemBase implements PidfEnabledSubsyste
             @Override
             public boolean isFinished() {
                 return Math.abs(subsystem.getAngle().minus(setpoint.getPosition()).in(Units.Degrees)) <= Constants.Wrist.RotateAccuracyThreshold.in(Units.Degrees);
+            }
+        };
+    }
+
+    public Command toSetpoint(Angle setpoint) {
+        WristSubsystem subsystem = this;
+        return new Command() {
+            @Override
+            public void execute() {
+                subsystem.toSetpoint(setpoint);
+            }
+
+            @Override
+            public void end(boolean interrupted) {
+                if (interrupted) subsystem.stop();
+            }
+
+            @Override
+            public boolean isFinished() {
+                return Math.abs(subsystem.getAngle().minus(setpoint).in(Units.Degrees)) <= Constants.Wrist.RotateAccuracyThreshold.in(Units.Degrees);
             }
         };
     }
