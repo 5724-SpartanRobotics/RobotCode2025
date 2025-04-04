@@ -210,7 +210,7 @@ public class RobotContainer extends SubsystemBase {
 
         Autos.Chooser.addCmd("1Pc from Center", autos::OnePieceCenter);
 
-        SmartDashboard.putData(Autos.Chooser);
+        SmartDashboard.putData("Auto choices", Autos.Chooser);
         RobotModeTriggers.autonomous().whileTrue(Autos.Chooser.selectedCommandScheduler());
     }
 

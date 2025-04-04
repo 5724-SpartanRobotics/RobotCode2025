@@ -2,6 +2,7 @@ package frc.robot.commands;
 
 import choreo.auto.AutoChooser;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.autos.OnePieceCenter;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.ClawSubsystem;
@@ -24,7 +25,11 @@ public final class Autos {
         _OnePieceCenter = new OnePieceCenter(driveTrainSubsystem, elevatorSubsystem, armSubsystem, wristSubsystem, clawSubsystem);
     }
 
+    private Command _applyDeadline(Command cmd) {
+        return cmd.withDeadline(new WaitCommand(15.0));
+    }
+
     public Command OnePieceCenter() {
-        return _OnePieceCenter;
+        return _applyDeadline(_OnePieceCenter);
     }
 }
