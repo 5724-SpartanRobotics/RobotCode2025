@@ -48,7 +48,7 @@
           },
           {
             "title": "Barrel Cam",
-            "x": 896.0,
+            "x": 384.0,
             "y": 0.0,
             "width": 640.0,
             "height": 512.0,
@@ -82,7 +82,7 @@
           },
           {
             "title": "Algae Camera",
-            "x": 384.0,
+            "x": 1024.0,
             "y": 0.0,
             "width": 512.0,
             "height": 512.0,
@@ -90,8 +90,7 @@
             "properties": {
               "topic": "/CameraPublisher/Algae Camera",
               "period": 0.06,
-              "rotation_turns": 0,
-              "fps": 20
+              "rotation_turns": 0
             }
           }
         ]
@@ -168,9 +167,9 @@
           },
           {
             "title": "Barrel Camera",
-            "x": 1024.0,
+            "x": 512.0,
             "y": 0.0,
-            "width": 512.0,
+            "width": 640.0,
             "height": 512.0,
             "type": "Camera Stream",
             "properties": {
@@ -182,16 +181,15 @@
           },
           {
             "title": "Algae Camera",
-            "x": 512.0,
+            "x": 1152.0,
             "y": 0.0,
-            "width": 512.0,
+            "width": 384.0,
             "height": 512.0,
             "type": "Camera Stream",
             "properties": {
               "topic": "/CameraPublisher/Algae Camera",
               "period": 0.06,
-              "rotation_turns": 0,
-              "fps": 15
+              "rotation_turns": 0
             }
           }
         ]
