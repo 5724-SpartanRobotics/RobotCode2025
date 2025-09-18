@@ -105,7 +105,7 @@
             "title": "Auto choices",
             "x": 0.0,
             "y": 128.0,
-            "width": 512.0,
+            "width": 640.0,
             "height": 128.0,
             "type": "ComboBox Chooser",
             "properties": {
@@ -118,7 +118,7 @@
             "title": "FMSInfo",
             "x": 0.0,
             "y": 0.0,
-            "width": 512.0,
+            "width": 640.0,
             "height": 128.0,
             "type": "FMSInfo",
             "properties": {
@@ -130,7 +130,7 @@
             "title": "Voltage",
             "x": 256.0,
             "y": 256.0,
-            "width": 256.0,
+            "width": 384.0,
             "height": 128.0,
             "type": "Voltage View",
             "properties": {
@@ -167,9 +167,9 @@
           },
           {
             "title": "Barrel Camera",
-            "x": 512.0,
+            "x": 640.0,
             "y": 0.0,
-            "width": 640.0,
+            "width": 896.0,
             "height": 512.0,
             "type": "Camera Stream",
             "properties": {
@@ -177,19 +177,6 @@
               "period": 0.06,
               "rotation_turns": 0,
               "fps": 15
-            }
-          },
-          {
-            "title": "Algae Camera",
-            "x": 1152.0,
-            "y": 0.0,
-            "width": 384.0,
-            "height": 512.0,
-            "type": "Camera Stream",
-            "properties": {
-              "topic": "/CameraPublisher/Algae Camera",
-              "period": 0.06,
-              "rotation_turns": 0
             }
           }
         ]
