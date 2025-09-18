@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
+import frc.robot.Constants;
 import frc.robot.Constants.ControllerConstants;
 import frc.robot.Constants.DebugLevel;
 import frc.robot.Constants.DebugSetting;
@@ -78,8 +79,8 @@ public class TeleopSwerve extends Command {
             zAxis = -controller.getTwist();
 
             double speedMod = DriveConstants.defaultSpeedMod;
-            if (controller.button(1).getAsBoolean()) speedMod = 0.65;
-            else if (controller.button(2).getAsBoolean()) speedMod = 1.0;
+            if (controller.button(Constants.ControllerConstants.MediumSpeedButton).getAsBoolean()) speedMod = 0.65;
+            else if (controller.button(Constants.ControllerConstants.FastSpeedButton).getAsBoolean()) speedMod = 1.0;
 
         // Power Array Auto Align Code
         // Conditional is a check for having a combination of buttons pressed

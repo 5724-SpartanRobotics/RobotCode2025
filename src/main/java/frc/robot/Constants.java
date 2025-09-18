@@ -64,6 +64,8 @@ public final class Constants {
     public static final class ControllerConstants{
         public static double joystickDeadband = 0.1;//a deadband that you must overcome for the joystick input, otherwise we send 0
         public static double joystickZDeadband = 0.35;//a deadband that you must overcome for the joystick input, otherwise we send 0
+        public static final int FastSpeedButton = 11;
+        public static final int MediumSpeedButton = 12;
     }
 
     public final class ElevatorAndArmConstants {
