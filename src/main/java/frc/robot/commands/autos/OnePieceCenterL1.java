@@ -19,7 +19,7 @@ import frc.robot.subsystems.DriveTrainSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.WristSubsystem;
 
-public class OnePieceCenter extends Command {
+public class OnePieceCenterL1 extends Command {
     private DriveTrainSubsystem _DriveTrainSubsystem;
     private ElevatorSubsystem _ElevatorSubsystem;
     private ArmSubsystem _ArmSubsystem;
@@ -27,7 +27,7 @@ public class OnePieceCenter extends Command {
     private ClawSubsystem _ClawSubsystem;
     Timer _StartTime;
 
-    public OnePieceCenter(DriveTrainSubsystem driveTrainSubsystem, ElevatorSubsystem elevatorSubsystem, ArmSubsystem armSubsystem, WristSubsystem wristSubsystem, ClawSubsystem clawSubsystem) {
+    public OnePieceCenterL1(DriveTrainSubsystem driveTrainSubsystem, ElevatorSubsystem elevatorSubsystem, ArmSubsystem armSubsystem, WristSubsystem wristSubsystem, ClawSubsystem clawSubsystem) {
         addRequirements(driveTrainSubsystem, elevatorSubsystem, armSubsystem, wristSubsystem, clawSubsystem);
         _DriveTrainSubsystem = driveTrainSubsystem;
         _ElevatorSubsystem = elevatorSubsystem;
@@ -61,7 +61,7 @@ public class OnePieceCenter extends Command {
                 .alongWith(new SetpointCommands.ArmRotateToSetpointCommand(_ArmSubsystem, 65.0))
                 ).withDeadline(new WaitCommand(2.5))
             ),
-            (new ClawRunForDurationCommand(_ClawSubsystem, ClawRunMode.OuttakeDlbSpeed, 1.5)).withDeadline(new WaitCommand(1.5)),
+            (new ClawRunForDurationCommand(_ClawSubsystem, ClawRunMode.OuttakeDblSpeed, 1.5)).withDeadline(new WaitCommand(1.5)),
             new WaitCommand(0.5),
             Commands.sequence(
                 new ParallelDeadlineGroup(new WaitCommand(1.0), new InstantCommand(() -> {

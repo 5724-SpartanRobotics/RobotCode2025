@@ -82,7 +82,8 @@ public class RobotContainer {
         // m_autos.addCmd("B R 2P F2,3", _Autos::_Blue_Right_2Piece_Faces23);
         m_autos.addCmd("Basic 2s Leave", _Autos::_Leave);
         m_autos.addCmd("Leave w/ Preload", _Autos::_LeaveWithWrist);
-        m_autos.addCmd("1Pc from Center", _Autos::_OnePieceCenter);
+        m_autos.addCmd("1Pc L1 from Center", _Autos::_OnePieceCenterL1);
+        m_autos.addCmd("1Pc L3 from Center", _Autos::_OnePieceCenterL3);
         // m_autos.addCmd("10 ft", _Autos::_10ft);
         // m_autos.addCmd("claw run", _Autos::_ClawRun);
 
