@@ -181,6 +181,65 @@
           }
         ]
       }
+    },
+    {
+      "name": "Controller",
+      "grid_layout": {
+        "layouts": [],
+        "containers": [
+          {
+            "title": "Joystick X Deadband",
+            "x": 128.0,
+            "y": 128.0,
+            "width": 384.0,
+            "height": 256.0,
+            "type": "Number Slider",
+            "properties": {
+              "topic": "/SmartDashboard/Joystick X Deadband",
+              "period": 0.06,
+              "data_type": "double",
+              "min_value": 0.0,
+              "max_value": 1.5,
+              "divisions": 5,
+              "update_continuously": false
+            }
+          },
+          {
+            "title": "Joystick Y Deadband",
+            "x": 512.0,
+            "y": 128.0,
+            "width": 384.0,
+            "height": 256.0,
+            "type": "Number Slider",
+            "properties": {
+              "topic": "/SmartDashboard/Joystick Y Deadband",
+              "period": 0.06,
+              "data_type": "double",
+              "min_value": 0.0,
+              "max_value": 1.5,
+              "divisions": 5,
+              "update_continuously": false
+            }
+          },
+          {
+            "title": "Joystick Z Deadband",
+            "x": 896.0,
+            "y": 128.0,
+            "width": 384.0,
+            "height": 256.0,
+            "type": "Number Slider",
+            "properties": {
+              "topic": "/SmartDashboard/Joystick Z Deadband",
+              "period": 0.06,
+              "data_type": "double",
+              "min_value": 0.0,
+              "max_value": 1.5,
+              "divisions": 5,
+              "update_continuously": false
+            }
+          }
+        ]
+      }
     }
   ]
 }
