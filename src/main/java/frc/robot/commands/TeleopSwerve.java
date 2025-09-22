@@ -67,32 +67,30 @@ public class TeleopSwerve extends Command {
         } else if (controller.button(7).getAsBoolean()) {
             return;
         } else {
-            double xAxis;
-            double yAxis;
-            double zAxis;
+            double xAxis = -controller.getX();
+            double yAxis = -controller.getY();
+            double zAxis = -controller.getTwist();
         // This chunk of code locks certain joystick directions if buttons are pressed
 
-            yAxis = -controller.getY();
-
-            xAxis = -controller.getX();
-
-            zAxis = -controller.getTwist();
-
             double speedMod = DriveConstants.defaultSpeedMod;
-            if (controller.button(Constants.ControllerConstants.MediumSpeedButton).getAsBoolean()) speedMod = 0.65;
+            if (controller.button(Constants.ControllerConstants.MediumSpeedButton).getAsBoolean() &&
+                controller.button(Constants.ControllerConstants.FastSpeedButton).getAsBoolean()) speedMod = 1.2;
+            else if (controller.button(Constants.ControllerConstants.MediumSpeedButton).getAsBoolean()) speedMod = 0.65;
             else if (controller.button(Constants.ControllerConstants.FastSpeedButton).getAsBoolean()) speedMod = 1.0;
+            double speedModZ = speedMod * 0.9;
 
         // Power Array Auto Align Code
         // Conditional is a check for having a combination of buttons pressed
 
 
-            double joystickDeadband = SmartDashboard.getNumber("joystickDeadband", ControllerConstants.joystickDeadband);
-            double joystickZDeadband = SmartDashboard.getNumber("joystickZDeadband", ControllerConstants.joystickZDeadband);
+            double joystickXDeadband = SmartDashboard.getNumber("Joystick X Deadband", ControllerConstants.joystickXDeadband);
+            double joystickYDeadband = SmartDashboard.getNumber("Joystick Y Deadband", ControllerConstants.joystickYDeadband);
+            double joystickZDeadband = SmartDashboard.getNumber("Joystick Z Deadband", ControllerConstants.joystickZDeadband);
         
         
-            yAxis = (Math.abs(yAxis) < joystickDeadband) ? 0 : yAxis * speedMod;
-            xAxis = (Math.abs(xAxis) < joystickDeadband) ? 0 : xAxis * speedMod;
-            zAxis = (Math.abs(zAxis) < joystickZDeadband) ? 0 : zAxis * speedMod * 0.70;
+            xAxis = (Math.abs(xAxis) < joystickXDeadband) ? 0 : xAxis * speedMod;
+            yAxis = (Math.abs(yAxis) < joystickYDeadband) ? 0 : yAxis * speedMod;
+            zAxis = (Math.abs(zAxis) < joystickZDeadband) ? 0 : zAxis * speedModZ;
 
             double rotation = zAxis * DriveConstants.maxAngularVelocityRadps;
             if (DebugSetting.TraceLevel == DebugLevel.Swerve || DebugSetting.TraceLevel == DebugLevel.All) {

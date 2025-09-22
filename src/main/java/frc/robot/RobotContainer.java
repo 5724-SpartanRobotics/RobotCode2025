@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import frc.robot.Constants.ClawConstants;
+import frc.robot.Constants.ControllerConstants;
 import frc.robot.commands.PresetCommands;
 import frc.robot.commands.TeleopSwerve;
 import frc.robot.commands.autos.Autos;
@@ -70,6 +71,7 @@ public class RobotContainer {
         _DriveTrainSubsystem.flipGyro();
        
 
+        configureSmartDashboardTopics();
         configureBindings(presetCommands);
         configureAutos();
     }
@@ -184,6 +186,12 @@ public class RobotContainer {
         _OperatorController.button(6).onTrue(presetCommands.L2);
         _OperatorController.button(4).onTrue(presetCommands.CoralPickup);
         _OperatorController.button(12).onTrue(presetCommands.ReturnHome);
+    }
+
+    private void configureSmartDashboardTopics() {
+        SmartDashboard.putNumber("Joystick X Deadband", ControllerConstants.joystickXDeadband);
+        SmartDashboard.putNumber("Joystick Y Deadband", ControllerConstants.joystickYDeadband);
+        SmartDashboard.putNumber("Joystick Z Deadband", ControllerConstants.joystickZDeadband);
     }
 
     public void robotFinishedBooting() {
