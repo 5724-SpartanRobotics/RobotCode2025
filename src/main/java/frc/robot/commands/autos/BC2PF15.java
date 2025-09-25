@@ -6,7 +6,6 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants.ElevatorAndArmConstants;
-import frc.robot.Constants.TimeDuration;
 import frc.robot.commands.ClawRunForDurationCommand;
 import frc.robot.commands.ClawRunForDurationCommand.ClawRunMode;
 import frc.robot.commands.PresetCommands;
