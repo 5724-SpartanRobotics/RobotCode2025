@@ -29,7 +29,13 @@ public class LedSubsystem extends SubsystemBase {
     private final Timer _timer = new Timer();
     private boolean _useDuration = false;
     private double _duration = 0;
+    private double _sleepDuration = 0;
     private boolean _lock = false;
+
+    private boolean _isBlinkOn = false;
+    private int _blinkCount = 0;
+    private int _targetBlinkCount = 0;
+    private Color _blinkColor = Color.kBlack;
 
     public LedSubsystem() {
         this._led = new AddressableLED(LedConstants.port);
@@ -48,10 +54,30 @@ public class LedSubsystem extends SubsystemBase {
     public void periodic() {
         super.periodic();
 
-        if (_useDuration && _timer.get() >= _duration) {
+        if (_useDuration && _timer.get() >= _duration && _sleepDuration <= 0) {
             _useDuration = false;
             _duration = 0.0;
             reset();
+        }
+        if (_useDuration && _sleepDuration > 0) {
+            double elapsed = _timer.get();
+            double cycleTime = _isBlinkOn ? _duration : _sleepDuration;
+    
+            if (elapsed >= cycleTime) {
+                _timer.restart();
+                _isBlinkOn = !_isBlinkOn;
+                _blinkCount++;
+    
+                if (_blinkCount >= _targetBlinkCount) {
+                    _useDuration = false;
+                    _lock = false;
+                    _blinkCount = 0;
+                    _targetBlinkCount = 0;
+                    SetColor(kDefaultInactiveColor);
+                } else {
+                    SetColor(_isBlinkOn ? _blinkColor : kDefaultInactiveColor);
+                }
+            }
         }
 
         if (!_lock) reset();
@@ -106,9 +132,24 @@ public class LedSubsystem extends SubsystemBase {
      */
     public LedSubsystem setColorForDuration(Color color, double duration) {
         _timer.restart();
-        setColor(color, true);
         _useDuration = true;
         _duration = Math.max(duration, 0);
+        setColor(color, true);
         return this;
     }
+
+    public LedSubsystem setColorForDurationNTimes(Color color, double duration, int nTimes) {
+        _blinkColor = color;
+        _duration = Math.max(duration, 0);
+        _sleepDuration = _duration / 2.0;
+        _targetBlinkCount = nTimes * 2; // Each blink has an "on" and "off"
+        _blinkCount = 0;
+        _useDuration = true;
+        _lock = true;
+        _timer.restart();
+        _isBlinkOn = true;
+        SetColor(_blinkColor);
+        return this;
+    }
+    
 }

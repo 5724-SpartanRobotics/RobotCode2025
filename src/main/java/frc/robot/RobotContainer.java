@@ -58,7 +58,7 @@ public class RobotContainer {
         _OperatorController = new CommandJoystick(1);      
 
         _TeleopSwerve = new TeleopSwerve(_DriveTrainSubsystem, _DriverController);
-        PresetCommands presetCommands = new PresetCommands(_ElevatorSubsystem, _WristSubsystem, _ArmSubsystem);
+        PresetCommands presetCommands = new PresetCommands(_ElevatorSubsystem, _WristSubsystem, _ArmSubsystem, _LedSubsystem);
         _Autos = new Autos(_DriveTrainSubsystem, _ElevatorSubsystem, _ArmSubsystem, _ClawSubsystem, _WristSubsystem, presetCommands);
 
         _DriveTrainSubsystem.setDefaultCommand(_TeleopSwerve);
