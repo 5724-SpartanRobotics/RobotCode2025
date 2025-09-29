@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.ElevatorAndArmConstants;
 import frc.robot.commands.ClawRunForDurationCommand;
+import frc.robot.commands.PresetCommands;
 import frc.robot.commands.SetpointCommands;
 import frc.robot.commands.ClawRunForDurationCommand.ClawRunMode;
 import frc.robot.subsystems.ArmSubsystem;
@@ -25,15 +26,17 @@ public class OnePieceCenterL3 extends Command {
     private ArmSubsystem _ArmSubsystem;
     private WristSubsystem _WristSubsystem;
     private ClawSubsystem _ClawSubsystem;
+    private PresetCommands _PresetCommands;
     Timer _StartTime;
 
-    public OnePieceCenterL3(DriveTrainSubsystem driveTrainSubsystem, ElevatorSubsystem elevatorSubsystem, ArmSubsystem armSubsystem, WristSubsystem wristSubsystem, ClawSubsystem clawSubsystem) {
+    public OnePieceCenterL3(DriveTrainSubsystem driveTrainSubsystem, ElevatorSubsystem elevatorSubsystem, ArmSubsystem armSubsystem, WristSubsystem wristSubsystem, ClawSubsystem clawSubsystem, PresetCommands presetCommands) {
         addRequirements(driveTrainSubsystem, elevatorSubsystem, armSubsystem, wristSubsystem, clawSubsystem);
         _DriveTrainSubsystem = driveTrainSubsystem;
         _ElevatorSubsystem = elevatorSubsystem;
         _ArmSubsystem = armSubsystem;
         _WristSubsystem = wristSubsystem;
         _ClawSubsystem = clawSubsystem;
+        _PresetCommands = presetCommands;
     }
 
     @Override
@@ -49,7 +52,7 @@ public class OnePieceCenterL3 extends Command {
             ),
             Commands.parallel(
                 Commands.sequence(
-                    new ParallelDeadlineGroup(new WaitCommand(4.290), new InstantCommand(() -> {
+                    new ParallelDeadlineGroup(new WaitCommand(4.305), new InstantCommand(() -> {
                         _DriveTrainSubsystem.drive(new Translation2d(0.09, 0).times(DriveConstants.maxRobotSpeedmps), 0);
                     }, _DriveTrainSubsystem)),
                     _DriveTrainSubsystem.brakeCmd()
@@ -59,13 +62,14 @@ public class OnePieceCenterL3 extends Command {
                     .alongWith(new SetpointCommands.ElevatorToSetpointCommand(_ElevatorSubsystem, ElevatorAndArmConstants.ElevatorL3Posn))
                     .alongWith(new SetpointCommands.WristRotateToSetpointCommand(_WristSubsystem, 0))
                     .alongWith(new SetpointCommands.ArmRotateToSetpointCommand(_ArmSubsystem, ElevatorAndArmConstants.ArmRotateL3Posn))
+                    .alongWith(new ClawRunForDurationCommand(_ClawSubsystem, ClawRunMode.Intake, 5))
                 ).withDeadline(new WaitCommand(3.1))
             ),
             (new ClawRunForDurationCommand(_ClawSubsystem, ClawRunMode.OuttakeDblSpeed, 1.5)).withDeadline(new WaitCommand(1.5)),
             new WaitCommand(0.5),
             Commands.sequence(
                 new ParallelDeadlineGroup(new WaitCommand(0.5), new InstantCommand(() -> {
-                    _DriveTrainSubsystem.drive(new Translation2d(0.20, 0.00).times(DriveConstants.maxRobotSpeedmps), 0);
+                    _DriveTrainSubsystem.drive(new Translation2d(-0.20, 0.00).times(DriveConstants.maxRobotSpeedmps), 0);
                 }, _DriveTrainSubsystem)),
                 new WaitCommand(0.5),
                 new ParallelDeadlineGroup(new WaitCommand(1.0), new InstantCommand(() -> {
@@ -73,7 +77,9 @@ public class OnePieceCenterL3 extends Command {
                 }, _DriveTrainSubsystem)),
                 _DriveTrainSubsystem.brakeCmd()
             ),
-            new InstantCommand(() -> {_DriveTrainSubsystem.flipGyro();}, _DriveTrainSubsystem)
+            new WaitCommand(0.2),
+            new InstantCommand(() -> {_DriveTrainSubsystem.flipGyro();}, _DriveTrainSubsystem),
+            _PresetCommands.ReturnHome()
         ).schedule();
     }
 
