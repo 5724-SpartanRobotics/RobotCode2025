@@ -182,11 +182,11 @@ public class RobotContainer {
         }, _ClawSubsystem));
 
         //sequential commands
-        _OperatorController.button(5).onTrue(presetCommands.L4);
-        _OperatorController.button(3).onTrue(presetCommands.L3);
-        _OperatorController.button(6).onTrue(presetCommands.L2);
-        _OperatorController.button(4).onTrue(presetCommands.CoralPickup);
-        _OperatorController.button(12).onTrue(presetCommands.ReturnHome);
+        _OperatorController.button(5).onTrue(presetCommands.L4());
+        _OperatorController.button(3).onTrue(presetCommands.L3());
+        _OperatorController.button(6).onTrue(presetCommands.L2());
+        _OperatorController.button(4).onTrue(presetCommands.CoralPickup());
+        _OperatorController.button(12).onTrue(presetCommands.ReturnHome());
     }
 
     private void configureSmartDashboardTopics() {

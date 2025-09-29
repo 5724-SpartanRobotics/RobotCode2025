@@ -1,5 +1,6 @@
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -11,12 +12,10 @@ import frc.robot.subsystems.LedSubsystem;
 import frc.robot.subsystems.WristSubsystem;
 
 public final class PresetCommands {
-    public final SequentialCommandGroup L4;
-    public final SequentialCommandGroup L3;
-    public final SequentialCommandGroup L2;
-    public final SequentialCommandGroup L1;
-    public final SequentialCommandGroup ReturnHome;
-    public final SequentialCommandGroup CoralPickup;
+    private final ElevatorSubsystem _ElevatorSubsystem;
+    private final WristSubsystem _WristSubsystem;
+    private final ArmSubsystem _ArmSubsystem;
+    private final LedSubsystem _LedSubsystem;
 
     public PresetCommands(
         ElevatorSubsystem elevatorSubsystem,
@@ -24,40 +23,45 @@ public final class PresetCommands {
         ArmSubsystem armSubsystem,
         LedSubsystem ledSubsystem
     ) {
-        L4 = new SequentialCommandGroup(new ParallelCommandGroup(
-            new InstantCommand(() -> { ledSubsystem.setColorForDurationNTimes(LedSubsystem.kDefaultNotificationColor, 0.5, 1); }),
-            new WaitCommand(0)
-            .alongWith(new SetpointCommands.ElevatorToSetpointCommand(elevatorSubsystem, ElevatorAndArmConstants.ElevatorL4Posn))
-            .alongWith(new SetpointCommands.WristRotateToSetpointCommand(wristSubsystem, 0))
-            .alongWith(new SetpointCommands.ArmRotateToSetpointCommand(armSubsystem, ElevatorAndArmConstants.ArmRotateL4Posn))
-        ));
-        L3 = new SequentialCommandGroup(new ParallelCommandGroup(
-            new InstantCommand(() -> { ledSubsystem.setColorForDurationNTimes(LedSubsystem.kDefaultNotificationColor, 0.5, 2); }),
-            new SetpointCommands.ElevatorToSetpointCommand(elevatorSubsystem, ElevatorAndArmConstants.ElevatorL3Posn)
-            .alongWith(new SetpointCommands.WristRotateToSetpointCommand(wristSubsystem, 0))
-            .alongWith(new SetpointCommands.ArmRotateToSetpointCommand(armSubsystem, ElevatorAndArmConstants.ArmRotateL3Posn))
-        ));
-        L2 = new SequentialCommandGroup(new ParallelCommandGroup(
-            new InstantCommand(() -> { ledSubsystem.setColorForDurationNTimes(LedSubsystem.kDefaultNotificationColor, 0.5, 3); }),
-            new SetpointCommands.ElevatorToSetpointCommand((elevatorSubsystem), ElevatorAndArmConstants.ElevatorL2Posn)
-            .alongWith(new SetpointCommands.WristRotateToSetpointCommand(wristSubsystem, 0))
-            .alongWith(new SetpointCommands.ArmRotateToSetpointCommand(armSubsystem, ElevatorAndArmConstants.ArmRotateL2Posn))
-        ));
-        L1 = new SequentialCommandGroup(new ParallelCommandGroup(
-            new InstantCommand(() -> { ledSubsystem.setColorForDurationNTimes(LedSubsystem.kDefaultNotificationColor, 0.5, 4); }),
-            new SetpointCommands.ElevatorToSetpointCommand(elevatorSubsystem, ElevatorAndArmConstants.ElevatorL1Posn)
-            .alongWith(new SetpointCommands.WristRotateToSetpointCommand(wristSubsystem, 0))
-            .alongWith(new SetpointCommands.ArmRotateToSetpointCommand(armSubsystem, ElevatorAndArmConstants.ArmRotateL1Posn))
-        ));
-        ReturnHome = new SequentialCommandGroup(
-            new SetpointCommands.WristRotateToSetpointCommand(wristSubsystem, 0)
-            .alongWith(new SetpointCommands.ArmRotateToSetpointCommand(armSubsystem, 0.0))
-            .alongWith(new SetpointCommands.ElevatorToSetpointCommand(elevatorSubsystem, 0.0))
-        );
-        CoralPickup = new SequentialCommandGroup(
-            new SetpointCommands.ElevatorToSetpointCommand(elevatorSubsystem, ElevatorAndArmConstants.ElevatorCoralPosn)
-            .alongWith(new SetpointCommands.WristRotateToSetpointCommand(wristSubsystem, ElevatorAndArmConstants.WristMax))
-            .alongWith(new SetpointCommands.ArmRotateToSetpointCommand(armSubsystem, ElevatorAndArmConstants.ArmRotateCoralPosn))
-        );
+        _ElevatorSubsystem = elevatorSubsystem;
+        _WristSubsystem = wristSubsystem;
+        _ArmSubsystem = armSubsystem;
+        _LedSubsystem = ledSubsystem;
     }
+
+    public Command L4() { return new SequentialCommandGroup(new ParallelCommandGroup(
+            new InstantCommand(() -> { _LedSubsystem.setColorForDurationNTimes(LedSubsystem.kDefaultNotificationColor, 0.5, 1); }),
+            new WaitCommand(0)
+            .alongWith(new SetpointCommands.ElevatorToSetpointCommand(_ElevatorSubsystem, ElevatorAndArmConstants.ElevatorL4Posn))
+            .alongWith(new SetpointCommands.WristRotateToSetpointCommand(_WristSubsystem, 0))
+            .alongWith(new SetpointCommands.ArmRotateToSetpointCommand(_ArmSubsystem, ElevatorAndArmConstants.ArmRotateL4Posn))
+    )); }
+    public Command L3() { return new SequentialCommandGroup(new ParallelCommandGroup(
+            new InstantCommand(() -> { _LedSubsystem.setColorForDurationNTimes(LedSubsystem.kDefaultNotificationColor, 0.5, 2); }),
+            new SetpointCommands.ElevatorToSetpointCommand(_ElevatorSubsystem, ElevatorAndArmConstants.ElevatorL3Posn)
+            .alongWith(new SetpointCommands.WristRotateToSetpointCommand(_WristSubsystem, 0))
+            .alongWith(new SetpointCommands.ArmRotateToSetpointCommand(_ArmSubsystem, ElevatorAndArmConstants.ArmRotateL3Posn))
+    )); }
+    public Command L2() { return new SequentialCommandGroup(new ParallelCommandGroup(
+            new InstantCommand(() -> { _LedSubsystem.setColorForDurationNTimes(LedSubsystem.kDefaultNotificationColor, 0.5, 3); }),
+            new SetpointCommands.ElevatorToSetpointCommand((_ElevatorSubsystem), ElevatorAndArmConstants.ElevatorL2Posn)
+            .alongWith(new SetpointCommands.WristRotateToSetpointCommand(_WristSubsystem, 0))
+            .alongWith(new SetpointCommands.ArmRotateToSetpointCommand(_ArmSubsystem, ElevatorAndArmConstants.ArmRotateL2Posn))
+    ));}
+    public Command L1() { return new SequentialCommandGroup(new ParallelCommandGroup(
+            new InstantCommand(() -> { _LedSubsystem.setColorForDurationNTimes(LedSubsystem.kDefaultNotificationColor, 0.5, 4); }),
+            new SetpointCommands.ElevatorToSetpointCommand(_ElevatorSubsystem, ElevatorAndArmConstants.ElevatorL1Posn)
+            .alongWith(new SetpointCommands.WristRotateToSetpointCommand(_WristSubsystem, 0))
+            .alongWith(new SetpointCommands.ArmRotateToSetpointCommand(_ArmSubsystem, ElevatorAndArmConstants.ArmRotateL1Posn))
+    )); }
+    public Command ReturnHome() { return new SequentialCommandGroup(
+            new SetpointCommands.WristRotateToSetpointCommand(_WristSubsystem, 0)
+            .alongWith(new SetpointCommands.ArmRotateToSetpointCommand(_ArmSubsystem, 0.0))
+            .alongWith(new SetpointCommands.ElevatorToSetpointCommand(_ElevatorSubsystem, 0.0))
+    ); }
+    public Command CoralPickup() { return new SequentialCommandGroup(
+            new SetpointCommands.ElevatorToSetpointCommand(_ElevatorSubsystem, ElevatorAndArmConstants.ElevatorCoralPosn)
+            .alongWith(new SetpointCommands.WristRotateToSetpointCommand(_WristSubsystem, ElevatorAndArmConstants.WristMax))
+            .alongWith(new SetpointCommands.ArmRotateToSetpointCommand(_ArmSubsystem, ElevatorAndArmConstants.ArmRotateCoralPosn))
+    ); }
 }
