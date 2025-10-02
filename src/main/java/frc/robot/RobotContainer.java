@@ -187,6 +187,18 @@ public class RobotContainer {
         _OperatorController.button(6).onTrue(presetCommands.L2());
         _OperatorController.button(4).onTrue(presetCommands.CoralPickup());
         _OperatorController.button(12).onTrue(presetCommands.ReturnHome());
+
+        // Ready LEDs for intake
+        _OperatorController.axisMagnitudeGreaterThan(0, 0.3).toggleOnTrue(new RunCommand(() -> {
+            _LedSubsystem.setColor(
+                _OperatorController.getRawAxis(0) > 0 ?
+                    Color.kPurple :
+                    Color.kYellowGreen
+            );
+        }, _LedSubsystem));
+        _OperatorController.axisMagnitudeGreaterThan(0, 0.3).toggleOnFalse(new RunCommand(() -> {
+            _LedSubsystem.off();
+        }, _LedSubsystem));
     }
 
     private void configureSmartDashboardTopics() {

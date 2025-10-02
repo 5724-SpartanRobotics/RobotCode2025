@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.ElevatorAndArmConstants;
 import frc.robot.commands.ClawRunForDurationCommand;
+import frc.robot.commands.PresetCommands;
 import frc.robot.commands.SetpointCommands;
 import frc.robot.commands.ClawRunForDurationCommand.ClawRunMode;
 import frc.robot.subsystems.ArmSubsystem;
@@ -25,15 +26,17 @@ public class OnePieceCenterL1 extends Command {
     private ArmSubsystem _ArmSubsystem;
     private WristSubsystem _WristSubsystem;
     private ClawSubsystem _ClawSubsystem;
+    private PresetCommands _PresetCommands;
     Timer _StartTime;
 
-    public OnePieceCenterL1(DriveTrainSubsystem driveTrainSubsystem, ElevatorSubsystem elevatorSubsystem, ArmSubsystem armSubsystem, WristSubsystem wristSubsystem, ClawSubsystem clawSubsystem) {
+    public OnePieceCenterL1(DriveTrainSubsystem driveTrainSubsystem, ElevatorSubsystem elevatorSubsystem, ArmSubsystem armSubsystem, WristSubsystem wristSubsystem, ClawSubsystem clawSubsystem, PresetCommands presetCommands) {
         addRequirements(driveTrainSubsystem, elevatorSubsystem, armSubsystem, wristSubsystem, clawSubsystem);
         _DriveTrainSubsystem = driveTrainSubsystem;
         _ElevatorSubsystem = elevatorSubsystem;
         _ArmSubsystem = armSubsystem;
         _WristSubsystem = wristSubsystem;
         _ClawSubsystem = clawSubsystem;
+        _PresetCommands = presetCommands;
     }
 
     @Override
@@ -69,7 +72,8 @@ public class OnePieceCenterL1 extends Command {
                 }, _DriveTrainSubsystem)),
                 _DriveTrainSubsystem.brakeCmd()
             ),
-            new InstantCommand(() -> {_DriveTrainSubsystem.flipGyro();}, _DriveTrainSubsystem)
+            new InstantCommand(() -> {_DriveTrainSubsystem.flipGyro();}, _DriveTrainSubsystem),
+            _PresetCommands.ReturnHome()
         ).schedule();
     }
 
