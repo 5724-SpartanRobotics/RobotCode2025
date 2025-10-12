@@ -1,46 +1,59 @@
 package frc.robot.subsystems;
 
-import edu.wpi.first.math.VecBuilder;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Util.LimelightHelpers;
+import static edu.wpi.first.units.Units.DegreesPerSecond;
 
-public class VisionSubsystem extends SubsystemBase {
-    private static final String kLimelightName = "limelight";
-    private final DriveTrainSubsystem _DriveTrainSubsystem;
+import java.util.Optional;
 
-    public Pose2d robotPose;
-    public int currentFiducial = -1;
+import com.ctre.phoenix6.hardware.Pigeon2;
 
-    public VisionSubsystem(DriveTrainSubsystem driveTrainSubsystem) {
-        super();
-        this._DriveTrainSubsystem = driveTrainSubsystem;
-    }
+import limelight.Limelight;
+import limelight.networktables.PoseEstimate;
+import limelight.networktables.LimelightPoseEstimator;
+import limelight.networktables.LimelightSettings.LEDMode;
+import limelight.networktables.Orientation3d;
+import limelight.networktables.AngularVelocity3d;
+import edu.wpi.first.math.estimator.PoseEstimator;
+import edu.wpi.first.math.geometry.Pose3d;
 
-    @Override
-    public void periodic() {
-        super.periodic();
 
-        // This needs to be called every periodic cycle because it actually updates the estimated position.
-        LimelightHelpers.SetRobotOrientation(
-            kLimelightName, _DriveTrainSubsystem.getPoseEstimator().getEstimatedPosition().getRotation().getDegrees(),
-            0, 0, 0, 0, 0
+public class VisionSubsystem {
+
+    private final Limelight limelight;
+    private final LimelightPoseEstimator poseEstimator;
+    private final Pigeon2 gyro;
+    public int currentFiducial;
+    public Object robotPose;
+
+    /**
+     * Constructor: pass the gyro and the pose estimator in — don't create them silently here.
+     */
+    public VisionSubsystem(Pigeon2 gyro, LimelightPoseEstimator poseEstimator) {
+        this.gyro = gyro;
+        this.poseEstimator = poseEstimator;
+        this.limelight = new Limelight("limelight");
+
+        this.limelight.getSettings()
+            .withLimelightLEDMode(LEDMode.PipelineControl)
+            .withCameraOffset(new Pose3d()) 
+            .save();
+
+        Orientation3d orientation = new Orientation3d(
+           gyro.getRotation3d(), null, null, null);
+            new AngularVelocity3d(
+                 DegreesPerSecond.of(gyro.getPitch())
+                 DegreesPerSecond.of(gyro.getRoll())  
+                 DegreesPerSecond.of(gyro.getYaw())   
+            )
         );
-        // The docs say to only use wpiBlue because starting in 2024 all coordinates are based off of blue side only.
-        LimelightHelpers.PoseEstimate mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(kLimelightName);
 
-        // Do not do anything if there is wild stuff happening
-        if (
-            Math.abs(_DriveTrainSubsystem.getGyroRate()) > 720 ||
-            mt2 == null || (mt2 != null && mt2.tagCount == 0) ||
-            (mt2 != null && mt2.pose == null)
-        ) return;
+        this.limelight.getSettings()
+            .withRobotOrientation(orientation)
+            .save();
 
-        _DriveTrainSubsystem.getPoseEstimator().setVisionMeasurementStdDevs(VecBuilder.fill(0.7, 0.7, 9999999));
-        _DriveTrainSubsystem.getPoseEstimator().addVisionMeasurement(mt2.pose, mt2.timestampSeconds);
-        robotPose = mt2.pose;
-        currentFiducial = java.util.Arrays.asList(mt2.rawFiducials).stream().findFirst().orElse(
-            new LimelightHelpers.RawFiducial(-1, 0, 0, 0, 0, 0, -1.)
-        ).id;
+        Optional<PoseEstimate> visionEstimate = this.poseEstimator.getPoseEstimate();
+
+        visionEstimate.ifPresent(poseEstimate -> {
+            this.poseEstimator.addVisionMeasurement(poseEstimate.pose.toPose2d(), poseEstimate.timestampSeconds);
+        });
     }
 }

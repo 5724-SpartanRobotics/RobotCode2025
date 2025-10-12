@@ -24,14 +24,19 @@ public class AprilTagLockonCommand extends Command {
         VisionSubsystem visionSubsystem
     ) {
         addRequirements(driveTrainSubsystem, visionSubsystem);
-        this._DriveTrainSubsystem = driveTrainSubsystem;
-        this._VisionSubsystem = visionSubsystem;
-
-        this._translationPid = new PIDController(1., 0., 0.1);
-        this._rotationPid = new PIDController(2., 0., 0.2);
-    }
-
-    @Override
+                this._DriveTrainSubsystem = driveTrainSubsystem;
+                this._VisionSubsystem = visionSubsystem;
+        
+                this._translationPid = new PIDController(1., 0., 0.1);
+                this._rotationPid = new PIDController(2., 0., 0.2);
+            }
+        
+            private void addRequirements(DriveTrainSubsystem driveTrainSubsystem, VisionSubsystem visionSubsystem) {
+                // TODO Auto-generated method stub
+                throw new UnsupportedOperationException("Unimplemented method 'addRequirements'");
+            }
+        
+            @Override
     public void execute() {
         // (hopefully) Average out the estimated pose and the MegaTag2 pose (which is fed into the pose estimator in VisionSubsystem)
         Pose2d robotPose = _DriveTrainSubsystem.getPoseEstimator().getEstimatedPosition()   

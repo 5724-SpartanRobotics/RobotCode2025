@@ -47,7 +47,7 @@ public class RobotContainer {
     public RobotContainer(){
         _DriveTrainSubsystem = new DriveTrainSubsystem();
         _LedSubsystem = new LedSubsystem();
-        _VisionSubsystem = new VisionSubsystem(_DriveTrainSubsystem);
+        _VisionSubsystem = new VisionSubsystem(null, null);
         _ArmSubsystem = new ArmSubsystem();
         _ElevatorSubsystem = new ElevatorSubsystem();
         _ClawSubsystem = new ClawSubsystem(_LedSubsystem);
