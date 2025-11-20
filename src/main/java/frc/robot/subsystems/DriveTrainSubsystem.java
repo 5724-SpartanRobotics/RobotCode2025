@@ -148,6 +148,19 @@ public class DriveTrainSubsystem extends SubsystemBase {
         return new InstantCommand(() -> {this.brake();});
     }
 
+    public void zeroSensors(Pose2d xy) {
+        _SwerveDriveOdometry.resetPosition(
+            lastUpdatedGyroHeading,
+            new SwerveModulePosition[] {
+                _LF.getPosition(),
+                _RF.getPosition(),
+                _LB.getPosition(),
+                _RB.getPosition()
+            },
+            xy
+        );
+    }
+
 
     private void updateGyro() {
         lastUpdatedGyroHeading = Rotation2d.fromDegrees(_gyroscope.getYaw().getValueAsDouble());

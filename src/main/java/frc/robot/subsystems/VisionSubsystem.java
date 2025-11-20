@@ -1,46 +1,91 @@
 package frc.robot.subsystems;
 
-import edu.wpi.first.math.VecBuilder;
+import java.util.Arrays;
+import java.util.Optional;
+
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.networktables.DoubleArraySubscriber;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Util.LimelightHelpers;
 
 public class VisionSubsystem extends SubsystemBase {
-    private static final String kLimelightName = "limelight";
-    private final DriveTrainSubsystem _DriveTrainSubsystem;
-
-    public Pose2d robotPose;
-    public int currentFiducial = -1;
+    public static DoubleArraySubscriber _aprilTag;
+    private static NetworkTableInstance _NetworkTable = NetworkTableInstance.getDefault();
+    private static double[] _defaultTag = { -1, -1 };
+    private DriveTrainSubsystem _DriveTrainSubsystem;
 
     public VisionSubsystem(DriveTrainSubsystem driveTrainSubsystem) {
-        super();
         this._DriveTrainSubsystem = driveTrainSubsystem;
     }
 
-    @Override
-    public void periodic() {
-        super.periodic();
+    public void setDrivePosition(double targetDistance, int tag) {
+        Optional<TagMap> optTag = TagMap.getTagMap(tag);
+        if (optTag.isEmpty()) return;
+        TagMap tagMap = optTag.get();
+        // [ tag_dist_ft, tag_angle_deg, tag_id, tag_is_valid ]
+        double[] reportedTag = tagMap.getSubscriber().get(_defaultTag);
 
-        // This needs to be called every periodic cycle because it actually updates the estimated position.
-        LimelightHelpers.SetRobotOrientation(
-            kLimelightName, _DriveTrainSubsystem.getPoseEstimator().getEstimatedPosition().getRotation().getDegrees(),
-            0, 0, 0, 0, 0
-        );
-        // The docs say to only use wpiBlue because starting in 2024 all coordinates are based off of blue side only.
-        LimelightHelpers.PoseEstimate mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(kLimelightName);
+        if (reportedTag.length == 4 && reportedTag[0] > 0) {
+            double theta = -reportedTag[1] + _DriveTrainSubsystem.getGyroHeading().getDegrees() - Constants.CameraAngleOffset;
+            double thetaRadians = Math.toRadians(theta);
+            double deltaD = (reportedTag[0] - targetDistance + Constants.CameraDepthOffset) / 3.28;
+            double deltaX = -deltaD * Math.sin(thetaRadians);
+            double deltaY = deltaD * Math.cos(thetaRadians);
+            _DriveTrainSubsystem.zeroSensors(makePose(deltaX, deltaY));
+            tagMap.setLastTheta(theta);
+        } else {
+            _DriveTrainSubsystem.zeroSensors(makePose(0., 0.));
+        }
+    }
 
-        // Do not do anything if there is wild stuff happening
-        if (
-            Math.abs(_DriveTrainSubsystem.getGyroRate()) > 720 ||
-            mt2 == null || (mt2 != null && mt2.tagCount == 0) ||
-            (mt2 != null && mt2.pose == null)
-        ) return;
+    public Pose2d makePose(double raw_dx, double raw_dy) {
+        return new Pose2d(new Translation2d(-raw_dy, raw_dx), _DriveTrainSubsystem.getGyroHeading().times(-1.0));
+    }
 
-        _DriveTrainSubsystem.getPoseEstimator().setVisionMeasurementStdDevs(VecBuilder.fill(0.7, 0.7, 9999999));
-        _DriveTrainSubsystem.getPoseEstimator().addVisionMeasurement(mt2.pose, mt2.timestampSeconds);
-        robotPose = mt2.pose;
-        currentFiducial = java.util.Arrays.asList(mt2.rawFiducials).stream().findFirst().orElse(
-            new LimelightHelpers.RawFiducial(-1, 0, 0, 0, 0, 0, -1.)
-        ).id;
+    public double getTheta(int tag) {
+        Optional<TagMap> optTag = TagMap.getTagMap(tag);
+        if (optTag.isEmpty()) return 0.0;
+        return optTag.get().getLastTheta();
+    }
+
+    public boolean hasTag(int tag) {
+        Optional<TagMap> optTag = TagMap.getTagMap(tag);
+        if (optTag.isEmpty()) return false;
+        TagMap tagMap = optTag.get();
+        double[] reportedTag = tagMap.getSubscriber().get(_defaultTag);
+        if (reportedTag.length != 4) return false;
+        return reportedTag[0] > 0;
+    }
+
+    public enum TagMap {
+        TAG0_InsertName( 0, _NetworkTable.getDoubleArrayTopic("/Vision/aprilTag0").subscribe(_defaultTag), 0. ),
+        TAG1_InsertName( 1, _NetworkTable.getDoubleArrayTopic("/Vision/aprilTag1").subscribe(_defaultTag), 0. ),
+        TAG2_InsertName( 2, _NetworkTable.getDoubleArrayTopic("/Vision/aprilTag2").subscribe(_defaultTag), 0. );
+
+        private int _id;
+        private DoubleArraySubscriber _subscriber;
+        private double _lastTheta;
+        TagMap(int id, DoubleArraySubscriber subscriber, double lastTheta) {
+            this._id = id;
+            this._subscriber = subscriber;
+            this._lastTheta = lastTheta;
+        }
+
+        int getId() { return this._id; }
+        DoubleArraySubscriber getSubscriber() { return this._subscriber; }
+
+        double setLastTheta(double theta) { this._lastTheta = theta; return theta; }
+        double getLastTheta() { return this._lastTheta; }
+
+        static Optional<TagMap> getTagMap(int id) {
+            return Arrays.asList(TagMap.values()).stream().filter(tm -> tm.getId() == id).findFirst();
+        }
+    }
+
+    public static final class Constants {
+        // TODO: I ned to fix this
+        static final int CameraAngleOffset = 40;
+        static final int CameraDepthOffset = 3;
     }
 }
